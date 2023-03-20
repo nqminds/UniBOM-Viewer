@@ -1,0 +1,34 @@
+{
+  "name": "@nqminds/cyber-demo",
+  "version": "1.0.0",
+  "description": "Demonstrator use cases for a variety of cyber scenarios",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=16.14.0",
+    "npm": "^8.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nqminds/cyber.git"
+  },
+  "workspaces": [
+    "./packages/*"
+  ],
+  "keywords": [
+    "cyber"
+  ],
+  "contributors": [
+    "Alexandru Mereacre <mereacre@gmail.com>",
+    "Alois Klink <alois@nquiringminds.com> (https://aloisklink.com)",
+    "Anthony McCaigue <anthony@nquiringminds.com>",
+    "Ash Setter <ash@nquiringminds.com>"
+  ],
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/nqminds/cyber/issues"
+  },
+  "homepage": "https://github.com/nqminds/cyber#readme"
+}
