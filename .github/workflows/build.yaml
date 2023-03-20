@@ -1,0 +1,53 @@
+name: Lint and test
+
+on: [push, pull_request]
+
+jobs:
+  lint-build-and-test:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+
+      - name: download npm dependencies
+        run: npm ci --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: lint
+        run: npm run lint
+      - name: build dependencies
+        # run dependency build scripts with exposing our private NODE_AUTH_KEY
+        run: npm rebuild && npm run prepare --if-present
+      - name: test
+        run: npm test --if-present
+        # normally this step only takes ~1 minute, but sometimes the download
+        # can be slow
+        timeout-minutes: 10
+        env:
+          # everything we're accessing is public, but authenticating allows us
+          # to avoid failures due to rate-limits
+          GH_TOKEN: ${{ github.token }}
+      - name: Check for uncommited/unignored files
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No files changed"
+          else
+            echo "::error title=Dirty git workspace::The git workspace has uncommited files after running tests"
+            # double --verbose means show `git diff` too
+            git status --verbose --verbose
+            exit 1
+          fi

@@ -4,7 +4,7 @@
   "description": "Demonstrator use cases for a variety of cyber scenarios",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test --workspaces --if-present",
     "lint": "eslint --cache --cache-strategy content && prettier --check --cache .",
     "prepare": "husky install"
   },
