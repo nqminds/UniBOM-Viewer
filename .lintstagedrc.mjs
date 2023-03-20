@@ -1,5 +1,5 @@
 export default {
-  "*.{m,c}?jsx?": [
+  "*.{mjs,cjs,js,jsx}": [
     "eslint --cache --cache-strategy content",
     "prettier --write",
   ],
