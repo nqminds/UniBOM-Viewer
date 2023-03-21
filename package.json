@@ -1,0 +1,42 @@
+{
+  "name": "@nqminds/cyber-demo",
+  "version": "1.0.0",
+  "description": "Demonstrator use cases for a variety of cyber scenarios",
+  "private": true,
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "lint": "eslint --cache --cache-strategy content && prettier --check --cache .",
+    "prepare": "husky install"
+  },
+  "engines": {
+    "node": ">=16.14.0",
+    "npm": "^8.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nqminds/cyber.git"
+  },
+  "workspaces": [
+    "./packages/*"
+  ],
+  "keywords": [
+    "cyber"
+  ],
+  "contributors": [
+    "Alexandru Mereacre <mereacre@gmail.com>",
+    "Alois Klink <alois@nquiringminds.com> (https://aloisklink.com)",
+    "Anthony McCaigue <anthony@nquiringminds.com>",
+    "Ash Setter <ash@nquiringminds.com>"
+  ],
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/nqminds/cyber/issues"
+  },
+  "homepage": "https://github.com/nqminds/cyber#readme",
+  "devDependencies": {
+    "eslint": "^8.36.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.5"
+  }
+}

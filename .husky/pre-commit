@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# run lint-staged, if it's installed
+npm exec --no -- lint-staged

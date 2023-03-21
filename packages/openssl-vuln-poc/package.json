@@ -1,0 +1,17 @@
+{
+  "name": "@nqminds/openssl-vuln-poc",
+  "version": "0.1.0",
+  "description": "Proof-of-concept example of exploiting CVE-2022-3602 in OpenSSL on CHERI",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nqminds/cyber.git",
+    "directory": "openssl-vuln-poc"
+  },
+  "keywords": [
+    "poc",
+    "openssl",
+    "cheri"
+  ],
+  "author": "Alois Klink <alois@nquiringminds.com> (https://aloisklink.com)",
+  "license": "UNLICENSED"
+}
