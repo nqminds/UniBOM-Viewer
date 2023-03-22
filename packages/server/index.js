@@ -12,15 +12,13 @@ const scriptPort = "4001";
 // we'll either want 4 api routes, one for each permutation
 // or 2 parameters (purecap/hybrid and good/malicious cert) and run the appropriate script for each
 app.get('/run-script', async (req, res) => {
+    let [stdout, stderr, error] = ["", "", ""];
     try {
-        const { stdout, stderr } = await exec(`./test.sh ${IP} ${scriptPort} ${userID} ${key}`);
-    } catch {
-
+        ({ stdout, stderr } = await exec(`./test.sh ${IP} ${scriptPort} ${userID} ${key}`));
+    } catch (err) {
+        error = err;
     }
-    console.log("result: ", result);
-    const { stdout, stderr } = result;
-
-    res.send({stdout, stderr});
+    res.send({stdout, stderr, error});
 });
 
 app.listen(port, () => {
