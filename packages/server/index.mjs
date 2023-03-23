@@ -1,36 +1,15 @@
+/* eslint-disable */
 import express from "express";
-import { promisify, parseArgs } from "util";
+import { promisify } from "util";
 import { exec as execRaw } from "child_process";
-const exec = promisify(execRaw).exec;
+import config from "./config.json" assert { type: "json" };
+
+const exec = promisify(execRaw);
 
 const app = express();
 const serverPort = 3000;
 
-const cmdLineOptions = {
-  userID: {
-    type: "string",
-    default: "me",
-  },
-  key: {
-    type: "string",
-    default: "my-ssh-key",
-  },
-  ip: {
-    type: "string",
-    default: "192.168.0.1",
-  },
-  port: {
-    type: "string",
-    default: "4001",
-  },
-};
-
-const { values } = parseArgs({ options: cmdLineOptions });
-
-const userID = values.userID ?? cmdLineOptions.userID.default;
-const key = values.key ?? cmdLineOptions.key.default;
-const IP = values.ip ?? cmdLineOptions.ip.default;
-const port = values.port ?? cmdLineOptions.port.default;
+const { userID, key, IP, port, scriptPath } = config;
 
 console.log(userID, key, IP, port);
 
@@ -40,10 +19,10 @@ app.get("/run-script", async (req, res) => {
   let [stdout, stderr, error] = ["", "", ""];
   try {
     ({ stdout, stderr } = await exec(
-      `./test.sh ${IP} ${port} ${userID} ${key}`
+      `${scriptPath} ${IP} ${port} ${userID} ${key}`
     ));
   } catch (err) {
-    error = err;
+    error = err.message;
   }
   res.send({ stdout, stderr, error });
 });
