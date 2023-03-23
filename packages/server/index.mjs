@@ -7,25 +7,27 @@ import config from "./config.json" assert { type: "json" };
 const exec = promisify(execRaw);
 
 const app = express();
-const serverPort = 3000;
 
-const { userID, key, IP, port, scriptPath } = config;
+const { serverPort, userID, key, IP, port, scriptPaths } = config;
 
-console.log(userID, key, IP, port);
-
-// we'll either want 4 api routes, one for each permutation
-// or 2 parameters (purecap/hybrid and good/malicious cert) and run the appropriate script for each
-app.get("/run-script", async (req, res) => {
-  let [stdout, stderr, error] = ["", "", ""];
-  try {
-    ({ stdout, stderr } = await exec(
-      `${scriptPath} ${IP} ${port} ${userID} ${key}`
-    ));
-  } catch (err) {
-    error = err.message;
+app.get(
+  "/run-script/:purecap(true|false)/:cert(good|malicious)",
+  async (req, res) => {
+    const { purecap, cert } = req.params;
+    const mode = purecap === "true" ? "purecap" : "hybrid";
+    const certificate = cert === "malicious" ? "maliciousCert" : "goodCert";
+    let [stdout, stderr, error] = ["", "", ""];
+    try {
+      const scriptPath = scriptPaths[mode][certificate];
+      ({ stdout, stderr } = await exec(
+        `${scriptPath} ${IP} ${port} ${userID} ${key}`
+      ));
+    } catch (err) {
+      error = err.message;
+    }
+    res.send({ stdout, stderr, error });
   }
-  res.send({ stdout, stderr, error });
-});
+);
 
 app.listen(serverPort, () => {
   console.log(`Crypto Demonstrator server listening on port ${serverPort}.
