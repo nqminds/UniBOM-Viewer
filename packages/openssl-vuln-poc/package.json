@@ -7,11 +7,18 @@
     "url": "git+https://github.com/nqminds/cyber.git",
     "directory": "openssl-vuln-poc"
   },
+  "type": "module",
+  "scripts": {
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
   "keywords": [
     "poc",
     "openssl",
     "cheri"
   ],
   "author": "Alois Klink <alois@nquiringminds.com> (https://aloisklink.com)",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
 }
