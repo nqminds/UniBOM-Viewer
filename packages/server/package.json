@@ -2,7 +2,6 @@
   "name": "@nqminds/cyber-demonstrator-server",
   "version": "1.0.0",
   "description": "Cyber demonstrator server, providing API route to run open-ssl vulnerability script on morello.",
-  "main": "index.js",
   "scripts": {
     "start": "node  ./index.mjs"
   },
