@@ -1,4 +1,3 @@
-/* eslint-disable */
 import express from "express";
 import { promisify } from "util";
 import { exec as execRaw } from "child_process";
