@@ -7,8 +7,7 @@ export default function DemoDescriptor() {
       <h1>Interactive Demo description</h1>
       <Typography>
         Basically, what does the terminal ouput mean? 
-        Might be good to get a few diagrams in?
-  
+        Might be good to get a few diagrams in
       </Typography>
     </Paper>
   )
