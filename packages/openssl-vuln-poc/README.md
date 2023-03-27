@@ -18,3 +18,25 @@ import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
 const res = await MorelloPurecapOpenSSLTestCase.run();
 console.log(`Server output error logs were: ${res.server.stderr}`);
 ```
+
+## Bash scripts to implement in JavaScript
+
+### Server
+
+```bash
+openssl s_server -accept 31050 -CAfile certs/cacert.pem -cert certs/server.cert.pem -key certs/server.key.pem  -state -verify 1
+```
+
+Results:
+
+- Safe: Server stays active.
+- Vulnerable (CHERI Hybrid): malicious payload runs and calls `Abort()`
+  - Exit code: 0x86 (`SIGTRAP`)
+- Vulnerable (CHERI Purecap): malicious payload is caught by CPU and is killed with `In-address space security exception (core dumped)`
+  - Exit code: 0xA2 (`SIGPROT`)
+
+## Client
+
+```bash
+openssl s_client -connect 127.0.0.1:31050 -key certs/client.key.pem  -cert certs/client.cert.pem -CAfile certs/malicious-client-cacert.pem -state
+```

