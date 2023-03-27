@@ -22,12 +22,15 @@ const darkTheme = createTheme({
     background: {
       paper: grey[900],
       default: "#4f4f4f",
+      terminal: "#000000",
+      terminalBar: grey[900],
     },
     text: {
       hint: colour.text[50],
       icon: colour.text[300],
       primary: colour.text[100],
       secondary: colour.text[300],
+      terminal: "#ffffff",
     },
     ...themeConstants,
   },

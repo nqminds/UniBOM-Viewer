@@ -21,12 +21,15 @@ const lightTheme = createTheme({
     background: {
       paper: "#ffffff",
       default: grey[200],
+      terminal: "#c9d1d9",
+      terminalBar: "#92a2b3",
     },
     text: {
       hint: colour.text[100],
       icon: colour.text[600],
       primary: colour.text[800],
       secondary: colour.text[400],
+      terminal: colour.primary[900],
     },
     ...themeConstants,
   },
