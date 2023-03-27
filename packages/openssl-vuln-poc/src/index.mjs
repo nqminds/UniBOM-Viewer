@@ -38,7 +38,7 @@ export class LocalHostTestCase extends OpenSSLTestCase {
    * @inheritdoc
    */
   static async run() {
-    const port = 3000;
+    const port = 31050;
 
     const timeout = 10_000;
 

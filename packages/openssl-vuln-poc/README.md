@@ -24,7 +24,7 @@ console.log(`Server output error logs were: ${res.server.stderr}`);
 ### Server
 
 ```bash
-openssl s_server -accept 3000 -CAfile certs/cacert.pem -cert certs/server.cert.pem -key certs/server.key.pem  -state -verify 1
+openssl s_server -accept 31050 -CAfile certs/cacert.pem -cert certs/server.cert.pem -key certs/server.key.pem  -state -verify 1
 ```
 
 Results:
@@ -38,5 +38,5 @@ Results:
 ## Client
 
 ```bash
-openssl s_client -connect 127.0.0.1:3000 -key certs/client.key.pem  -cert certs/client.cert.pem -CAfile certs/malicious-client-cacert.pem -state
+openssl s_client -connect 127.0.0.1:31050 -key certs/client.key.pem  -cert certs/client.cert.pem -CAfile certs/malicious-client-cacert.pem -state
 ```
