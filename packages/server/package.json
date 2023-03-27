@@ -1,0 +1,17 @@
+{
+  "name": "@nqminds/cyber-demonstrator-server",
+  "version": "1.0.0",
+  "description": "Cyber demonstrator server, providing API route to run open-ssl vulnerability script on morello.",
+  "scripts": {
+    "start": "node  ./index.mjs"
+  },
+  "author": "Ash Setter <ash@nquiringminds.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.21.3",
+    "@babel/plugin-syntax-import-assertions": "^7.20.0"
+  }
+}
