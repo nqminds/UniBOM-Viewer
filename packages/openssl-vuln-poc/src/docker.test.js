@@ -25,7 +25,7 @@ const DOCKER_SETUP_TIMEOUT = 10 * 60 * 1000;
   describe("setup", () => {
     afterEach(async () => {
       await dockerServer.stop();
-    }, 15000);
+    }, 60_000);
 
     test(
       "should setup process",

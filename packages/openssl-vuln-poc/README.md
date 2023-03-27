@@ -13,10 +13,45 @@ These functions are adapted from the
 These are currently only mocked functions, so the API may change in the future.
 
 ```javascript
-import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
+import {
+  MorelloPurecapOpenSSLTestCase,
+  MorelloHybridOpenSSLTestCase,
+} from "@nqminds/openssl-vuln-poc";
 
-const res = await MorelloPurecapOpenSSLTestCase.run();
+import {DockerServer} from "@nqminds/openssl-vuln-poc/src/docker.mjs";
+
+// These are the credentials of a local morello server running
+// in a docker container
+const sshOptions = {
+  username: "root",
+  host: "127.0.0.2",
+  port: 2224,
+};
+
+const dockerServer = new DockerServer({
+  port: sshOptions.port,
+});
+// ~will take hours to download on the first time~
+// Use `podman pull docker.io/aloisklink/cheribuild-edgesec:morello-purecap-20220511`
+// to view progress.
+// next times should take a few minutes to startup
+await dockerServer.setup({quiet = false});
+
+// or use MorelloHybridOpenSSLTestCase
+const testCase = new MorelloPurecapOpenSSLTestCase({
+  sshOpts: sshOptions,
+});
+
+// installs vulnerable OpenSSL versions, and caches
+// `ssh` connection for 60 minutes for faster tests
+await testCase.setup();
+
+// run your tests as many times as you want
+// (MorelloHybridcapOpenSSLTestCase can use the same connection)
+const res = await testCase.run();
 console.log(`Server output error logs were: ${res.server.stderr}`);
+
+await dockerServer.stop();
 ```
 
 ## Bash scripts to implement in JavaScript
@@ -81,11 +116,11 @@ scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r ./certs scp:/
 (For `purecap`, use `/usr/local/bin/openssl`)
 
 ```bash
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"/usr/local64/bin/openssl s_server -accept 31050 -CAfile certs/cacert.pem -cert certs/server.cert.pem -key certs/server.key.pem -state -verify 1; exit $?"'
+ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"/usr/local64/bin/openssl s_server -accept 31050 -CAfile certs/cacert.pem -cert certs/server.cert.pem -key certs/server.key.pem -state -verify 1; exit $?"'
 ```
 
 ### Client
 
 ```bash
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"openssl s_client -connect 127.0.0.1:31050 -key certs/client.key.pem -cert certs/client.cert.pem -CAfile certs/malicious-client-cacert.pem -state; exit $?"'
+ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"openssl s_client -connect 127.0.0.1:31050 -key certs/client.key.pem -cert certs/client.cert.pem -CAfile certs/malicious-client-cacert.pem -state; exit $?"'
 ```
