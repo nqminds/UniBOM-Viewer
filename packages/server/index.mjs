@@ -39,7 +39,7 @@ app.get(
       res.send({ stdout, stderr, error });
     } else {
       res
-        .status(400)
+        .status(501)
         .send(`${cert} certificate for mode ${mode} is not implemented`);
     }
   }
