@@ -1,13 +1,24 @@
 import express from "express";
-import { promisify } from "util";
-import { exec as execRaw } from "child_process";
 import config from "./config.json" assert { type: "json" };
+import {
+  MorelloPurecapOpenSSLTestCase,
+  MorelloHybridOpenSSLTestCase,
+} from "@nqminds/openssl-vuln-poc";
 
-const exec = promisify(execRaw);
+const scriptPaths = {
+  purecap: {
+    goodCert: null,
+    maliciousCert: MorelloPurecapOpenSSLTestCase,
+  },
+  hybrid: {
+    goodCert: null,
+    maliciousCert: MorelloHybridOpenSSLTestCase,
+  },
+};
 
 const app = express();
 
-const { serverPort, userID, key, IP, port, scriptPaths } = config;
+const { serverPort, userID, key, IP, port } = config;
 
 app.get(
   "/run-script/:purecap(true|false)/:cert(good|malicious)",
@@ -16,15 +27,21 @@ app.get(
     const mode = purecap === "true" ? "purecap" : "hybrid";
     const certificate = cert === "malicious" ? "maliciousCert" : "goodCert";
     let [stdout, stderr, error] = ["", "", ""];
-    try {
-      const scriptPath = scriptPaths[mode][certificate];
-      ({ stdout, stderr } = await exec(
-        `${scriptPath} ${IP} ${port} ${userID} ${key}`
-      ));
-    } catch (err) {
-      error = err.message;
+    const scriptPath = scriptPaths[mode][certificate];
+    if (scriptPath) {
+      try {
+        ({
+          server: { stdout, stderr },
+        } = await scriptPath.run());
+      } catch (err) {
+        error = err.message;
+      }
+      res.send({ stdout, stderr, error });
+    } else {
+      res
+        .status(501)
+        .send(`${cert} certificate for ${mode} mode is not implemented`);
     }
-    res.send({ stdout, stderr, error });
   }
 );
 
