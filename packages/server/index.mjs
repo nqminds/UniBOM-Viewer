@@ -1,6 +1,20 @@
 import express from "express";
 import config from "./config.json" assert { type: "json" };
-import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
+import {
+  MorelloPurecapOpenSSLTestCase,
+  MorelloHybridOpenSSLTestCase,
+} from "@nqminds/openssl-vuln-poc";
+
+const scriptPaths = {
+  purecap: {
+    goodCert: null,
+    maliciousCert: MorelloPurecapOpenSSLTestCase,
+  },
+  hybrid: {
+    goodCert: null,
+    maliciousCert: MorelloHybridOpenSSLTestCase,
+  },
+};
 
 const app = express();
 
@@ -13,14 +27,21 @@ app.get(
     const mode = purecap === "true" ? "purecap" : "hybrid"; // eslint-disable-line no-unused-vars
     const certificate = cert === "malicious" ? "maliciousCert" : "goodCert"; // eslint-disable-line no-unused-vars
     let [stdout, stderr, error] = ["", "", ""];
-    try {
-      ({
-        server: { stdout, stderr },
-      } = await MorelloPurecapOpenSSLTestCase.run());
-    } catch (err) {
-      error = err.message;
+    const scriptPath = scriptPaths[mode][certificate];
+    if (scriptPath) {
+      try {
+        ({
+          server: { stdout, stderr },
+        } = await scriptPath.run());
+      } catch (err) {
+        error = err.message;
+      }
+      res.send({ stdout, stderr, error });
+    } else {
+      res
+        .status(400)
+        .send(`${cert} certificate for mode ${mode} is not implemented`);
     }
-    res.send({ stdout, stderr, error });
   }
 );
 
