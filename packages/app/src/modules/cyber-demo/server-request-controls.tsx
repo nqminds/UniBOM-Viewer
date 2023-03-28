@@ -15,38 +15,38 @@ const ButtonContainer = styled("div")(() => ({
   justifyContent: "center",
 }))
 
-export default function ServerRequestControls() {
-  const servers = [
-    {
-      name: "Morello",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
-      controls: [
-        {
-          name: "Cert",
-          onClick: () => console.log("Cert")
-        },
-        {
-          name: "No cert",
-          onClick: () => console.log("No cert")
-        }
-      ]
-    },
-    {
-      name: `Ubuntu / "normal server here"`,
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
-      controls: [
-        {
-          name: "Cert",
-          onClick: () => console.log("Cert")
-        },
-        {
-          name: "No cert",
-          onClick: () => console.log("No cert")
-        }
-      ]
-    }
-  ];
-  
+const servers = [
+  {
+    name: "Morello",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
+    controls: [
+      {
+        name: "Cert",
+        mutateParams: [true, true]
+      },
+      {
+        name: "No cert",
+        mutateParams: [true, false]
+      }
+    ]
+  },
+  {
+    name: `Ubuntu / "normal server here"`,
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
+    controls: [
+      {
+        name: "Cert",
+        mutateParams: [false, true]
+      },
+      {
+        name: "No cert",
+        mutateParams: [false, false]
+      }
+    ]
+  }
+];
+
+export default function ServerRequestControls({mutateRequest, loading} : props) {
   return (
     <Container>
       {servers.map(({name, description, controls}) => 
@@ -54,9 +54,14 @@ export default function ServerRequestControls() {
           <h2>{name}</h2>
           <Typography>{description}</Typography>
           <Container>
-            {controls.map(({name, onClick}) => (
+            {controls.map(({name, mutateParams}) => (
               <ButtonContainer key={`${name}-control-${name}`}>
-                <Button variant="contained" onClick={onClick} startIcon=">">
+                <Button
+                  variant="contained"
+                  onClick={()=> mutateRequest(...mutateParams)}
+                  startIcon=">"
+                  disabled={loading}
+                  >
                   {name}
                 </Button>
               </ButtonContainer>
@@ -66,4 +71,9 @@ export default function ServerRequestControls() {
       )}
     </Container>
   )
+}
+
+type props = {
+  mutateRequest: (...rest:any[]) => void,
+  loading: boolean,
 }

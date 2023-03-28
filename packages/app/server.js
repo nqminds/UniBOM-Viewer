@@ -34,6 +34,7 @@ app
               config.get("serverAddress")
             );
           }
+          res.send({ error });
         }
       }
     );
