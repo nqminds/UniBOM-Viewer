@@ -1,1 +1,1 @@
-export {default as CyberDemo} from "./dashboard";
+export { default as CyberDemo } from "./dashboard";

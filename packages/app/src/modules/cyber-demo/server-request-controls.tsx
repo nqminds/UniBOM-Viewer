@@ -1,8 +1,8 @@
-import {styled} from "@mui/system";
-import {Paper} from "../common";
-import {Typography, Button} from "@mui/material";
+import { styled } from "@mui/system";
+import { Paper } from "../common";
+import { Typography, Button } from "@mui/material";
 
-const Container = styled("div")(({theme: {spacing}}) => ({
+const Container = styled("div")(({ theme: { spacing } }) => ({
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
   width: "85%",
@@ -13,67 +13,72 @@ const Container = styled("div")(({theme: {spacing}}) => ({
 const ButtonContainer = styled("div")(() => ({
   display: "flex",
   justifyContent: "center",
-}))
+}));
 
 const servers = [
   {
     name: "Morello",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
     controls: [
       {
         name: "Cert",
-        mutateParams: [true, true]
+        mutateParams: [true, true],
       },
       {
         name: "No cert",
-        mutateParams: [true, false]
-      }
-    ]
+        mutateParams: [true, false],
+      },
+    ],
   },
   {
     name: `Ubuntu / "normal server here"`,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
     controls: [
       {
         name: "Cert",
-        mutateParams: [false, true]
+        mutateParams: [false, true],
       },
       {
         name: "No cert",
-        mutateParams: [false, false]
-      }
-    ]
-  }
+        mutateParams: [false, false],
+      },
+    ],
+  },
 ];
 
-export default function ServerRequestControls({mutateRequest, loading} : props) {
+export default function ServerRequestControls({
+  mutateRequest,
+  loading,
+}: props) {
   return (
     <Container>
-      {servers.map(({name, description, controls}) => 
+      {servers.map(({ name, description, controls }) => (
         <Paper key={`server-${name}`}>
           <h2>{name}</h2>
           <Typography>{description}</Typography>
           <Container>
-            {controls.map(({name, mutateParams}) => (
+            {controls.map(({ name, mutateParams }) => (
               <ButtonContainer key={`${name}-control-${name}`}>
                 <Button
                   variant="contained"
-                  onClick={()=> mutateRequest(...mutateParams)}
+                  onClick={() => mutateRequest(...mutateParams)}
                   startIcon=">"
                   disabled={loading}
-                  >
+                >
                   {name}
                 </Button>
               </ButtonContainer>
             ))}
           </Container>
         </Paper>
-      )}
+      ))}
     </Container>
-  )
+  );
 }
 
 type props = {
-  mutateRequest: (...rest:any[]) => void,
-  loading: boolean,
-}
+  mutateRequest: (...rest: any[]) => void;
+  loading: boolean;
+};

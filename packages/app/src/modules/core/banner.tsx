@@ -1,9 +1,9 @@
-import React from 'react';
-import Image from 'next/image'
+import React from "react";
+import Image from "next/image";
 
-import {styled} from "@mui/system";
+import { styled } from "@mui/system";
 
-import Menu from './menu';
+import Menu from "./menu";
 
 const AppTitleContainer = styled("div")(({ theme: { palette, spacing } }) => ({
   position: "sticky",
@@ -20,7 +20,7 @@ const AppTitleContainer = styled("div")(({ theme: { palette, spacing } }) => ({
   width: "100%",
 }));
 
-export default function AppBanner(){
+export default function AppBanner() {
   return (
     <AppTitleContainer>
       <Image
@@ -30,7 +30,9 @@ export default function AppBanner(){
         height={37}
         priority
       />
-      <div><Menu /></div>
+      <div>
+        <Menu />
+      </div>
     </AppTitleContainer>
-  )
+  );
 }

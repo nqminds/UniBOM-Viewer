@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {createContext, useContext, useState} from "react";
-import {ThemeProvider as MuiThemeProvider} from "@mui/material/styles";
+import { createContext, useContext, useState } from "react";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 
 import lightTheme from "@/styles/theme/lightTheme";
 import darkTheme from "@/styles/theme/darkTheme";
@@ -15,7 +15,7 @@ const Context = createContext({});
  * @param {Array.<object>} props.children - child components
  * @returns {object} - theme provider
  */
-export function ThemeProvider({children}: any) {
+export function ThemeProvider({ children }: any) {
   const [themeType, setTheme] = useState("light");
   return (
     <Context.Provider value={[themeType, setTheme]}>
@@ -39,4 +39,3 @@ export function useThemeContext() {
   // Fix for Typescript error
   return useContext(Context) as any[];
 }
-

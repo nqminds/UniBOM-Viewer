@@ -1,7 +1,5 @@
-import { CyberDemo } from "@/modules/cyber-demo"
+import { CyberDemo } from "@/modules/cyber-demo";
 
 export default function Home() {
-  return (
-    <CyberDemo />
-  )
+  return <CyberDemo />;
 }

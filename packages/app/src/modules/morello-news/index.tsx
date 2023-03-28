@@ -1,1 +1,1 @@
-export {default as NewsReel} from "./news-reel";
+export { default as NewsReel } from "./news-reel";
