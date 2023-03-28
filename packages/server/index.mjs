@@ -24,8 +24,8 @@ app.get(
   "/run-script/:purecap(true|false)/:cert(good|malicious)",
   async (req, res) => {
     const { purecap, cert } = req.params;
-    const mode = purecap === "true" ? "purecap" : "hybrid"; // eslint-disable-line no-unused-vars
-    const certificate = cert === "malicious" ? "maliciousCert" : "goodCert"; // eslint-disable-line no-unused-vars
+    const mode = purecap === "true" ? "purecap" : "hybrid";
+    const certificate = cert === "malicious" ? "maliciousCert" : "goodCert";
     let [stdout, stderr, error] = ["", "", ""];
     const scriptPath = scriptPaths[mode][certificate];
     if (scriptPath) {
