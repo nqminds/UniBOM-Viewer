@@ -20,5 +20,10 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "jest": "^29.5.0"
+  },
+  "exports": {
+    ".": {
+      "default": "./src/index.mjs"
+    }
   }
 }

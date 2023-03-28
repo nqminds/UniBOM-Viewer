@@ -1,26 +1,22 @@
 import express from "express";
-import { promisify } from "util";
-import { exec as execRaw } from "child_process";
 import config from "./config.json" assert { type: "json" };
-
-const exec = promisify(execRaw);
+import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
 
 const app = express();
 
-const { serverPort, userID, key, IP, port, scriptPaths } = config;
+const { serverPort, userID, key, IP, port } = config;
 
 app.get(
   "/run-script/:purecap(true|false)/:cert(good|malicious)",
   async (req, res) => {
     const { purecap, cert } = req.params;
-    const mode = purecap === "true" ? "purecap" : "hybrid";
-    const certificate = cert === "malicious" ? "maliciousCert" : "goodCert";
+    const mode = purecap === "true" ? "purecap" : "hybrid"; // eslint-disable-line no-unused-vars
+    const certificate = cert === "malicious" ? "maliciousCert" : "goodCert"; // eslint-disable-line no-unused-vars
     let [stdout, stderr, error] = ["", "", ""];
     try {
-      const scriptPath = scriptPaths[mode][certificate];
-      ({ stdout, stderr } = await exec(
-        `${scriptPath} ${IP} ${port} ${userID} ${key}`
-      ));
+      ({
+        server: { stdout, stderr },
+      } = await MorelloPurecapOpenSSLTestCase.run());
     } catch (err) {
       error = err.message;
     }
