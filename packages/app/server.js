@@ -15,17 +15,26 @@ app
       "/api/morello/:purecap(true|false)/:goodCert(true|false)",
       async (req, res) => {
         const { purecap, goodCert } = req.params;
-
-        const result = await fetch(
-          `${config.get("serverAddress")}/run-script/${purecap}/${goodCert}`,
-          {
-            referrerPolicy: "strict-origin-when-cross-origin",
-            body: null,
-            method: "GET",
+        try {
+          const result = await fetch(
+            `${config.get("serverAddress")}/run-script/${purecap}/${goodCert}`,
+            {
+              referrerPolicy: "strict-origin-when-cross-origin",
+              body: null,
+              method: "GET",
+            }
+          );
+          const data = await result.json();
+          res.send(data);
+        } catch (error) {
+          console.log(error);
+          if (error.errno === "ECONNREFUSED") {
+            console.log(
+              "Have you started the server on:",
+              config.get("serverAddress")
+            );
           }
-        );
-        const data = await result.json();
-        res.send(data);
+        }
       }
     );
 
