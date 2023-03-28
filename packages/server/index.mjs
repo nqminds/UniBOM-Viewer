@@ -10,21 +10,20 @@ const app = express();
 const { serverPort, userID, key, IP, port, scriptPaths } = config;
 
 app.get(
-  "/run-script/:purecap(true|false)/:cert(good|malicious)",
+  "/run-script/:purecap(true|false)/:goodCert(true|false)",
   async (req, res) => {
     const { purecap, cert } = req.params;
     const mode = purecap === "true" ? "purecap" : "hybrid";
-    const certificate = cert === "malicious" ? "maliciousCert" : "goodCert";
-    let [stdout, stderr, error] = ["", "", ""];
+    const certificate = cert === "true" ? "goodCert" : "maliciousCert";
+    let [input, stdout, stderr, error] = ["", "", "", ""];
     try {
       const scriptPath = scriptPaths[mode][certificate];
-      ({ stdout, stderr } = await exec(
-        `${scriptPath} ${IP} ${port} ${userID} ${key}`
-      ));
+      input = `${scriptPath} ${IP} ${port} ${userID} ${key}`;
+      ({ stdout, stderr } = await exec(input));
     } catch (err) {
       error = err.message;
     }
-    res.send({ stdout, stderr, error });
+    res.send({ input, stdout, stderr, error });
   }
 );
 
