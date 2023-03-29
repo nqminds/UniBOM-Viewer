@@ -8,13 +8,6 @@ import darkTheme from "@/styles/theme/darkTheme";
 
 const Context = createContext({});
 
-/**
- * Theme provider
- *
- * @param {object} props - react props
- * @param {Array.<object>} props.children - child components
- * @returns {object} - theme provider
- */
 export function ThemeProvider({ children }: any) {
   const [themeType, setTheme] = useState("light");
   return (
@@ -26,16 +19,8 @@ export function ThemeProvider({ children }: any) {
   );
 }
 
-ThemeProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
-/**
- * Use theme context hook
- *
- * @returns {object} - theme context
- */
 export function useThemeContext() {
-  // Fix for Typescript error
-  return useContext(Context) as any[];
+  const Context = createContext<[themeType: "light" | "dark", setTheme: (theme: string) => void]>(["light", () => {}]);
+
+  return Context;
 }
