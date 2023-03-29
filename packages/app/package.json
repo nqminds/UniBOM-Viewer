@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.21.3",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.14",
+    "@next/eslint-plugin-next": "^13.2.4",
     "@types/node": "18.15.5",
     "@types/react": "18.0.28",
     "config": "^3.3.9",

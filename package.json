@@ -34,7 +34,6 @@
   },
   "homepage": "https://github.com/nqminds/cyber#readme",
   "devDependencies": {
-    "@next/eslint-plugin-next": "^13.2.4",
     "@nqminds/eslint-config": "^1.1.4",
     "eslint": "^8.36.0",
     "husky": "^8.0.0",
