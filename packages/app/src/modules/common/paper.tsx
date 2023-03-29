@@ -13,5 +13,5 @@ export default function PaperComponent({ children, sx }: props) {
 
 type props = {
   children?: string | JSX.Element | JSX.Element[];
-  sx?: object;
+  sx?: React.ComponentProps<typeof StyledPaper>["sx"];
 };
