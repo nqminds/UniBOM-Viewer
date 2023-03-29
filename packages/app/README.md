@@ -1,4 +1,4 @@
-##@nqminds/cyber-demonstrator app
+## @nqminds/cyber-demonstrator app
 
 First, run the development server:
 
