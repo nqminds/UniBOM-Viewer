@@ -16,15 +16,14 @@ app.get(
     const { purecap, cert } = req.params;
     const mode = purecap === "true" ? "purecap" : "hybrid";
     const certificate = cert === "true" ? "goodCert" : "maliciousCert";
-    let [input, stdout, stderr, error] = ["", "", "", ""];
     try {
       const scriptPath = scriptPaths[mode][certificate];
-      input = `${scriptPath} ${IP} ${port} ${userID} ${key}`;
-      ({ stdout, stderr } = await exec(input));
-    } catch (err) {
-      error = err.message;
+      const input = `${scriptPath} ${IP} ${port} ${userID} ${key}`;
+      const { stdout, stderr } = await exec(input);
+      res.send({ input, stdout, stderr });
+    } catch (error) {
+      res.send({ error });
     }
-    res.send({ input, stdout, stderr, error });
   }
 );
 
