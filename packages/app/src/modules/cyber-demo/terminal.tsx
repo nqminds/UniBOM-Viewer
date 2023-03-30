@@ -1,52 +1,60 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import { Paper, IconButton, Typography } from "@mui/material";
 import { red, amber, lightGreen } from "@mui/material/colors";
 
 import { Delete, Circle } from "@mui/icons-material";
 
-const TerminalContainer = styled(Paper)(({ theme: { palette, spacing } }) => ({
-  marginBottom: spacing(2),
-  background: palette.background.terminal,
-  minHeight: 500,
-  overflowY: "scroll",
-  height: 500,
-}));
+const TerminalContainer = styled(Paper)(
+  ({ theme: {spacing, terminal}}) => ({
+    marginBottom: spacing(2),
+    background: terminal.background,
+    minHeight: 500,
+    overflowY: "scroll",
+    height: 500,
+  })
+);
 
-const DecorativeBar = styled("div")(({ theme: { palette, spacing } }) => ({
-  height: spacing(4),
-  background: palette.background.terminalBar,
-  paddingRight: spacing(2),
-  position: "sticky",
-  top: 0,
-  left: 0,
-  justifyContent: "space-between",
-  display: "flex",
-}));
+const DecorativeBar = styled("div")(
+  ({ theme: {spacing, terminal}}) => ({
+    height: spacing(4),
+    background: terminal.bar,
+    paddingRight: spacing(2),
+    position: "sticky",
+    top: 0,
+    left: 0,
+    justifyContent: "space-between",
+    display: "flex",
+  })
+);
 
-const DecorativeControls = styled(Circle)(({ theme: { spacing } }) => ({
+const DecorativeControls = styled(Circle)(({ theme: {spacing} }) => ({
   fontSize: "1rem",
   margin: spacing(1),
   marginRight: 0,
 }));
 
-const ClearTerminal = styled(IconButton)(({ theme: { spacing, palette } }) => ({
-  fontSize: "1rem",
-  margin: spacing(1),
-  marginRight: 0,
-  color: palette.text.terminal,
-}));
+const ClearTerminal = styled(IconButton)(
+  ({ theme: {spacing, terminal} }) => ({
+    fontSize: "1rem",
+    margin: spacing(1),
+    marginRight: 0,
+    color: terminal.text,
+  })
+);
 
-const TerminalOutput = styled("pre")(({ theme: { palette, spacing } }) => ({
-  padding: spacing(2),
-  color: palette.text.terminal,
-  display: "block",
-  paddingBottom: 0,
-  paddingTop: 0,
-  margin: 0,
-  whiteSpace: "pre-wrap",
-}));
+const TerminalOutput = styled("pre")(
+  ({ theme: {spacing, terminal} }) => ({
+    padding: spacing(2),
+    color: terminal.text,
+    display: "block",
+    paddingBottom: 0,
+    paddingTop: 0,
+    margin: 0,
+    whiteSpace: "pre-wrap",
+  })
+);
 
 function formatOutput(output: string) {
   // Add tab space to begining of output, add tab spaces to all newlines

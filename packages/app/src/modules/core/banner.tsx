@@ -1,15 +1,15 @@
 import React from "react";
 import Image from "next/image";
 
-import { styled } from "@mui/system";
+import {styled} from "@mui/material/styles";
 
 import Menu from "./menu";
 
-const AppTitleContainer = styled("div")(({ theme: { palette, spacing } }) => ({
+const AppTitleContainer = styled("div")(({ theme: {palette, spacing , menu} }) => ({
   position: "sticky",
   top: 0,
   alignItems: "center",
-  background: palette.appBarBackground,
+  background: menu.appBarBackground,
   color: "white",
   display: "flex",
   justifyContent: "space-around",

@@ -7,8 +7,8 @@ const colours = {
   public: {
     primary: lightBlue,
     secondary: blueGrey,
-    text: blue,
-  },
+    text: blue
+  }
 };
 
 const colour = colours.public; // Choose colour scheme here based off e.g. profile initialised in boot
@@ -20,19 +20,19 @@ const lightTheme = createTheme({
     secondary: colour.secondary,
     background: {
       paper: "#ffffff",
-      default: grey[200],
-      terminal: "#c9d1d9",
-      terminalBar: "#92a2b3",
+      default: grey[200]
     },
     text: {
-      hint: colour.text[100],
-      icon: colour.text[600],
       primary: colour.text[800],
-      secondary: colour.text[400],
-      terminal: colour.primary[900],
+      secondary: colour.text[400]
     },
-    ...themeConstants,
   },
+  terminal: {
+    background: "#c9d1d9",
+    bar: "#92a2b3",
+    text: colour.primary[900]
+  },
+  ...themeConstants
 });
 
 export default lightTheme;

@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 
 import { useThemeContext } from "@/context/theme";
 
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import { IconButton, useTheme } from "@mui/material";
 import { LightMode, Nightlight } from "@mui/icons-material";
 
@@ -20,25 +20,25 @@ const Container = styled("div")(() => ({
 }));
 
 const MenuItem = styled("div")(
-  ({ theme: { spacing, breakpoints, palette } }) => ({
+  ({ theme: {spacing, menu}}) => ({
     display: "flex",
     alignItems: "center",
     marginRight: spacing(2),
     cursor: "pointer",
-    color: palette.appBarText,
+    color: menu.appBarText,
   })
 );
 
 const MenuButton = styled(IconButton)(
-  ({ theme: { spacing, breakpoints, palette } }) => ({
-    color: palette.appBarText,
+  ({ theme: {menu} }) => ({
+    color: menu.appBarText,
   })
 );
 
 export default function Menu() {
   const router = useRouter();
   const [themeType, setTheme] = useThemeContext();
-  const { palette }: any = useTheme();
+  const {menu} = useTheme();
   const toggleTheme = () =>
     themeType === "light" ? setTheme("dark") : setTheme("light");
 
@@ -51,7 +51,7 @@ export default function Menu() {
             color: [url, ...associatedUrls].find(
               (route) => router.route === route
             )
-              ? palette.menuHighlight
+              ? menu.menuHighlight
               : undefined,
           }}
         >

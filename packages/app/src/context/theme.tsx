@@ -1,12 +1,38 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { createContext, useContext, useState } from "react";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+
+declare module "@mui/material/styles" {
+  interface Theme {
+    terminal: {
+      background: string;
+      bar: string;
+      text: string;
+    };
+    menu: {
+      appBarBackground: string;
+      appBarText: string;
+      menuHighlight: string;
+    };
+  }
+  interface ThemeOptions {
+    terminal: {
+      background: string;
+      bar: string;
+      text: string;
+    };
+    menu: {
+      appBarBackground: string;
+      appBarText: string;
+      menuHighlight: string;
+    };
+  }
+}
 
 import lightTheme from "@/styles/theme/lightTheme";
 import darkTheme from "@/styles/theme/darkTheme";
 
-const Context = createContext({});
+const Context = createContext<[themeType: string, setTheme: (theme: string) => void]>(["light", () => {}]);
 
 export function ThemeProvider({ children }: any) {
   const [themeType, setTheme] = useState("light");
@@ -20,7 +46,5 @@ export function ThemeProvider({ children }: any) {
 }
 
 export function useThemeContext() {
-  const Context = createContext<[themeType: "light" | "dark", setTheme: (theme: string) => void]>(["light", () => {}]);
-
-  return Context;
+  return useContext(Context);
 }
