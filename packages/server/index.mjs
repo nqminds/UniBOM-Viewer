@@ -30,9 +30,11 @@ app.get(
     const scriptPath = scriptPaths[mode][certificate];
     if (scriptPath) {
       try {
-        const input = `${scriptPath} ${IP} ${port} ${userID} ${key}`;
-        const { stdout, stderr } = await await scriptPath.run();
-        res.send({ input, stdout, stderr });
+        const stdin = `${IP} ${port} ${userID} ${key}`;
+        const {
+          server: { stdout, stderr },
+        } = await scriptPath.run();
+        res.send({ stdin, stdout, stderr });
       } catch (error) {
         res.send({ error });
       }
