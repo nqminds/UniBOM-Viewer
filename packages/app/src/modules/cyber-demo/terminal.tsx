@@ -65,11 +65,11 @@ export default function Terminal({data, error, isLoading}: props) {
   const [terminalDisplay, setTerminalDisplay] = useState<string[]>([]);
 
   useEffect(() => {
-    if (data) {
+    if (data && typeof data === "object") {
       if (data?.error) {
         setTerminalDisplay([...terminalDisplay, data.error.message]);
         scrollIntoView(divRef);
-      } else if (data) {
+      } else if (data.input && data.stdout) {
         const display = terminalDisplay;
         display.push(`> ${data.input}`);
         display.push(formatOutput(data.stdout));
@@ -103,12 +103,14 @@ export default function Terminal({data, error, isLoading}: props) {
 }
 
 type props = {
-  data?: {
-    input: string;
-    stdout: string;
-    stderr: string;
-    error: {message: string};
-  };
+  data: TerminalData | (() => Promise<TerminalData>) | undefined;
   error?: object;
   isLoading: boolean;
+};
+
+type TerminalData = {
+  input?: string;
+  stdout?: string;
+  stderr?: string;
+  error?: {message: string};
 };
