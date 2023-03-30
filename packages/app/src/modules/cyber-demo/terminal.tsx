@@ -68,19 +68,26 @@ export default function Terminal({data, error, isLoading}: props) {
     if (data && typeof data === "object") {
       if (data?.error) {
         setTerminalDisplay([...terminalDisplay, data.error.message]);
-        scrollIntoView(divRef);
-      } else if (data.input && data.stdout) {
-        const display = terminalDisplay;
-        display.push(`> ${data.input}`);
-        display.push(formatOutput(data.stdout));
+      } else if (data.stdin && (data.stdout || data.stderr)) {
+        const display = [...terminalDisplay];
+
+        display.push(`> ${data.stdin}`);
+        if (data.stdout) {
+          display.push(formatOutput(data.stdout));
+        }
         if (data.stderr) {
           display.push(formatOutput(data.stderr));
         }
         setTerminalDisplay(display);
-        scrollIntoView(divRef);
       }
     }
-  }, [data, isLoading, error]);
+  }, [data, typeof data, isLoading, error]);
+
+  useEffect(() => {
+    if (terminalDisplay.length > 0) {
+      scrollIntoView(divRef);
+    }
+  }, [terminalDisplay]);
 
   return (
     <TerminalContainer>
@@ -109,7 +116,7 @@ type props = {
 };
 
 type TerminalData = {
-  input?: string;
+  stdin?: string;
   stdout?: string;
   stderr?: string;
   error?: {message: string};

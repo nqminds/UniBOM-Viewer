@@ -11,7 +11,7 @@ import {useState} from "react";
 
 const fetcher = async ([purecap, goodCert]: [boolean, boolean]) => {
   const response = await fetch(`/api/morello/${purecap}/${goodCert}`);
-  return await response.json;
+  return await response.json();
 };
 
 const Container = styled("div")(({theme: {spacing}}) => ({
@@ -51,12 +51,12 @@ export default function Dashboard() {
         loading={apiRequest.isLoading}
       />
       <DemoContainer>
+        <DemoDescriptor />
         <Terminal
           data={apiRequest.data}
           error={apiRequest.error}
           isLoading={apiRequest.isLoading}
         />
-        <DemoDescriptor />
       </DemoContainer>
     </Container>
   );
