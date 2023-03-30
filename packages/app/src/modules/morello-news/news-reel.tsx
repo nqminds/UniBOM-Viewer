@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 import newsReel from "./articles";
-import { styled } from "@mui/system";
+import {styled} from "@mui/system";
 import Excerpt from "./excerpt";
 import Image from "next/image";
-import { Paper, IconButton } from "@mui/material";
-import { ArrowForwardIos, ArrowBackIos } from "@mui/icons-material";
+import {Paper, IconButton} from "@mui/material";
+import {ArrowForwardIos, ArrowBackIos} from "@mui/icons-material";
 
 const News = styled(Paper)(() => ({
   display: "flex",
@@ -12,27 +12,27 @@ const News = styled(Paper)(() => ({
   height: "100%",
 }));
 
-const Container = styled("div")(({ theme: { spacing } }) => ({
+const Container = styled("div")(() => ({
   display: "grid",
   gridTemplateColumns: "1fr 2fr",
   alignSelf: "center",
   columnGap: 0,
 }));
 
-const ImageContainer = styled("div")(({ theme: { spacing } }) => ({
+const ImageContainer = styled("div")(({theme: {spacing}}) => ({
   justifyContent: "center",
   display: "flex",
   padding: spacing(1),
   alignItems: "center",
 }));
 
-const Button = styled(IconButton)(({ theme: { palette } }) => ({
+const Button = styled(IconButton)(({theme: {palette}}) => ({
   position: "relative",
   alignSelf: "center",
   color: palette.text.secondary,
 }));
 
-const Next = styled(Button)(({ theme: { palette } }) => ({
+const Next = styled(Button)(() => ({
   justifySelf: "end",
 }));
 

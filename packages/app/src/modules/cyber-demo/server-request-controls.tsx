@@ -1,8 +1,9 @@
-import { styled } from "@mui/system";
-import { Paper } from "../common";
-import { Typography, Button } from "@mui/material";
+/* eslint-disable max-len */
+import {styled} from "@mui/system";
+import {Paper} from "../common";
+import {Typography, Button} from "@mui/material";
 
-const Container = styled("div")(({ theme: { spacing } }) => ({
+const Container = styled("div")(({theme: {spacing}}) => ({
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
   width: "85%",
@@ -32,7 +33,7 @@ const servers = [
     ],
   },
   {
-    name: `Ubuntu / "normal server here"`,
+    name: "Ubuntu / \"normal server here\"",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
     controls: [
@@ -48,26 +49,23 @@ const servers = [
   },
 ];
 
-export default function ServerRequestControls({
-  mutateRequest,
-  loading,
-}: props) {
+export default function ServerRequestControls({mutateRequest, loading}: props) {
   return (
     <Container>
-      {servers.map(({ name, description, controls }) => (
+      {servers.map(({name, description, controls}) => (
         <Paper key={`server-${name}`}>
           <h2>{name}</h2>
           <Typography>{description}</Typography>
           <Container>
-            {controls.map(({ name, mutateParams }) => (
-              <ButtonContainer key={`${name}-control-${name}`}>
+            {controls.map(({name: buttonName, mutateParams}) => (
+              <ButtonContainer key={`${name}-control-${buttonName}`}>
                 <Button
                   variant="contained"
                   onClick={() => mutateRequest(...mutateParams)}
                   startIcon=">"
                   disabled={loading}
                 >
-                  {name}
+                  {buttonName}
                 </Button>
               </ButtonContainer>
             ))}

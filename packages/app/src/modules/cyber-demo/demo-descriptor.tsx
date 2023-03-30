@@ -1,5 +1,5 @@
-import { Typography } from "@mui/material";
-import { Paper } from "@/modules/common";
+import {Typography} from "@mui/material";
+import {Paper} from "@/modules/common";
 
 export default function DemoDescriptor() {
   return (

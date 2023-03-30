@@ -1,15 +1,15 @@
-import { createTheme } from "@mui/material/styles";
+import {createTheme} from "@mui/material/styles";
 import themeConstants from "./theme-constants";
 
-import { blueGrey, grey, lightBlue, blue } from "@mui/material/colors";
+import {blueGrey, grey, lightBlue, blue} from "@mui/material/colors";
 
 const colours = {
   // Extra theme colours may be added here
   public: {
     primary: lightBlue,
     secondary: blueGrey,
-    text: blue
-  }
+    text: blue,
+  },
 };
 
 const colour = colours.public; // Choose colour scheme here based off e.g. profile initialised in boot
@@ -21,19 +21,19 @@ const darkTheme = createTheme({
     secondary: colour.secondary,
     background: {
       paper: grey[900],
-      default: "#4f4f4f"
+      default: "#4f4f4f",
     },
     text: {
       primary: colour.text[100],
-      secondary: colour.text[300]
+      secondary: colour.text[300],
     },
   },
   terminal: {
     background: "#000000",
     bar: grey[900],
-    text: "#ffffff"
+    text: "#ffffff",
   },
-  ...themeConstants
+  ...themeConstants,
 });
 
 export default darkTheme;

@@ -1,18 +1,20 @@
-import { styled } from "@mui/system";
+import {styled} from "@mui/system";
 import DemoDescriptor from "./demo-descriptor";
 import InfoPane from "./info-pane";
 import ServerRequestControls from "./server-request-controls";
 import Terminal from "./terminal";
 
-import { NewsReel } from "../morello-news";
+import {NewsReel} from "../morello-news";
 
 import useSWR from "swr";
-import { useState } from "react";
+import {useState} from "react";
 
-const fetcher = ([purecap, goodCert]: [boolean, boolean]) =>
-  fetch(`/api/morello/${purecap}/${goodCert}`).then((r) => r.json());
+const fetcher = async([purecap, goodCert]: [boolean, boolean]) => {
+  const response = await fetch(`/api/morello/${purecap}/${goodCert}`);
+  return await response.json;
+};
 
-const Container = styled("div")(({ theme: { spacing } }) => ({
+const Container = styled("div")(({theme: {spacing}}) => ({
   padding: spacing(2),
   display: "flex",
   flexDirection: "column",
@@ -20,7 +22,7 @@ const Container = styled("div")(({ theme: { spacing } }) => ({
   overflowX: "hidden",
 }));
 
-const DemoContainer = styled("div")(({ theme: { spacing } }) => ({
+const DemoContainer = styled("div")(({theme: {spacing}}) => ({
   display: "grid",
   gridTemplateColumns: "2fr 3fr",
   width: "85%",
@@ -49,7 +51,11 @@ export default function Dashboard() {
         loading={apiRequest.isLoading}
       />
       <DemoContainer>
-        <Terminal apiRequest={apiRequest} />
+        <Terminal
+          data={apiRequest.data}
+          error={apiRequest.error}
+          isLoading={apiRequest.isLoading}
+        />
         <DemoDescriptor />
       </DemoContainer>
     </Container>

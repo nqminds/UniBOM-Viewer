@@ -1,9 +1,9 @@
-import { Typography } from "@mui/material";
-import { Paper } from "@/modules/common";
+import {Typography} from "@mui/material";
+import {Paper} from "@/modules/common";
 
 export default function InfoPane() {
   return (
-    <Paper sx={{ marginBottom: 0 }}>
+    <Paper sx={{marginBottom: 0}}>
       <h1>OpenSLL Morello protection</h1>
       <Typography>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus a

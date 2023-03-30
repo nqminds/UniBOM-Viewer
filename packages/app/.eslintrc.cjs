@@ -1,13 +1,20 @@
 module.exports = {
+  parser: "@typescript-eslint/parser",
   env: {
     es2021: true,
     node: true,
   },
-  extends: ["plugin:@next/next/recommended", "@nqminds/eslint-config"],
+  extends: [
+    "plugin:@next/next/recommended",
+    "plugin:@typescript-eslint/recommended",
+  ],
+  plugins: ["@typescript-eslint", "react"],
   overrides: [],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  rules: {},
+  rules: {
+    "jsdoc/require-jsdoc": 0,
+  },
 };

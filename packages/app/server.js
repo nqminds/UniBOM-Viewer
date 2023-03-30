@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-console */
 const express = require("express");
 const next = require("next");
 const config = require("config");
 
 const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev });
+const app = next({dev});
 const handle = app.getRequestHandler();
 
 app
@@ -15,7 +16,7 @@ app
     server.get(
       "/api/morello/:purecap(true|false)/:goodCert(true|false)",
       async (req, res) => {
-        const { purecap, goodCert } = req.params;
+        const {purecap, goodCert} = req.params;
         try {
           const result = await fetch(
             `${config.get("serverAddress")}/run-script/${purecap}/${goodCert}`,
@@ -23,7 +24,7 @@ app
               referrerPolicy: "strict-origin-when-cross-origin",
               body: null,
               method: "GET",
-            }
+            },
           );
           const data = await result.json();
           res.send(data);
@@ -32,12 +33,12 @@ app
           if (error.errno === "ECONNREFUSED") {
             console.log(
               "Have you started the server on:",
-              config.get("serverAddress")
+              config.get("serverAddress"),
             );
           }
-          res.send({ error });
+          res.send({error});
         }
-      }
+      },
     );
 
     server.get("*", (req, res) => {

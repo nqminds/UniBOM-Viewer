@@ -5,7 +5,7 @@ import {styled} from "@mui/material/styles";
 
 import Menu from "./menu";
 
-const AppTitleContainer = styled("div")(({ theme: {palette, spacing , menu} }) => ({
+const AppTitleContainer = styled("div")(({theme: {spacing, menu}}) => ({
   position: "sticky",
   top: 0,
   alignItems: "center",

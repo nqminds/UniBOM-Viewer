@@ -1,5 +1,5 @@
-import type { AppProps } from "next/app";
-import { styled } from "@mui/system";
+import type {AppProps} from "next/app";
+import {styled} from "@mui/system";
 import AppBanner from "./banner";
 
 const App = styled("div")(() => ({
@@ -8,7 +8,7 @@ const App = styled("div")(() => ({
   height: "100%",
 }));
 
-const Content = styled("div")(({ theme: { breakpoints } }) => ({
+const Content = styled("div")(({theme: {breakpoints}}) => ({
   display: "flex",
   flex: 1,
   overflow: "hidden",
@@ -26,7 +26,10 @@ const Page = styled("div")(() => ({
   height: "100%",
 }));
 
-export default function AppPage({ Component, pageProps }:  Pick<AppProps, "Component" | "pageProps">) {
+export default function AppPage({
+  Component,
+  pageProps,
+}: Pick<AppProps, "Component" | "pageProps">) {
   return (
     <App>
       <AppBanner />

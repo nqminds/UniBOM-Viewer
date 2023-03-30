@@ -1,9 +1,9 @@
-import { Button, Divider as MuiDivider, Typography } from "@mui/material";
-import { styled } from "@mui/system";
+import {Button, Divider as MuiDivider, Typography} from "@mui/material";
+import {styled} from "@mui/system";
 
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 
-const Container = styled("div")(({ theme: { spacing } }) => ({
+const Container = styled("div")(({theme: {spacing}}) => ({
   padding: spacing(2),
   display: "flex",
   flexDirection: "column",
@@ -17,18 +17,18 @@ const Header = styled("h2")(() => ({
   marginTop: 0,
 }));
 
-const Subheader = styled("h5")(({ theme: { palette } }) => ({
+const Subheader = styled("h5")(({theme: {palette}}) => ({
   marginTop: 0,
   color: palette.text.secondary,
 }));
 
-const ButtonContainer = styled("div")(({ theme: { spacing } }) => ({
+const ButtonContainer = styled("div")(() => ({
   display: "flex",
   justifyContent: "center",
   flexDirection: "column",
 }));
 
-const Divider = styled(MuiDivider)(({ theme: { palette, spacing } }) => ({
+const Divider = styled(MuiDivider)(({theme: {palette, spacing}}) => ({
   margin: spacing(1),
   borderColor: palette.text.secondary,
   opacity: 0.5,

@@ -1,6 +1,6 @@
 import React from "react";
-import { createContext, useContext, useState } from "react";
-import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import {createContext, useContext, useState} from "react";
+import {ThemeProvider as MuiThemeProvider} from "@mui/material/styles";
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -32,9 +32,11 @@ declare module "@mui/material/styles" {
 import lightTheme from "@/styles/theme/lightTheme";
 import darkTheme from "@/styles/theme/darkTheme";
 
-const Context = createContext<[themeType: string, setTheme: (theme: string) => void]>(["light", () => {}]);
+const Context = createContext<
+[themeType: string, setTheme:(theme: string) => void]
+  >(["light", () => null]);
 
-export function ThemeProvider({ children }: props) {
+export function ThemeProvider({children}: props) {
   const [themeType, setTheme] = useState("light");
   return (
     <Context.Provider value={[themeType, setTheme]}>
@@ -51,4 +53,4 @@ export function useThemeContext() {
 
 type props = {
   children: string | JSX.Element | JSX.Element[];
-}
+};
