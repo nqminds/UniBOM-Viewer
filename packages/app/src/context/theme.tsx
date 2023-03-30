@@ -33,8 +33,8 @@ import lightTheme from "@/styles/theme/lightTheme";
 import darkTheme from "@/styles/theme/darkTheme";
 
 const Context = createContext<
-[themeType: string, setTheme:(theme: string) => void]
-  >(["light", () => null]);
+  [themeType: string, setTheme: (theme: string) => void]
+>(["light", () => null]);
 
 export function ThemeProvider({children}: props) {
   const [themeType, setTheme] = useState("light");

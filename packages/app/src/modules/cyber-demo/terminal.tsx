@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-  MutableRefObject,
-} from "react";
+import {useEffect, useState, useRef, MutableRefObject} from "react";
 
 import {styled} from "@mui/material/styles";
 import {Paper, IconButton} from "@mui/material";

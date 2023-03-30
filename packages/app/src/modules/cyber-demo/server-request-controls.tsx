@@ -33,7 +33,7 @@ const servers = [
     ],
   },
   {
-    name: "Ubuntu / \"normal server here\"",
+    name: 'Ubuntu / "normal server here"',
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
     controls: [

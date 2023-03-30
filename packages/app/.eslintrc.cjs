@@ -16,5 +16,7 @@ module.exports = {
   },
   rules: {
     "jsdoc/require-jsdoc": 0,
+    "operator-linebreak": 0,
+    "space-before-function-paren": 0,
   },
 };
