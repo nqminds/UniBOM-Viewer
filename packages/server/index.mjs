@@ -36,7 +36,7 @@ app.get(
         } = await scriptPath.run();
         res.send({ stdin, stdout, stderr });
       } catch (error) {
-        res.send({ error });
+        res.status(500).send({ error: error.message });
       }
     } else {
       res
