@@ -1,0 +1,63 @@
+openapi: "3.0.0"
+info:
+  title: Cyber Demonstrator Server
+  description: |
+    An OpenAPI spec of the @nqminds/cyber-demonstrator-server API
+  contact:
+    name: "NquiringMinds"
+    email: "info@nquiringminds.com"
+    url: "https://nquiringminds.com/contact/"
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Development Server
+paths:
+  /run-script/{purecap}/{goodCert}:
+    get:
+      summary: Returns standard inpu / output / errors when running open-ssl vulnerability scripts on various servers
+      parameters:
+        - in: path
+          name: purecap
+          schema:
+            type: boolen
+          required: true
+          description: Boolean flag to test Morello architecture
+        - in: path
+          name: goodCert
+          schema:
+            type: boolean
+          required: true
+          description: Boolean flag to test server with a "good" certificate
+      responses:
+        "200":
+          description: open-ssl script executed successfully and the response has been returned
+          content:
+            application/json:
+              example:
+                stdin: "standard input"
+                stdout: "some\n output"
+                stderr: ""
+              schema:
+                type: object
+                properties:
+                  stdin: 
+                    type: string
+                    description: standard input
+                    required: true
+                  stdout:
+                    type: string
+                    description: standard output
+                  stderr:
+                    type: string
+                    description: standard error
+        "501":
+          description: Internal Server Error
+        "502":
+          description: Not Implemented
+      
+
+
+
+
+
+
