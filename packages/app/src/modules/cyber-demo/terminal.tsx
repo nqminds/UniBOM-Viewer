@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, MutableRefObject } from "react";
 
 import { styled } from "@mui/material/styles";
 import { Paper, IconButton, Typography } from "@mui/material";
@@ -56,6 +56,13 @@ const TerminalOutput = styled("pre")(
   })
 );
 
+function scrollIntoView(divRef:MutableRefObject<null | HTMLDivElement>) {
+  if(divRef.current !== null) {
+    divRef.current.scrollIntoView({ behavior: "smooth" });
+  }
+  
+}
+
 function formatOutput(output: string) {
   // Add tab space to begining of output, add tab spaces to all newlines
   const tab = "\t";
@@ -63,7 +70,7 @@ function formatOutput(output: string) {
 }
 
 export default function Terminal({ apiRequest = undefined }: props) {
-  const divRef: any = useRef(null);
+  const divRef = useRef(null);
   const [terminalDisplay, setTerminalDisplay] = useState<string[]>([]);
 
   useEffect(() => {
@@ -72,16 +79,16 @@ export default function Terminal({ apiRequest = undefined }: props) {
 
       if (data?.error) {
         setTerminalDisplay([...terminalDisplay, data.error.message]);
-        divRef.current.scrollIntoView({ behavior: "smooth" });
+        scrollIntoView(divRef);
       } else if (data) {
-        const display: any = terminalDisplay;
+        const display = terminalDisplay;
         display.push(`> ${data.input}`);
         display.push(formatOutput(data.stdout));
         if (data.stderr) {
           display.push(formatOutput(data.stderr));
         }
         setTerminalDisplay(display);
-        divRef.current.scrollIntoView({ behavior: "smooth" });
+        scrollIntoView(divRef);
       }
     }
   }, [apiRequest]);

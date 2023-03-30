@@ -34,7 +34,7 @@ import darkTheme from "@/styles/theme/darkTheme";
 
 const Context = createContext<[themeType: string, setTheme: (theme: string) => void]>(["light", () => {}]);
 
-export function ThemeProvider({ children }: any) {
+export function ThemeProvider({ children }: props) {
   const [themeType, setTheme] = useState("light");
   return (
     <Context.Provider value={[themeType, setTheme]}>
@@ -47,4 +47,8 @@ export function ThemeProvider({ children }: any) {
 
 export function useThemeContext() {
   return useContext(Context);
+}
+
+type props = {
+  children: string | JSX.Element | JSX.Element[];
 }
