@@ -2,6 +2,7 @@
   "name": "@nqminds/cyber-demonstrator",
   "version": "0.1.0",
   "private": true,
+  "author": "Anthony McCaigue <anthony@nquiringminds.com>",
   "scripts": {
     "dev": "node server.js",
     "build": "next build",

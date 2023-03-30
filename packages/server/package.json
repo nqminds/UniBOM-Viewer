@@ -5,7 +5,17 @@
   "scripts": {
     "start": "node  ./index.mjs"
   },
-  "author": "Ash Setter <ash@nquiringminds.com>",
+  "author": "nqminds",
+  "contributors": [
+    {
+      "name": "Ash Setter",
+      "email": "ash@nquiringminds.com"
+    },
+    {
+      "name": "Anthony McCaigue",
+      "email": "anthony@nquiringminds.com"
+    }
+  ],
   "license": "UNLICENSED",
   "dependencies": {
     "@nqminds/openssl-vuln-poc": "^0.1.0",
