@@ -9,8 +9,8 @@ import { NewsReel } from "../morello-news";
 import useSWR from "swr";
 import { useState } from "react";
 
-const fetcher = (fetchParams: boolean[]) =>
-  fetch(`/api/morello/${fetchParams.join("/")}`).then((r) => r.json());
+const fetcher = ([purecap, goodCert]: [boolean, boolean]) =>
+  fetch(`/api/morello/${purecap}/${goodCert}`).then((r) => r.json());
 
 const Container = styled("div")(({ theme: { spacing } }) => ({
   padding: spacing(2),

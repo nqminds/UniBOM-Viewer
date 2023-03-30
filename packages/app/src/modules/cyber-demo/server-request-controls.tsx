@@ -79,6 +79,6 @@ export default function ServerRequestControls({
 }
 
 type props = {
-  mutateRequest: (...rest: any[]) => void;
+  mutateRequest: (...rest: boolean[]) => void;
   loading: boolean;
 };
