@@ -9,7 +9,7 @@ import {NewsReel} from "../morello-news";
 import useSWR from "swr";
 import {useState} from "react";
 
-const fetcher = async([purecap, goodCert]: [boolean, boolean]) => {
+const fetcher = async ([purecap, goodCert]: [boolean, boolean]) => {
   const response = await fetch(`/api/morello/${purecap}/${goodCert}`);
   return await response.json;
 };
