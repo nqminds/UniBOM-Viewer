@@ -26,7 +26,7 @@ const Page = styled("div")(() => ({
   height: "100%",
 }));
 
-export default function AppPage({ Component, pageProps }: any) {
+export default function AppPage({ Component, pageProps }:  Pick<AppProps, "Component" | "pageProps">) {
   return (
     <App>
       <AppBanner />
