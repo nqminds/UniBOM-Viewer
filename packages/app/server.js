@@ -13,6 +13,7 @@ app
   .then(() => {
     const server = express();
 
+    // TODO: should we use Next.JS Dynamic API Routes instead? https://nextjs.org/docs/api-routes/dynamic-api-routes
     server.get(
       "/api/morello/:purecap(true|false)/:goodCert(true|false)",
       async (req, res) => {
