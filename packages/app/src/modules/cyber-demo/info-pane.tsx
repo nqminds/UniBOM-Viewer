@@ -4,7 +4,7 @@ import {Paper} from "@/modules/common";
 export default function InfoPane() {
   return (
     <Paper sx={{marginBottom: 0}}>
-      <h1>OpenSLL Morello protection</h1>
+      <h1>OpenSSL Morello protection</h1>
       <Typography>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus a
         massa ac vulputate. Integer posuere magna nec eros euismod mattis.
