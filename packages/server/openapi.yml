@@ -40,7 +40,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  stdin: 
+                  stdin:
                     type: string
                     description: standard input
                     required: true
@@ -54,10 +54,3 @@ paths:
           description: Internal Server Error
         "502":
           description: Not Implemented
-      
-
-
-
-
-
-
