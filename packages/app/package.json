@@ -4,9 +4,11 @@
   "private": true,
   "author": "Anthony McCaigue <anthony@nquiringminds.com>",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "concurrently 'npm run start:server' 'sleep 5 && npm run start:app'",
     "build": "next build",
     "start": "next start",
+    "start:server": "cd ../server && npm start",
+    "start:app": "node server.js",
     "lint": "next lint",
     "prettier-format": "prettier --config .prettierrc 'src/**' --write"
   },
@@ -21,6 +23,7 @@
     "@types/react": "18.0.28",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
+    "concurrently": "^8.0.1",
     "config": "^3.3.9",
     "eslint-config-next": "^13.2.4",
     "eslint-plugin-react": "^7.32.2",
