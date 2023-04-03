@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import express from "express";
 import config from "./config.json" assert { type: "json" };
 import {
@@ -21,22 +22,22 @@ const app = express();
 const { serverPort, userID, key, IP, port } = config;
 
 app.get(
-  "/run-script/:purecap(true|false)/:cert(good|malicious)",
+  "/run-script/:purecap(true|false)/:goodCert(true|false)",
   async (req, res) => {
     const { purecap, cert } = req.params;
     const mode = purecap === "true" ? "purecap" : "hybrid";
-    const certificate = cert === "malicious" ? "maliciousCert" : "goodCert";
-    let [stdout, stderr, error] = ["", "", ""];
+    const certificate = cert === "true" ? "goodCert" : "maliciousCert";
     const scriptPath = scriptPaths[mode][certificate];
     if (scriptPath) {
       try {
-        ({
+        const stdin = `${IP} ${port} ${userID} ${key}`;
+        const {
           server: { stdout, stderr },
-        } = await scriptPath.run());
-      } catch (err) {
-        error = err.message;
+        } = await scriptPath.run();
+        res.send({ stdin, stdout, stderr });
+      } catch (error) {
+        res.send({ error });
       }
-      res.send({ stdout, stderr, error });
     } else {
       res
         .status(501)

@@ -3,8 +3,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  // todo, is it worth the effort to use the nqm eslint config?
-  extends: "eslint:recommended",
+  extends: ["@nqminds/eslint-config"],
   overrides: [],
   parserOptions: {
     ecmaVersion: "latest",
