@@ -3,6 +3,7 @@ import DemoDescriptor from "./demo-descriptor";
 import InfoPane from "./info-pane";
 import ServerRequestControls from "./server-request-controls";
 import Terminal from "./terminal";
+import axios from "axios";
 
 import {NewsReel} from "../morello-news";
 
@@ -10,8 +11,13 @@ import useSWR from "swr";
 import {useState} from "react";
 
 const fetcher = async ([purecap, goodCert]: [boolean, boolean]) => {
-  const response = await fetch(`/api/morello/${purecap}/${goodCert}`);
-  return await response.json();
+  const response = await axios(`/api/morello/${purecap}/${goodCert}`);
+  const json = response.data;
+  // TODO: error codes are not being surfaced, infer if data is a string, it is an error
+  if (typeof json === "string") {
+    return {error: json};
+  }
+  return json;
 };
 
 const Container = styled("div")(({theme: {spacing}}) => ({

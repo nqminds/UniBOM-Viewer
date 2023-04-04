@@ -22,12 +22,12 @@ api.get(
         } = await scriptPath.run();
         res.send({ stdin, stdout, stderr });
       } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).json(error.message);
       }
     } else {
       res
         .status(501)
-        .send(`${certificate} certificate for ${mode} mode is not implemented`);
+        .json(`${certificate} certificate for ${mode} mode is not implemented`);
     }
   }
 );

@@ -14,20 +14,32 @@ servers:
 paths:
   /run-script/{purecap}/{goodCert}:
     get:
-      summary: Returns standard inpu / output / errors when running open-ssl vulnerability scripts on various servers
+      operationId: runScript
+      summary: Returns standard input / output / errors when running open-ssl vulnerability scripts on various servers
       parameters:
         - in: path
           name: purecap
           schema:
-            type: boolen
+            type: boolean
           required: true
-          description: Boolean flag to test Morello architecture
+          description: |
+            Boolean flag to test server with morello architecture.
+            
+            If:
+              - `true`, a request is sent to a morello server.
+              - `false`, a request is sent to a ubuntu server.
         - in: path
           name: goodCert
           schema:
             type: boolean
           required: true
-          description: Boolean flag to test server with a "good" certificate
+          description: |
+            Boolean flag to test server with a "good" certificate.
+            
+            If:
+              - `true`, this is a malicious certificate that attempts to exploit
+            [CVE-2022-3602](https://nvd.nist.gov/vuln/detail/CVE-2022-3602).
+              - `false`, this is a non-malicious certificate.
       responses:
         "200":
           description: open-ssl script executed successfully and the response has been returned
@@ -39,11 +51,12 @@ paths:
                 stderr: ""
               schema:
                 type: object
+                required:
+                  - "stdin"
                 properties:
                   stdin:
                     type: string
                     description: standard input
-                    required: true
                   stdout:
                     type: string
                     description: standard output
@@ -53,4 +66,5 @@ paths:
         "501":
           description: Internal Server Error
         "502":
-          description: Not Implemented
+          description: Config is not implemented
+
