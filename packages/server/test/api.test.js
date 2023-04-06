@@ -1,6 +1,6 @@
 import { expect, describe, test, jest } from "@jest/globals";
 
-import api from "./api.mjs";
+import api from "../src/api.mjs";
 import request from "supertest";
 
 function checkLength(item) {
@@ -11,7 +11,7 @@ function checkLength(item) {
 }
 
 import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
-import scriptPaths from "./script-paths.mjs";
+import scriptPaths from "../src/script-paths.mjs";
 
 function getAllGoodRequests() {
   return [
