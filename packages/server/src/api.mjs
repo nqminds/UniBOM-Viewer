@@ -5,7 +5,7 @@ import scriptPaths from "./script-paths.mjs";
 
 const api = express();
 
-const { userID, key, IP, port } = config;
+const { username, key, host, port } = config;
 
 api.get(
   "/run-script/:purecap(true|false)/:goodCert(true|false)",
@@ -13,13 +13,16 @@ api.get(
     const { purecap, goodCert } = req.params;
     const mode = purecap === "true" ? "purecap" : "hybrid";
     const certificate = goodCert === "true" ? "goodCert" : "maliciousCert";
-    const scriptPath = scriptPaths[mode][certificate];
-    if (scriptPath) {
+    const ScriptPath = scriptPaths[mode][certificate];
+    if (ScriptPath) {
       try {
-        const stdin = `${IP} ${port} ${userID} ${key}`;
+        const stdin = `${host} ${port} ${username} ${key}`;
+        const sshOpts = { username, host, port };
+        const scriptPath = new ScriptPath({ sshOpts });
+        await scriptPath.setup();
         const {
           server: { stdout, stderr },
-        } = await scriptPath.run();
+        } = await scriptPath.run({ port });
         res.send({ stdin, stdout, stderr });
       } catch (error) {
         res.status(500).json(error.message);
