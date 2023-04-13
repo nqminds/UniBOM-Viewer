@@ -3,5 +3,6 @@
   "userID": "me",
   "key": "my-ssh-key",
   "IP": "192.168.0.1",
-  "port": "4001"
+  "port": "4001",
+  "nistApiKey": "a03cfee3-bcf1-4f6d-ac31-fe9f7bda1bb2"
 }

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import express from "express";
 import config from "./config.json" assert { type: "json" };
+import getVulnerabilityAnalysis from "@nqminds/vulnerability-analysis";
 import {
   MorelloPurecapOpenSSLTestCase,
   MorelloHybridOpenSSLTestCase,
@@ -19,7 +20,7 @@ const scriptPaths = {
 
 const app = express();
 
-const { serverPort, userID, key, IP, port } = config;
+const { serverPort, userID, key, IP, port, nistApiKey } = config;
 
 app.get(
   "/run-script/:purecap(true|false)/:goodCert(true|false)",
@@ -45,6 +46,11 @@ app.get(
     }
   }
 );
+
+app.get("/vulnerability-analysis", async (req, res) => {
+  const data = await getVulnerabilityAnalysis(nistApiKey);
+  res.send(data);
+});
 
 app.listen(serverPort, () => {
   console.log(`Crypto Demonstrator server listening on port ${serverPort}.
