@@ -11,7 +11,10 @@ import {styled} from "@mui/material/styles";
 import {IconButton, useTheme} from "@mui/material";
 import {LightMode, Nightlight} from "@mui/icons-material";
 
-const routes = [{url: "", name: "Home", associatedUrls: ["/"]}];
+const routes = [
+  {url: "", name: "OpenSSL protection", associatedUrls: ["/"]},
+  {url: "sbom", name: "SBOM memory vulnerability", associatedUrls: ["/sbom"]},
+];
 
 const Container = styled("div")(() => ({
   display: "flex",
