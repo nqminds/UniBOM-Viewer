@@ -18,7 +18,7 @@ api.get(
       try {
         const sshOpts = { username, host, port };
         const scriptPath = new ScriptPath({ sshOpts });
-        await scriptPath.setup();
+        await scriptPath.setup({certDirectory: "../openssl-vuln-poc/certs/"});
         const {
           server: { stdin, stdout, stderr },
         } = await scriptPath.run({ port });
