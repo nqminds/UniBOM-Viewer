@@ -5,7 +5,7 @@ import scriptPaths from "./script-paths.mjs";
 
 const api = express();
 
-const { username, key, host, port } = config;
+const { username, host, port } = config;
 
 api.get(
   "/run-script/:purecap(true|false)/:goodCert(true|false)",
@@ -16,12 +16,11 @@ api.get(
     const ScriptPath = scriptPaths[mode][certificate];
     if (ScriptPath) {
       try {
-        const stdin = `${host} ${port} ${username} ${key}`;
         const sshOpts = { username, host, port };
         const scriptPath = new ScriptPath({ sshOpts });
         await scriptPath.setup();
         const {
-          server: { stdout, stderr },
+          server: { stdin, stdout, stderr },
         } = await scriptPath.run({ port });
         res.send({ stdin, stdout, stderr });
       } catch (error) {

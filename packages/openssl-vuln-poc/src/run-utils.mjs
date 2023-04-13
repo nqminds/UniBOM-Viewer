@@ -1,6 +1,6 @@
-import { execFile } from "node:child_process";
-import { Readable } from "node:stream";
-import { promisify } from "node:util";
+import {execFile} from "node:child_process";
+import {Readable} from "node:stream";
+import {promisify} from "node:util";
 
 /**
  * @typedef {import("./ssh-utils.mjs").SSHOpts} SSHOpts
@@ -52,7 +52,7 @@ export async function runTest({
   port = 31050,
 } = {}) {
   // use dynamic import so that jest can mock this function in our test code
-  const { runViaSSH: dynamicallyImportedRunViaSSH } = await import(
+  const {runViaSSH: dynamicallyImportedRunViaSSH} = await import(
     "./ssh-utils.mjs"
   );
 
@@ -66,7 +66,7 @@ export async function runTest({
   let execFileFunc;
   if (sshOpts) {
     execFileFunc = (command, opts) => {
-      return dynamicallyImportedRunViaSSH(command, sshOpts, { ...opts });
+      return dynamicallyImportedRunViaSSH(command, sshOpts, {...opts});
     };
   } else {
     execFileFunc = (command, opts) =>
@@ -77,26 +77,27 @@ export async function runTest({
   try {
     console.info(`Running OpenSSL server on port ${port}`);
 
+    const serverStdIn = [
+      serverOpensslBinary,
+      "s_server",
+      "-accept",
+      port,
+      "-CAfile",
+      "certs/cacert.pem",
+      "-cert",
+      "certs/server.cert.pem",
+      "-key",
+      "certs/server.key.pem",
+      "-state",
+      "-verify",
+      1,
+    ];
     const serverProcess = execFileFunc(
-      [
-        serverOpensslBinary,
-        "s_server",
-        "-accept",
-        port,
-        "-CAfile",
-        "certs/cacert.pem",
-        "-cert",
-        "certs/server.cert.pem",
-        "-key",
-        "certs/server.key.pem",
-        "-state",
-        "-verify",
-        1,
-      ],
+      serverStdIn,
       {
         signal: abortController.signal,
         killSignal: "SIGINT",
-      }
+      },
     );
 
     try {
@@ -110,7 +111,7 @@ export async function runTest({
 
     console.info(`Running OpenSSL malicious client payload on port ${port}`);
 
-    const clientProcess = execFileFunc([
+    const clientStdIn = [
       clientOpensslBinary,
       "s_client",
       "-connect",
@@ -122,27 +123,28 @@ export async function runTest({
       "-CAfile",
       "certs/malicious-client-cacert.pem",
       "-state",
-    ]);
+    ];
+    const clientProcess = execFileFunc(clientStdIn);
 
     clientProcess.child.on("spawn", () => {
       Readable.from("Hello World from my OpenSSL Client!").pipe(
-        clientProcess.child.stdin
+        clientProcess.child.stdin,
       );
     });
 
     serverProcess.then(
-      async () => {
+      async() => {
         await promisify(setTimeout)(1000);
         abortController.abort(
-          `Aborting OpenSSL client as OpenSSL server closed`
+          "Aborting OpenSSL client as OpenSSL server closed",
         );
       },
-      async (error) => {
+      async(error) => {
         await promisify(setTimeout)(1000);
         abortController.abort(
-          `Aborting OpenSSL client as OpenSSL server exited due to ${error}`
+          `Aborting OpenSSL client as OpenSSL server exited due to ${error}`,
         );
-      }
+      },
     );
 
     /** @type {RunLogs["client"] | undefined} */
@@ -159,18 +161,19 @@ export async function runTest({
           `
           Client OpenSSL cmd failed with error code ${execFileError.code}. ` +
             `Stderr was ${execFileError.stderr}.\n` +
-            `Stdout was ${execFileError.stdout}.`
+            `Stdout was ${execFileError.stdout}.`,
         );
       }
 
       clientOutput = {
+        stdin: clientStdIn.join(", "),
         stdout: execFileError.stdout,
         stderr: execFileError.stderr,
       };
     }
 
     abortController.abort(
-      "Client OpenSSL process is done, killing OpenSSL Server"
+      "Client OpenSSL process is done, killing OpenSSL Server",
     );
 
     /** @type {RunLogs["server"] | undefined} */
@@ -180,10 +183,11 @@ export async function runTest({
     } catch (error) {
       const execFileError = /** @type {PromisifiedExecFileException} */ (error);
       console.info(
-        `Server OpenSSL cmd failed with error code ${execFileError.code}`
+        `Server OpenSSL cmd failed with error code ${execFileError.code}`,
       );
 
       serverOutput = {
+        stdin: serverStdIn.join(", "),
         stdout: execFileError.stdout,
         stderr: execFileError.stderr,
       };
