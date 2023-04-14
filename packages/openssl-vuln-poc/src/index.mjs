@@ -53,7 +53,6 @@ export class LocalHostTestCase extends OpenSSLTestCase {
   async run({ port } = {}) {
     // runs tests with default options on localhost
     return await runTest({
-      opensslBinary: "/usr/local64/bin/openssl",
       sshOpts: null,
       port,
     });
