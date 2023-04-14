@@ -7,7 +7,7 @@ import path from "path";
 
 import testCases from "./test-cases.mjs";
 
-const scriptCache = {
+const testCaseCache = {
   purecap: {
     goodCert: null,
     maliciousCert: null,
@@ -20,7 +20,10 @@ const scriptCache = {
 
 const api = express();
 
-const { username, host, port } = config;
+const { username, host, sshPort} = config;
+
+let callIndex = 0;
+const getOpensllPort = (callIndexLocal) => 31050 + (callIndexLocal % 1000);
 
 api.get(
   "/run-script/:purecap(true|false)/:goodCert(true|false)",
@@ -29,12 +32,14 @@ api.get(
     const mode = purecap === "true" ? "purecap" : "hybrid";
     const certificate = goodCert === "true" ? "goodCert" : "maliciousCert";
     let TestCase = null;
-    let testCase = scriptCache[mode][certificate];
+    let testCase = testCaseCache[mode][certificate];
+    const opensslPort = getOpensllPort(callIndex);
+    callIndex++;
     if (testCase) {
       try {
         const {
           server: { stdin, stdout, stderr },
-        } = await testCase.run({ port });
+        } = await testCase.run({ port: opensslPort });
         res.send({ stdin, stdout, stderr });
       } catch (error) {
         res.status(500).json(error.message);
@@ -43,13 +48,13 @@ api.get(
       TestCase = testCases[mode][certificate];
       if (TestCase) {
         try {
-          const sshOpts = { username, host, port };
+          const sshOpts = { username, host, port: sshPort };
           testCase = new TestCase({ sshOpts });
           await testCase.setup({certDirectory: path.join(__dirname, "../../openssl-vuln-poc", "certs")});
-          scriptCache[mode][certificate] = testCase;
+          testCaseCache[mode][certificate] = testCase;
           const {
             server: { stdin, stdout, stderr },
-          } = await testCase.run({ port });
+          } = await testCase.run({ port: opensslPort });
           res.send({ stdin, stdout, stderr });
         } catch (error) {
           res.status(500).json(error.message);

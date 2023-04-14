@@ -1,7 +1,7 @@
 {
-  "serverPort": "3000",
+  "httpServerPort": "3000",
   "username": "root",
   "key": "my-ssh-key",
   "host": "127.0.0.2",
-  "port": "2222"
+  "sshPort": "2222"
 }

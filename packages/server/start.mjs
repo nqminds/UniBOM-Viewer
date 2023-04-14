@@ -2,19 +2,19 @@
 import express from "express";
 import config from "./config.json" assert { type: "json" };
 
-const { serverPort, username, key, host, port } = config;
+const { httpServerPort, username, key, host, sshPort} = config;
 import api from "./src/api.mjs";
 
 const app = express();
 
 app.use(api);
 
-app.listen(serverPort, () => {
-  console.log(`Crypto Demonstrator server listening on port ${serverPort}.
+app.listen(httpServerPort, () => {
+  console.log(`Crypto Demonstrator server listening on port ${httpServerPort}.
 Using parameters: 
   username: ${username}
   key: ${key}
   host: ${host}
-  port: ${port}
+  ssh port: ${sshPort}
   `);
 });
