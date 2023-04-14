@@ -28,8 +28,7 @@ export class OpenSSLTestCase {
    * Run OpenSSL Test Case.
    *
    * @abstract
-   * @param _opts
-   * @param {OpenSSLTestCaseRunOptions} [opts] - Optional options.
+   * @param {OpenSSLTestCaseRunOptions} [_opts] - Optional options.
    * @returns {Promise<RunLogs>} Resolves when the processes are closed with the logs of the process.
    */
   async run(
