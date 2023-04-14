@@ -1,7 +1,11 @@
 import express from "express";
 import config from "../config.json" assert { type: "json" };
+import { fileURLToPath } from "node:url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+import path from "path";
 
-import scriptPaths from "./script-paths.mjs";
+import testCases from "./test-cases.mjs";
 
 const scriptCache = {
   purecap: {
@@ -24,28 +28,28 @@ api.get(
     const { purecap, goodCert } = req.params;
     const mode = purecap === "true" ? "purecap" : "hybrid";
     const certificate = goodCert === "true" ? "goodCert" : "maliciousCert";
-    let ScriptPath = null;
-    let scriptPath = scriptCache[mode][certificate];
-    if (scriptPath) {
+    let TestCase = null;
+    let testCase = scriptCache[mode][certificate];
+    if (testCase) {
       try {
         const {
           server: { stdin, stdout, stderr },
-        } = await scriptPath.run({ port });
+        } = await testCase.run({ port });
         res.send({ stdin, stdout, stderr });
       } catch (error) {
         res.status(500).json(error.message);
       }
     } else {
-      ScriptPath = scriptPaths[mode][certificate];
-      if (ScriptPath) {
+      TestCase = testCases[mode][certificate];
+      if (TestCase) {
         try {
           const sshOpts = { username, host, port };
-          scriptPath = new ScriptPath({ sshOpts });
-          await scriptPath.setup({certDirectory: "../openssl-vuln-poc/certs/"});
-          scriptCache[mode][certificate] = scriptPath;
+          testCase = new TestCase({ sshOpts });
+          await testCase.setup({certDirectory: path.join(__dirname, "../../openssl-vuln-poc", "certs")});
+          scriptCache[mode][certificate] = testCase;
           const {
             server: { stdin, stdout, stderr },
-          } = await scriptPath.run({ port });
+          } = await testCase.run({ port });
           res.send({ stdin, stdout, stderr });
         } catch (error) {
           res.status(500).json(error.message);
