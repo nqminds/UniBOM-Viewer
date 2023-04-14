@@ -27,6 +27,12 @@ describe("OpenSSLTestCase", () => {
 
 describe("LocalHostTestCase", () => {
   const localHostTestCase = new LocalHostTestCase();
+
+  beforeAll(async () => {
+    // make sure that OpenSSL has been installed.
+    await localHostTestCase.setup();
+  });
+
   describe("#run", () => {
     test(
       "should be killed by SIGINT after timeout due to safe OpenSSL lib",

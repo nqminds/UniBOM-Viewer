@@ -57,6 +57,60 @@ export class LocalHostTestCase extends OpenSSLTestCase {
       port,
     });
   }
+
+  /**
+   * Makes sure that:
+   *
+   * 1. OpenSSL is installed via `apt`
+   * 2. If running Ubuntu 22.04, make sure that OpenSSL has been patched to fix CVE-2022-3602.
+   */
+  async setup() {
+    const cmd = promisify(execFile)("dpkg-query", [
+      "--showformat",
+      '"${Version}"',
+      "--show",
+      "openssl",
+    ]);
+    let dpkgQueryStdout = "";
+    try {
+      const { stdout } = await cmd;
+      dpkgQueryStdout = stdout;
+    } catch (error) {
+      throw new Error(
+        `Failed to run ${cmd.child.spawnargs.join(
+          " "
+        )}. Have you ran 'apt install openssl?`,
+        { cause: error }
+      );
+    }
+
+    const version = JSON.parse(dpkgQueryStdout);
+    if (typeof version !== "string") {
+      throw new Error(
+        `Got output ${dpkgQueryStdout} from ${cmd.child.spawnargs.join(" ")} ` +
+          "but expected JSON string"
+      );
+    }
+
+    // subset of https://manpages.debian.org/wheezy/dpkg-dev/deb-version.5.en.html
+    const [upstreamVersion, debianRevision] = version.split("-");
+    // Ubuntu Jammy
+    if (upstreamVersion === "3.0.2") {
+      const [debianMajorRevision, debianMinorRevisionStr] =
+        debianRevision.split(".");
+      if (debianMajorRevision === "0ubuntu1") {
+        const debianMinorRevision = parseInt(debianMinorRevisionStr);
+        if (!isNaN(debianMinorRevision) && debianMinorRevision < 7) {
+          // OpenSSL hasn't been patched, run `sudo apt upgrade` to update!
+          throw new Error(
+            `Your OpenSSL version: ${version} is vulnerable to CVE-2022-3602. ` +
+              "Running 'sudo apt update && sudo apt upgrade' should update " +
+              "this to at least 3.0.2-0ubuntu1.7"
+          );
+        }
+      }
+    }
+  }
 }
 
 /**
