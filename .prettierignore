@@ -1,2 +1,5 @@
 # OpenAPI ts schema
 packages/server/openapi-schema.ts
+
+# input
+packages/vulnerability-analysis/input/*
