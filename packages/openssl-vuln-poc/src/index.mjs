@@ -181,10 +181,8 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
       );
     };
 
+    // eslint-disable-next-line no-console
     console.info(
-      // eslint-disable-line no-console
-      // eslint-disable-line no-console
-      // eslint-disable-line no-console
       `Installing Morello test dependencies on ${this.sshOpts.host}`
     );
     await Promise.all([

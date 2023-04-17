@@ -42,6 +42,30 @@ app
       },
     );
 
+    server.get("/api/vulnerability-analysis", async (req, res) => {
+      try {
+        const result = await fetch(
+          `${config.get("serverAddress")}/vulnerability-analysis`,
+          {
+            referrerPolicy: "strict-origin-when-cross-origin",
+            body: null,
+            method: "GET",
+          },
+        );
+        const data = await result.json();
+        res.send(data);
+      } catch (error) {
+        console.log(error);
+        if (error.errno === "ECONNREFUSED") {
+          console.log(
+            "Have you started the server on:",
+            config.get("serverAddress"),
+          );
+        }
+        res.send({error});
+      }
+    });
+
     server.get("*", (req, res) => {
       return handle(req, res);
     });

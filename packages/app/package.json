@@ -19,6 +19,7 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.14",
     "@next/eslint-plugin-next": "^13.2.4",
+    "@types/lodash": "^4.14.194",
     "@types/node": "18.15.5",
     "@types/react": "18.0.28",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
@@ -34,5 +35,9 @@
     "react-dom": "^18.2.0",
     "swr": "^2.1.1",
     "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@nqminds/ui-components": "^4.0.13",
+    "lodash": "^4.17.21"
   }
 }

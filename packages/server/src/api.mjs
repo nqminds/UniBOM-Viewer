@@ -1,6 +1,7 @@
 import express from "express";
 import config from "../config.json" assert { type: "json" };
 
+import getVulnerabilityAnalysis from "@nqminds/vulnerability-analysis";
 import testCases from "./test-cases.mjs";
 
 const testCaseCache = {
@@ -16,7 +17,7 @@ const testCaseCache = {
 
 const api = express();
 
-const { username, host, sshPort } = config;
+const { username, host, sshPort, nistApiKey } = config;
 
 let callIndex = 0;
 const getOpensllPort = (callIndexLocal) => 31050 + (callIndexLocal % 1000);
@@ -65,5 +66,10 @@ api.get(
     }
   }
 );
+
+api.get("/vulnerability-analysis", async (req, res) => {
+  const data = await getVulnerabilityAnalysis(nistApiKey);
+  res.send(data);
+});
 
 export default api;

@@ -1,3 +1,7 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable promise/prefer-await-to-then */
+/* eslint-disable no-console */
+/* eslint-disable max-len */
 import { execFile, spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { homedir } from "node:os";
@@ -250,10 +254,10 @@ export class DockerServer {
     this.#processClosedPromise = new Promise((resolve, reject) => {
       let resolved = false;
 
-      this.process.on("exit", (code, signal) => {
+      this.process.on("exit", (code, sig) => {
         if (!resolved) {
           resolved = true;
-          resolve({ code, signal });
+          resolve({ code, sig });
         }
       });
       this.process.on("error", (error) => {
@@ -279,10 +283,11 @@ export class DockerServer {
      */
     const abortController = new AbortController();
 
-    this.#processClosedPromise.then(({ code, signal }) => {
+    // eslint-disable-next-line promise/catch-or-return
+    this.#processClosedPromise.then(({ code, sig }) => {
       abortController.abort(
         new Error(
-          `Running ${this.#image} exited with code ${code} and signal ${signal}`
+          `Running ${this.#image} exited with code ${code} and signal ${sig}`
         )
       );
     });
@@ -302,6 +307,7 @@ export class DockerServer {
       this.process.kill("SIGTERM");
 
       const timeout = setTimeout(() => {
+        // eslint-disable-next-line no-unused-expressions
         this.process.kill("SIGKILL"), 30_000;
       });
       await this.#processClosedPromise;

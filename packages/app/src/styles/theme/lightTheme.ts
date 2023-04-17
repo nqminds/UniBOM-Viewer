@@ -23,7 +23,7 @@ const lightTheme = createTheme({
       default: grey[200],
     },
     text: {
-      primary: colour.text[800],
+      primary: colour.text[900],
       secondary: colour.text[400],
     },
   },

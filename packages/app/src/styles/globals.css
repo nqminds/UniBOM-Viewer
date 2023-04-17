@@ -22,3 +22,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.memory-safe-row {
+  background: rgba(220, 237, 200, 0.5);
+}

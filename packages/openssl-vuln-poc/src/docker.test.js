@@ -13,6 +13,7 @@ const DOCKER_SETUP_TIMEOUT = 10 * 60 * 1000;
   });
   describe("#pullImage", () => {
     test("should pull (eventually)", async () => {
+      // eslint-disable-next-line no-console
       console.info(
         "Pulling Docker image. If this times out, run " +
           '`podman pull "docker.io/aloisklink/cheribuild-edgesec:morello-purecap-20220511"`' +

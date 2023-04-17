@@ -3,5 +3,6 @@
   "username": "root",
   "key": "my-ssh-key",
   "host": "127.0.0.2",
-  "sshPort": "2222"
+  "sshPort": "2222",
+  "nistApiKey": "a03cfee3-bcf1-4f6d-ac31-fe9f7bda1bb2"
 }
