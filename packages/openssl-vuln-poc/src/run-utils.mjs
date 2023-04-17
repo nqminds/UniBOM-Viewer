@@ -160,12 +160,9 @@ export async function runTest({
       if (execFileError.code !== "ABORT_ERR") {
         // TODO: assuming this happens rarely, we should probably be throwing an error
         console.warn(
-          // eslint-disable-line no-console
-          // eslint-disable-line no-console
           `
           Client OpenSSL cmd failed with error code ${execFileError.code}. ` +
-            `Stderr was ${execFileError.stderr}.\n` +
-            `Stdout was ${execFileError.stdout}.`
+            `Stderr was ${execFileError.stderr}.\n`
         );
       }
 
