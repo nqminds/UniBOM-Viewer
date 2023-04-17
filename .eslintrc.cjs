@@ -3,7 +3,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: ["@nqminds/eslint-config"],
+  extends: ["@nqminds/eslint-config", "prettier"],
   overrides: [],
   parserOptions: {
     ecmaVersion: "latest",
