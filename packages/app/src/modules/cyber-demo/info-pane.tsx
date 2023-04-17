@@ -6,19 +6,13 @@ export default function InfoPane() {
     <Paper sx={{marginBottom: 0}}>
       <h1>OpenSSL Morello protection</h1>
       <Typography>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus a
-        massa ac vulputate. Integer posuere magna nec eros euismod mattis.
-        Aenean sed diam ac lorem condimentum varius eget ac ante. Praesent ex
-        libero, vulputate at mattis nec, vestibulum vel purus. Sed fermentum id
-        tortor sit amet tristique. Suspendisse potenti. Proin et dolor vel mi
-        egestas bibendum id at ligula. Suspendisse scelerisque dignissim tellus
-        porttitor fringilla. Quisque lacinia, massa nec hendrerit tristique,
-        justo orci blandit enim, in viverra urna eros venenatis nibh. Vestibulum
-        ac diam nec enim feugiat dictum. In a cursus nunc, ac euismod purus.
-        Suspendisse fringilla quam enim, ut lobortis ligula hendrerit id.
-        Vivamus pulvinar accumsan vehicula. Proin quis massa velit. Nulla
-        consequat nisi at nulla ornare pretium. Proin maximus pretium magna eu
-        tempus.
+        CVE-2022-3602 is a recent OpenSSL exploit, causing significant disruption in the cybersecurity
+        space due to a suspected widespread remote code execution exploit
+        CHERI is a novel computer architecture, supporting a novel ISA
+        (Instruction set architecture) that protects against memory/pointer errors
+        Morello is optimised research silicon that implements the CHERI instruction set.
+        The practical question: can existing software be deployed to a Morello CPU based
+        system which actively defends against common memory exploits
       </Typography>
     </Paper>
   );
