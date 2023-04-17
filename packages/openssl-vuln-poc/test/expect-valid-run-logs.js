@@ -4,7 +4,7 @@ import { expect } from "@jest/globals";
  * Asserts that the given object is a valid {@link RunLogs} object.
  *
  * @param {import("./index.mjs").RunLogs} runLogsObj - The object to check.
- * @returns {expect.toBe} func return
+ * @returns {Promise<void>} Resolves if the object is valid, rejects otherwise.
  */
 export function expectValidRunLogs(runLogsObj) {
   return expect(runLogsObj).toEqual(
