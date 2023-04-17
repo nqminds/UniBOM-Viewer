@@ -8,7 +8,6 @@ import {classifySeverityScore} from "./severity-map";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import CveTable from "./cve-table";
 
-
 const Controls = styled(Icon)(({theme: {palette, spacing}}) => ({
   background: palette.text.primary,
   borderRadius: 15,
@@ -26,10 +25,13 @@ function categoriseCves(props: cve) {
   return props;
 }
 
-export default function SbomComponentTableRow({data, highlight = false}: props) {
+export default function SbomComponentTableRow({
+  data,
+  highlight = false,
+}: props) {
   const [open, setOpen] = useState(false);
 
-  function expand(currentState:boolean) {
+  function expand(currentState: boolean) {
     setOpen(!currentState);
   }
 
@@ -40,11 +42,16 @@ export default function SbomComponentTableRow({data, highlight = false}: props) 
 
   const formattedCves = data.cves.map(categoriseCves);
   const defaultCves = formattedCves;
-  const memorySafeCves = formattedCves.filter(({cwes}) => !cwes.find(({memoryCwe}) => memoryCwe));
+  const memorySafeCves = formattedCves.filter(
+    ({cwes}) => !cwes.find(({memoryCwe}) => memoryCwe),
+  );
 
   return (
     <>
-      <Row className={highlight ? "highlighted-row" : undefined} onClick={() => expand(open)}>
+      <Row
+        className={highlight ? "highlighted-row" : undefined}
+        onClick={() => expand(open)}
+      >
         <TableCell>{data.name}</TableCell>
         <TableCell align="right">{data.version}</TableCell>
         <TableCell>{data.licenses}</TableCell>
@@ -53,9 +60,7 @@ export default function SbomComponentTableRow({data, highlight = false}: props) 
         <TableCell align="center">{memorySafeCves.length}</TableCell>
         <SeverityBreakdown cves={memorySafeCves} />
         <TableCell align="center" sx={{alignItems: "center"}}>
-          <Controls>
-            {open ? <ExpandLess/> : <ExpandMore/>}
-          </Controls>
+          <Controls>{open ? <ExpandLess /> : <ExpandMore />}</Controls>
         </TableCell>
       </Row>
       <CveTable open={open} cves={defaultCves} />
@@ -66,4 +71,4 @@ export default function SbomComponentTableRow({data, highlight = false}: props) 
 type props = {
   data: sbomComponent;
   highlight?: boolean;
-}
+};

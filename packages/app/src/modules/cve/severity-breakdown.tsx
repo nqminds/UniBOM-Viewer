@@ -26,24 +26,36 @@ const SeverityBar = styled("div")(({theme: {menu}}) => ({
   textAlign: "center",
 }));
 
-type noNulls = NonNullable<cve["baseSeverity"]>
-const severityCategories = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "NONE"] as noNulls[];
+type noNulls = NonNullable<cve["baseSeverity"]>;
+const severityCategories = [
+  "CRITICAL",
+  "HIGH",
+  "MEDIUM",
+  "LOW",
+  "NONE",
+] as noNulls[];
 
-
-export default function SeverityBreakdown({cves} : props) {
+export default function SeverityBreakdown({cves}: props) {
   if (!cves.length) {
-    return <TableCell colSpan={2}/>;
+    return <TableCell colSpan={2} />;
   }
   const bySeverity = groupBy(cves, "baseSeverity");
 
   return (
     <TableCell colSpan={2}>
       <Container>
-      {severityCategories.map((cat) => {
-          const percentage = (bySeverity[cat]?.length / cves.length ) * 100 | 0;
+        {severityCategories.map((cat) => {
+          const percentage =
+            ((bySeverity[cat]?.length / cves.length) * 100) | 0;
           if (percentage) {
             return (
-              <SeverityBar key={cat} sx={{background: severityColourMap(cat), width: `${percentage}%`}}>
+              <SeverityBar
+                key={cat}
+                sx={{
+                  background: severityColourMap(cat),
+                  width: `${percentage}%`,
+                }}
+              >
                 <Typography>{bySeverity[cat]?.length}</Typography>
               </SeverityBar>
             );
@@ -56,5 +68,5 @@ export default function SeverityBreakdown({cves} : props) {
 }
 
 type props = {
-  cves: cve[]
-}
+  cves: cve[];
+};

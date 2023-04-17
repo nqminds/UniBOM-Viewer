@@ -20,7 +20,7 @@ const Container = styled("div")(({theme: {spacing}}) => ({
 export default function Home() {
   const {data, error} = useSWR("vul-analysis", fetcher);
   if (error || data?.error) {
-    return (<Typography>ERROR</Typography>);
+    return <Typography>ERROR</Typography>;
   }
   if (!data) {
     return <>Loading</>;

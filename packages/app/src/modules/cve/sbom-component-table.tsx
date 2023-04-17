@@ -8,18 +8,29 @@ import SbomComponentTableRow from "./sbom-component-table-row";
 import {uniqBy, sortBy} from "lodash";
 
 export default function SbomComponentTable({data}: props) {
-  const allComponents = data.reduce((iterator: sbomComponent, component: sbomComponent) => {
-    const concatCves = uniqBy([...iterator.cves, ...component.cves], "id");
-    return {...iterator, cves: concatCves};
-  }, {name: "All components", version: "", licenses: "", cves: [], id: undefined});
+  const allComponents = data.reduce(
+    (iterator: sbomComponent, component: sbomComponent) => {
+      const concatCves = uniqBy([...iterator.cves, ...component.cves], "id");
+      return {...iterator, cves: concatCves};
+    },
+    {
+      name: "All components",
+      version: "",
+      licenses: "",
+      cves: [],
+      id: undefined,
+    },
+  );
 
   return (
     <Paper>
       <Table size="small">
         <SbomComponentTableHead />
         <TableBody>
-          {sortBy(data, ({cves}) => -cves.length).map((row) => <SbomComponentTableRow data={row} key={row.id} />)}
-          <SbomComponentTableRow data={allComponents} highlight/>
+          {sortBy(data, ({cves}) => -cves.length).map((row) => (
+            <SbomComponentTableRow data={row} key={row.id} />
+          ))}
+          <SbomComponentTableRow data={allComponents} highlight />
         </TableBody>
       </Table>
     </Paper>
@@ -28,4 +39,4 @@ export default function SbomComponentTable({data}: props) {
 
 type props = {
   data: sbomComponent[];
-}
+};

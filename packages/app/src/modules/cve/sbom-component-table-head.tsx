@@ -7,13 +7,13 @@ const Cell = styled(TableCell)(() => ({
   fontSize: "16px",
 }));
 
-const defaultHeaderProps:cellProps = {
+const defaultHeaderProps: cellProps = {
   colSpan: 1,
   rowSpan: 2,
   align: "center",
 };
 
-const groupHeaderProps:cellProps = {
+const groupHeaderProps: cellProps = {
   colSpan: 3,
   rowSpan: 1,
   align: "center",
@@ -44,8 +44,16 @@ export default function SbomComponentTableHead() {
         ))}
       </TableRow>
       <TableRow>
-        {cveHeaders.map((props) => <Cell align="center" {...props}>{props.key}</Cell>)}
-        {cveHeaders.map((props) => <Cell align="center" {...props}>{props.key}</Cell>)}
+        {cveHeaders.map((props) => (
+          <Cell align="center" {...props}>
+            {props.key}
+          </Cell>
+        ))}
+        {cveHeaders.map((props) => (
+          <Cell align="center" {...props}>
+            {props.key}
+          </Cell>
+        ))}
       </TableRow>
     </TableHead>
   );
@@ -56,4 +64,4 @@ type cellProps = {
   colSpan: number;
   rowSpan: number;
   align: "left" | "center" | "right" | "justify" | "inherit" | undefined;
-}
+};
