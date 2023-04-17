@@ -23,11 +23,11 @@ const servers = [
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
     controls: [
       {
-        name: "Cert",
+        name: "Safe Cert",
         mutateParams: [true, true],
       },
       {
-        name: "No cert",
+        name: "Malicious Cert",
         mutateParams: [true, false],
       },
     ],
@@ -38,11 +38,11 @@ const servers = [
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
     controls: [
       {
-        name: "Cert",
+        name: "Safe Cert",
         mutateParams: [false, true],
       },
       {
-        name: "No cert",
+        name: "Malicious Cert",
         mutateParams: [false, false],
       },
     ],
