@@ -18,9 +18,17 @@ const ButtonContainer = styled("div")(() => ({
 
 const servers = [
   {
-    name: "Morello",
+    name: "Morello Purecap",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
+      "Sends the given certificates to an OpenSSL v3.0.2 server running on " +
+      "Morello in Purecap (Pure-capability) mode. " +
+      "The malicious certificate will attempt to run a stack buffer " +
+      "overflow. " +
+      "However, the pointer to the buffer has been tagged with the a " +
+      "capability that lists the size of the buffer. " +
+      "Attempting to overflow the buffer will violate the stack " +
+      "pointer capabilities, resulting in the CPU throwing a SIGPROT " +
+      "CHERI protection violation.",
     controls: [
       {
         name: "Safe Cert",
@@ -33,9 +41,17 @@ const servers = [
     ],
   },
   {
-    name: 'Ubuntu / "normal server here"',
+    name: "Morello Hybrid",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In magna urna, suscipit quis tincidunt vel, accumsan ut lacus. Donec malesuada eu nulla a laoreet. Praesent vehicula nisi sit amet sodales luctus. Donec eu ipsum ipsum. Nulla mollis scelerisque justo sit amet elementum.",
+      "Sends the given certificates to an OpenSSL v3.0.2 server running on " +
+      "Morello in Hybrid (hybrid-capability) mode. " +
+      "As Morello runs CheriBSD (a fork of FreeBSD v14), " +
+      "Address Space Layout Randomization is " +
+      "enabled and binaries are compiled with stack protection canaries " +
+      "(such as `-fstack-protector`). " +
+      "Therefore, attempting to exploit CVE-2022-3602 will normally result " +
+      "in the OS catching the attempted buffer overflow, and aborting the " +
+      "process with an 'SIGABRT'.",
     controls: [
       {
         name: "Safe Cert",
