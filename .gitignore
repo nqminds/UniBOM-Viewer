@@ -104,4 +104,4 @@ dist
 .tern-port
 
 # Input file
-packages/vulnerability-analysis/input/*
+#packages/vulnerability-analysis/input/*
