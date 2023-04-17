@@ -23,6 +23,6 @@ a {
   box-sizing: border-box;
 }
 
-.highlighted-row {
-  background: #eceff1;
+.memory-safe-row {
+  background: #dcedc8;
 }

@@ -1,8 +1,22 @@
-import React from "react";
+import React, {useState} from "react";
+import {styled} from "@mui/system";
 
 import SeverityBreakdown from "./severity-breakdown";
-import {TableCell, TableRow} from "@mui/material";
+import {TableCell, TableRow, Icon} from "@mui/material";
 import {classifySeverityScore} from "./severity-map";
+
+import {ExpandLess, ExpandMore} from "@mui/icons-material";
+import CveTable from "./cve-table";
+
+
+const Controls = styled(Icon)(({theme: {palette, spacing}}) => ({
+  background: palette.text.primary,
+  borderRadius: 15,
+  color: palette.background.paper,
+  alignItems: "center",
+  justifyContent: "center",
+  width: "50px",
+}));
 
 function categoriseCves(props: cve) {
   const {baseScore, baseSeverity, version} = props;
@@ -13,13 +27,24 @@ function categoriseCves(props: cve) {
 }
 
 export default function SbomComponentTableRow({data, highlight = false}: props) {
+  const [open, setOpen] = useState(false);
+
+  function expand(currentState:boolean) {
+    setOpen(!currentState);
+  }
+
+  const Row = styled(TableRow)(({theme: {palette}}) => ({
+    cursor: "pointer",
+    background: highlight ? palette.background.default : null,
+  }));
+
   const formattedCves = data.cves.map(categoriseCves);
   const defaultCves = formattedCves;
   const memorySafeCves = formattedCves.filter(({cwes}) => !cwes.find(({memoryCwe}) => memoryCwe));
 
   return (
     <>
-      <TableRow className={highlight ? "highlighted-row" : undefined} onClick={() => open(data.id)}>
+      <Row className={highlight ? "highlighted-row" : undefined} onClick={() => expand(open)}>
         <TableCell>{data.name}</TableCell>
         <TableCell align="right">{data.version}</TableCell>
         <TableCell>{data.licenses}</TableCell>
@@ -27,7 +52,13 @@ export default function SbomComponentTableRow({data, highlight = false}: props) 
         <SeverityBreakdown cves={defaultCves} />
         <TableCell align="center">{memorySafeCves.length}</TableCell>
         <SeverityBreakdown cves={memorySafeCves} />
-      </TableRow>
+        <TableCell align="center" sx={{alignItems: "center"}}>
+          <Controls>
+            {open ? <ExpandLess/> : <ExpandMore/>}
+          </Controls>
+        </TableCell>
+      </Row>
+      <CveTable open={open} cves={defaultCves} />
     </>
   );
 }

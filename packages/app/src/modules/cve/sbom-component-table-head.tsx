@@ -25,6 +25,7 @@ const primaryHeaders = [
   {key: "license(s)", ...defaultHeaderProps},
   {key: "Memory unprotected system", ...groupHeaderProps},
   {key: "Memory protected system", ...groupHeaderProps},
+  {key: "icon-drop-down", ...defaultHeaderProps, name: ""},
 ];
 
 const cveHeaders = [
@@ -36,7 +37,11 @@ export default function SbomComponentTableHead() {
   return (
     <TableHead>
       <TableRow>
-        {primaryHeaders.map((props) => <Cell {...props}>{props.key}</Cell>)}
+        {primaryHeaders.map((props) => (
+          <Cell {...props}>
+            {props.name !== undefined ? props.name : props.key}
+          </Cell>
+        ))}
       </TableRow>
       <TableRow>
         {cveHeaders.map((props) => <Cell align="center" {...props}>{props.key}</Cell>)}
@@ -47,7 +52,8 @@ export default function SbomComponentTableHead() {
 }
 
 type cellProps = {
-  colSpan: number,
-  rowSpan: number,
-  align: "left" | "center" | "right" | "justify" | "inherit" | undefined
+  name?: string;
+  colSpan: number;
+  rowSpan: number;
+  align: "left" | "center" | "right" | "justify" | "inherit" | undefined;
 }
