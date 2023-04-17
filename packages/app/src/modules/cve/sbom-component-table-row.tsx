@@ -40,9 +40,8 @@ export default function SbomComponentTableRow({
     background: highlight ? palette.background.default : null,
   }));
 
-  const formattedCves = data.cves.map(categoriseCves);
-  const defaultCves = formattedCves;
-  const memorySafeCves = formattedCves.filter(
+  const categorisedCves = data.cves.map(categoriseCves);
+  const memorySafeCves = categorisedCves.filter(
     ({cwes}) => !cwes.find(({memoryCwe}) => memoryCwe),
   );
 
@@ -55,15 +54,15 @@ export default function SbomComponentTableRow({
         <TableCell>{data.name}</TableCell>
         <TableCell align="right">{data.version}</TableCell>
         <TableCell>{data.licenses}</TableCell>
-        <TableCell align="center">{defaultCves.length}</TableCell>
-        <SeverityBreakdown cves={defaultCves} />
+        <TableCell align="center">{categorisedCves.length}</TableCell>
+        <SeverityBreakdown cves={categorisedCves} />
         <TableCell align="center">{memorySafeCves.length}</TableCell>
         <SeverityBreakdown cves={memorySafeCves} />
         <TableCell align="center" sx={{alignItems: "center"}}>
           <Controls>{open ? <ExpandLess /> : <ExpandMore />}</Controls>
         </TableCell>
       </Row>
-      <CveTable open={open} cves={defaultCves} />
+      <CveTable open={open} cves={categorisedCves} />
     </>
   );
 }
