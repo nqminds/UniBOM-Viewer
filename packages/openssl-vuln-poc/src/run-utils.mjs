@@ -75,7 +75,7 @@ export async function runTest({
 
   const abortController = new AbortController();
   try {
-    console.info(`Running OpenSSL server on port ${port}`); // eslint-disable-line no-console
+    console.info(`Running OpenSSL server on port ${port}`);
 
     const serverStdIn = [
       serverOpensslBinary,
@@ -106,7 +106,7 @@ export async function runTest({
       });
     }
 
-    console.info(`Running OpenSSL malicious client payload on port ${port}`); // eslint-disable-line no-console
+    console.info(`Running OpenSSL malicious client payload on port ${port}`);
 
     const clientStdIn = [
       clientOpensslBinary,
@@ -184,7 +184,6 @@ export async function runTest({
     } catch (error) {
       const execFileError = /** @type {PromisifiedExecFileException} */ (error);
       console.info(
-        // eslint-disable-line no-console
         `Server OpenSSL cmd failed with error code ${execFileError.code}`
       );
 
