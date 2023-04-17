@@ -6,6 +6,10 @@ import { promisify } from "node:util";
 
 import { runTest } from "./run-utils.mjs";
 import { DEFAULT_SSH_CLI_OPTIONS, runViaSSH } from "./ssh-utils.mjs";
+import { fileURLToPath } from "node:url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+import path from "path";
 
 /** @typedef {import("./ssh-utils.mjs").SSHOpts} SSHOpts */
 /** @typedef {import("./run-utils.mjs").RunLogs} RunLogs */
@@ -81,12 +85,11 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
    * 2. Sets up an SSH control master to greatly speed up future SSH commands
    * 3. Makes sure OpenSSL is installed
    *
-   * @param {object} options - options
-   * @param {string} options.certDirectory - directory in which certs and located
    * @returns {Promise<void>} Resolves when server is setup. Rejects if there
    * is an error.
    */
-  async setup({ certDirectory = "./certs" }) {
+  async setup() {
+    const certDirectory = path.join(__dirname, "../", "certs");
     console.info(`Setting up SSH connection to ${this.sshOpts.host}`); // eslint-disable-line no-console
     // create the ~/.ssh/controlmasters dir if it doesn't already exist
     await mkdir(join(homedir(), ".ssh", "controlmasters"), {
@@ -126,6 +129,7 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
     };
 
     console.info(
+      // eslint-disable-line no-console
       // eslint-disable-line no-console
       // eslint-disable-line no-console
       `Installing Morello test dependencies on ${this.sshOpts.host}`

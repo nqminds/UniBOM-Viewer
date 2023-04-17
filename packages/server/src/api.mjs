@@ -1,9 +1,5 @@
 import express from "express";
 import config from "../config.json" assert { type: "json" };
-import { fileURLToPath } from "node:url";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
-import path from "path";
 
 import testCases from "./test-cases.mjs";
 
@@ -50,13 +46,7 @@ api.get(
         try {
           const sshOpts = { username, host, port: sshPort };
           testCase = new TestCase({ sshOpts });
-          await testCase.setup({
-            certDirectory: path.join(
-              __dirname,
-              "../../openssl-vuln-poc",
-              "certs"
-            ),
-          });
+          await testCase.setup();
           testCaseCache[mode][certificate] = testCase;
           const {
             server: { stdin, stdout, stderr },
