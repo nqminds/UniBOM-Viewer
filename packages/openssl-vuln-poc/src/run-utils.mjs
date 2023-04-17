@@ -1,6 +1,6 @@
-import {execFile} from "node:child_process";
-import {Readable} from "node:stream";
-import {promisify} from "node:util";
+import { execFile } from "node:child_process";
+import { Readable } from "node:stream";
+import { promisify } from "node:util";
 
 /**
  * @typedef {import("./ssh-utils.mjs").SSHOpts} SSHOpts
@@ -14,12 +14,13 @@ import {promisify} from "node:util";
  * @property {object} server - OpenSSL server logs.
  * @property {string} server.stdout - OpenSSL server stdout output.
  * @property {string} server.stderr - OpenSSL server stderr output.
- * @property {import("node:child_process").ChildProcess["exitCode"]} server.exitCode - If set, the exit code of the process.
+ * @property {import("node:child_process").ChildProcess.exitCode} server.exitCode -
+ * If set, the exit code of the process.
  */
 
 /**
  * @typedef {import("node:child_process").ExecFileException & {
- *   stdout: string, stderr: string,
+ * stdout: string, stderr: string,
  * }} PromisifiedExecFileException The error that is thrown if `promisify(execFile)` rejects.
  */
 
@@ -30,9 +31,9 @@ import {promisify} from "node:util";
  * 2. Start a malicious OpenSSL client and connect to the server.
  * 3. Wait for client to exit.
  * 4. After waiting for `timeout` milliseconds:
- *     1. If server dies, stop client, then return logs.
- *     2. If server is still alive after a few seconds, then it's not vulnerable to
- *        the exploit. In that case, kill client and server and return logs.
+ * -    1. If server dies, stop client, then return logs.
+ * -    2. If server is still alive after a few seconds, then it's not vulnerable to
+ * -       the exploit. In that case, kill client and server and return logs.
  *
  * @param {object} [opts] - Optional options.
  * @param {string} [opts.clientOpensslBinary] - The openssl CLI binary to use for the client.
@@ -40,9 +41,6 @@ import {promisify} from "node:util";
  * @param {SSHOpts} [opts.sshOpts] - If set, SSH to the given host, and run the
  * test there.
  * @param {number} [opts.port] - The port to use for the OpenSSL test.
- * @param {number} [opts.timeout] - The number of milliseconds, after which,
- * if there has been no error, assume that the OpenSSL server code is not
- * vulnerable to CVE-2022-3602.
  * @returns {Promise<RunLogs>} Resolves when the processes are closed with the logs of the process.
  */
 export async function runTest({
@@ -52,21 +50,21 @@ export async function runTest({
   port = 31050,
 } = {}) {
   // use dynamic import so that jest can mock this function in our test code
-  const {runViaSSH: dynamicallyImportedRunViaSSH} = await import(
+  const { runViaSSH: dynamicallyImportedRunViaSSH } = await import(
     "./ssh-utils.mjs"
   );
 
   /**
    * @type {(
-   *   cmd: string[],
-   *   opts: import("node:child_process").ExecFileOptionsWithStringEncoding,
+   * cmd: string[],
+   * opts: import("node:child_process").ExecFileOptionsWithStringEncoding,
    * ) => import("node:child_process").PromiseWithChild<{stdout: string, stderr: string}>}
    * Runs the given command, either via SSH or on the local machine.
    */
   let execFileFunc;
   if (sshOpts) {
     execFileFunc = (command, opts) => {
-      return dynamicallyImportedRunViaSSH(command, sshOpts, {...opts});
+      return dynamicallyImportedRunViaSSH(command, sshOpts, { ...opts });
     };
   } else {
     execFileFunc = (command, opts) =>
@@ -75,7 +73,7 @@ export async function runTest({
 
   const abortController = new AbortController();
   try {
-    console.info(`Running OpenSSL server on port ${port}`);
+    console.info(`Running OpenSSL server on port ${port}`); // eslint-disable-line no-console
 
     const serverStdIn = [
       serverOpensslBinary,
@@ -92,13 +90,10 @@ export async function runTest({
       "-verify",
       1,
     ];
-    const serverProcess = execFileFunc(
-      serverStdIn,
-      {
-        signal: abortController.signal,
-        killSignal: "SIGINT",
-      },
-    );
+    const serverProcess = execFileFunc(serverStdIn, {
+      signal: abortController.signal,
+      killSignal: "SIGINT",
+    });
 
     try {
       // wait for OpenSSL server to start listening
@@ -109,7 +104,7 @@ export async function runTest({
       });
     }
 
-    console.info(`Running OpenSSL malicious client payload on port ${port}`);
+    console.info(`Running OpenSSL malicious client payload on port ${port}`); // eslint-disable-line no-console
 
     const clientStdIn = [
       clientOpensslBinary,
@@ -128,24 +123,22 @@ export async function runTest({
 
     clientProcess.child.on("spawn", () => {
       Readable.from("Hello World from my OpenSSL Client!").pipe(
-        clientProcess.child.stdin,
+        clientProcess.child.stdin
       );
     });
 
-    serverProcess.then(
-      async() => {
-        await promisify(setTimeout)(1000);
-        abortController.abort(
-          "Aborting OpenSSL client as OpenSSL server closed",
-        );
-      },
-      async(error) => {
-        await promisify(setTimeout)(1000);
-        abortController.abort(
-          `Aborting OpenSSL client as OpenSSL server exited due to ${error}`,
-        );
-      },
-    );
+    try {
+      await serverProcess;
+      await promisify(setTimeout)(1000);
+      abortController.abort("Aborting OpenSSL client as OpenSSL server closed");
+    } catch (error) {
+      await promisify(setTimeout)(1000);
+      abortController.abort(
+        `Aborting OpenSSL client as OpenSSL server exited due to ${error}`
+      );
+      // Handle error here
+      console.error("Error:", error); // eslint-disable-line no-console
+    }
 
     /** @type {RunLogs["client"] | undefined} */
     let clientOutput;
@@ -158,10 +151,11 @@ export async function runTest({
       if (execFileError.code !== "ABORT_ERR") {
         // TODO: assuming this happens rarely, we should probably be throwing an error
         console.warn(
+          // eslint-disable-line no-console
           `
           Client OpenSSL cmd failed with error code ${execFileError.code}. ` +
             `Stderr was ${execFileError.stderr}.\n` +
-            `Stdout was ${execFileError.stdout}.`,
+            `Stdout was ${execFileError.stdout}.`
         );
       }
 
@@ -173,7 +167,7 @@ export async function runTest({
     }
 
     abortController.abort(
-      "Client OpenSSL process is done, killing OpenSSL Server",
+      "Client OpenSSL process is done, killing OpenSSL Server"
     );
 
     /** @type {RunLogs["server"] | undefined} */
@@ -183,7 +177,8 @@ export async function runTest({
     } catch (error) {
       const execFileError = /** @type {PromisifiedExecFileException} */ (error);
       console.info(
-        `Server OpenSSL cmd failed with error code ${execFileError.code}`,
+        // eslint-disable-line no-console
+        `Server OpenSSL cmd failed with error code ${execFileError.code}`
       );
 
       serverOutput = {
