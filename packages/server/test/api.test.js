@@ -18,9 +18,9 @@ function checkLength(item) {
  */
 function getAllGoodRequests(api) {
   return [
-    // request(api).get("/run-script/true/true"), // TODO: not implemented
+    request(api).get("/run-script/true/true"),
     request(api).get("/run-script/true/false"),
-    // request(api).get("/run-script/false/true"), // TODO: not implemented
+    request(api).get("/run-script/false/true"),
     request(api).get("/run-script/false/false"),
   ];
 }
@@ -57,6 +57,9 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
           return mockedOpenSSLTestCase;
         }),
         MorelloHybridOpenSSLTestCase: jest.fn().mockImplementation(() => {
+          return mockedOpenSSLTestCase;
+        }),
+        LocalHostTestCase: jest.fn().mockImplementation(() => {
           return mockedOpenSSLTestCase;
         }),
       };

@@ -1,8 +1,13 @@
 /* eslint-disable no-console, promise/prefer-await-to-then
  */
 import { execFile } from "node:child_process";
+import { dirname } from "node:path";
 import { Readable } from "node:stream";
+import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
+
+const __filename = fileURLToPath(new URL(import.meta.url));
+const __dirname = dirname(__filename);
 
 /**
  * @typedef {import("./ssh-utils.mjs").SSHOpts} SSHOpts
@@ -95,6 +100,7 @@ export async function runTest({
     const serverProcess = execFileFunc(serverStdIn, {
       signal: abortController.signal,
       killSignal: "SIGINT",
+      cwd: dirname(__dirname),
     });
 
     try {
@@ -121,7 +127,9 @@ export async function runTest({
       "certs/malicious-client-cacert.pem",
       "-state",
     ];
-    const clientProcess = execFileFunc(clientStdIn);
+    const clientProcess = execFileFunc(clientStdIn, {
+      cwd: dirname(__dirname),
+    });
 
     clientProcess.child.on("spawn", () => {
       Readable.from("Hello World from my OpenSSL Client!").pipe(
