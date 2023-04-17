@@ -1,11 +1,25 @@
 import express from "express";
 import config from "../config.json" assert { type: "json" };
 
-import scriptPaths from "./script-paths.mjs";
+import testCases from "./test-cases.mjs";
+
+const testCaseCache = {
+  purecap: {
+    goodCert: null,
+    maliciousCert: null,
+  },
+  hybrid: {
+    goodCert: null,
+    maliciousCert: null,
+  },
+};
 
 const api = express();
 
-const { userID, key, IP, port } = config;
+const { username, host, sshPort } = config;
+
+let callIndex = 0;
+const getOpensllPort = (callIndexLocal) => 31050 + (callIndexLocal % 1000);
 
 api.get(
   "/run-script/:purecap(true|false)/:goodCert(true|false)",
@@ -13,21 +27,41 @@ api.get(
     const { purecap, goodCert } = req.params;
     const mode = purecap === "true" ? "purecap" : "hybrid";
     const certificate = goodCert === "true" ? "goodCert" : "maliciousCert";
-    const scriptPath = scriptPaths[mode][certificate];
-    if (scriptPath) {
+    let TestCase = null;
+    let testCase = testCaseCache[mode][certificate];
+    const opensslPort = getOpensllPort(callIndex);
+    callIndex++;
+    if (testCase) {
       try {
-        const stdin = `${IP} ${port} ${userID} ${key}`;
         const {
-          server: { stdout, stderr },
-        } = await scriptPath.run();
+          server: { stdin, stdout, stderr },
+        } = await testCase.run({ port: opensslPort });
         res.send({ stdin, stdout, stderr });
       } catch (error) {
         res.status(500).json(error.message);
       }
     } else {
-      res
-        .status(501)
-        .json(`${certificate} certificate for ${mode} mode is not implemented`);
+      TestCase = testCases[mode][certificate];
+      if (TestCase) {
+        try {
+          const sshOpts = { username, host, port: sshPort };
+          testCase = new TestCase({ sshOpts });
+          await testCase.setup();
+          testCaseCache[mode][certificate] = testCase;
+          const {
+            server: { stdin, stdout, stderr },
+          } = await testCase.run({ port: opensslPort });
+          res.send({ stdin, stdout, stderr });
+        } catch (error) {
+          res.status(500).json(error.message);
+        }
+      } else {
+        res
+          .status(501)
+          .json(
+            `${certificate} certificate for ${mode} mode is not implemented`
+          );
+      }
     }
   }
 );
