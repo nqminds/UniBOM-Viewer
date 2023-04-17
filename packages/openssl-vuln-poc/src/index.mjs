@@ -1,11 +1,11 @@
-import {execFile} from "node:child_process";
-import {mkdir} from "node:fs/promises";
-import {homedir} from "node:os";
-import {join} from "node:path";
-import {promisify} from "node:util";
+import { execFile } from "node:child_process";
+import { mkdir } from "node:fs/promises";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import { promisify } from "node:util";
 
-import {runTest} from "./run-utils.mjs";
-import {DEFAULT_SSH_CLI_OPTIONS, runViaSSH} from "./ssh-utils.mjs";
+import { runTest } from "./run-utils.mjs";
+import { DEFAULT_SSH_CLI_OPTIONS, runViaSSH } from "./ssh-utils.mjs";
 
 /** @typedef {import("./ssh-utils.mjs").SSHOpts} SSHOpts */
 /** @typedef {import("./run-utils.mjs").RunLogs} RunLogs */
@@ -32,7 +32,7 @@ export class OpenSSLTestCase {
    * @returns {Promise<RunLogs>} Resolves when the processes are closed with the logs of the process.
    */
   async run(
-    _opts = {}, // eslint-disable-line no-unused-vars
+    _opts = {} // eslint-disable-line no-unused-vars
   ) {
     throw new Error("Unimplemented");
   }
@@ -46,7 +46,7 @@ export class LocalHostTestCase extends OpenSSLTestCase {
   /**
    * @inheritdoc
    */
-  async run({port} = {}) {
+  async run({ port } = {}) {
     // runs tests with default options on localhost
     return await runTest({
       opensslBinary: "/usr/local64/bin/openssl",
@@ -64,10 +64,12 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
   sshOpts;
 
   /**
+   * Constructor for openssltestcase
+   *
    * @param {object} opts - Options.
    * @param {SSHOpts} opts.sshOpts - SSH connection options.
    */
-  constructor({sshOpts}) {
+  constructor({ sshOpts }) {
     super();
     this.sshOpts = sshOpts;
   }
@@ -84,8 +86,8 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
    * @returns {Promise<void>} Resolves when server is setup. Rejects if there
    * is an error.
    */
-  async setup({certDirectory = "./certs"}) {
-    console.info(`Setting up SSH connection to ${this.sshOpts.host}`);
+  async setup({ certDirectory = "./certs" }) {
+    console.info(`Setting up SSH connection to ${this.sshOpts.host}`); // eslint-disable-line no-console
     // create the ~/.ssh/controlmasters dir if it doesn't already exist
     await mkdir(join(homedir(), ".ssh", "controlmasters"), {
       mode: 0o700,
@@ -101,7 +103,7 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
      * @param {string} packageName - The package to install.
      * @see https://man.freebsd.org/cgi/man.cgi?pkg(7)
      */
-    const pkgInstall = async(pkgBinary, packageName) => {
+    const pkgInstall = async (pkgBinary, packageName) => {
       await runViaSSH(
         [
           // Install Hybrid ABI version of OpenSSL 3.0.2
@@ -109,7 +111,7 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
           pkgBinary,
           "update",
         ],
-        this.sshOpts,
+        this.sshOpts
       );
       await runViaSSH(
         [
@@ -119,12 +121,13 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
           "install",
           packageName,
         ],
-        this.sshOpts,
+        this.sshOpts
       );
     };
 
     console.info(
-      `Installing Morello test dependencies on ${this.sshOpts.host}`,
+      // eslint-disable-line no-console
+      `Installing Morello test dependencies on ${this.sshOpts.host}`
     );
     await Promise.all([
       // Install Hybrid ABI version of OpenSSL 3.0.2
@@ -153,7 +156,7 @@ export class MorelloHybridOpenSSLTestCase extends MorelloOpenSSLTestCase {
    * @inheritdoc
    *
    */
-  async run({port} = {}) {
+  async run({ port } = {}) {
     return await runTest({
       sshOpts: this.sshOpts,
       serverOpensslBinary: "/usr/local64/bin/openssl",
@@ -172,7 +175,7 @@ export class MorelloPurecapOpenSSLTestCase extends MorelloOpenSSLTestCase {
   /**
    * @inheritdoc
    */
-  async run({port} = {}) {
+  async run({ port } = {}) {
     return await runTest({
       sshOpts: this.sshOpts,
       serverOpensslBinary: "/usr/local/bin/openssl",
