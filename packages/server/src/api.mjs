@@ -20,7 +20,7 @@ const testCaseCache = {
 
 const api = express();
 
-const { username, host, sshPort} = config;
+const { username, host, sshPort } = config;
 
 let callIndex = 0;
 const getOpensllPort = (callIndexLocal) => 31050 + (callIndexLocal % 1000);
@@ -50,7 +50,13 @@ api.get(
         try {
           const sshOpts = { username, host, port: sshPort };
           testCase = new TestCase({ sshOpts });
-          await testCase.setup({certDirectory: path.join(__dirname, "../../openssl-vuln-poc", "certs")});
+          await testCase.setup({
+            certDirectory: path.join(
+              __dirname,
+              "../../openssl-vuln-poc",
+              "certs"
+            ),
+          });
           testCaseCache[mode][certificate] = testCase;
           const {
             server: { stdin, stdout, stderr },
@@ -62,7 +68,9 @@ api.get(
       } else {
         res
           .status(501)
-          .json(`${certificate} certificate for ${mode} mode is not implemented`);
+          .json(
+            `${certificate} certificate for ${mode} mode is not implemented`
+          );
       }
     }
   }

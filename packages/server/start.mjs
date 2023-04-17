@@ -2,7 +2,7 @@
 import express from "express";
 import config from "./config.json" assert { type: "json" };
 
-const { httpServerPort, username, key, host, sshPort} = config;
+const { httpServerPort, username, key, host, sshPort } = config;
 import api from "./src/api.mjs";
 
 const app = express();
