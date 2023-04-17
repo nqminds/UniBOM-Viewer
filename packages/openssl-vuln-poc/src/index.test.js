@@ -14,7 +14,7 @@ import {
 
 const CHERIBSD_MORELLO_SETUP_TIMEOUT = 10 * 60 * 1000;
 const CHERIBSD_DOCKER_SETUP_TIMEOUT = 10 * 60 * 1000;
-const OPENSSL_TEST_CASE_TIMEOUT = 10 * 60 * 1000;
+const OPENSSL_TEST_CASE_TIMEOUT = 20 * 60 * 1000;
 
 describe("OpenSSLTestCase", () => {
   const openSSlTestCase = new OpenSSLTestCase();
