@@ -1,0 +1,69 @@
+openapi: "3.0.0"
+info:
+  title: Cyber Demonstrator Server
+  description: |
+    An OpenAPI spec of the @nqminds/cyber-demonstrator-server API
+  contact:
+    name: "NquiringMinds"
+    email: "info@nquiringminds.com"
+    url: "https://nquiringminds.com/contact/"
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Development Server
+paths:
+  /run-script/{purecap}/{goodCert}:
+    get:
+      operationId: runScript
+      summary: Returns standard input / output / errors when running open-ssl vulnerability scripts on various servers
+      parameters:
+        - in: path
+          name: purecap
+          schema:
+            type: boolean
+          required: true
+          description: |
+            Boolean flag to test server with morello architecture.
+
+            If:
+              - `true`, a request is sent to a morello server.
+              - `false`, a request is sent to a ubuntu server.
+        - in: path
+          name: goodCert
+          schema:
+            type: boolean
+          required: true
+          description: |
+            Boolean flag to test server with a "good" certificate.
+
+            If:
+              - `true`, this is a malicious certificate that attempts to exploit
+            [CVE-2022-3602](https://nvd.nist.gov/vuln/detail/CVE-2022-3602).
+              - `false`, this is a non-malicious certificate.
+      responses:
+        "200":
+          description: open-ssl script executed successfully and the response has been returned
+          content:
+            application/json:
+              example:
+                stdin: "standard input"
+                stdout: "some\n output"
+                stderr: ""
+              schema:
+                type: object
+                required:
+                  - "stdin"
+                properties:
+                  stdin:
+                    type: string
+                    description: standard input
+                  stdout:
+                    type: string
+                    description: standard output
+                  stderr:
+                    type: string
+                    description: standard error
+        "501":
+          description: Internal Server Error
+        "502":
+          description: Config is not implemented

@@ -11,7 +11,6 @@ const TerminalContainer = styled(Paper)(({theme: {spacing, terminal}}) => ({
   background: terminal.background,
   minHeight: 500,
   overflowY: "scroll",
-  height: 500,
 }));
 
 const DecorativeBar = styled("div")(({theme: {spacing, terminal}}) => ({
@@ -67,7 +66,7 @@ export default function Terminal({data, error, isLoading}: props) {
   useEffect(() => {
     if (data && typeof data === "object") {
       if (data?.error) {
-        setTerminalDisplay([...terminalDisplay, data.error.message]);
+        setTerminalDisplay([...terminalDisplay, `ERROR: ${data.error}`]);
       } else if (data.stdin && (data.stdout || data.stderr)) {
         const display = [...terminalDisplay];
 
@@ -119,5 +118,5 @@ type TerminalData = {
   stdin?: string;
   stdout?: string;
   stderr?: string;
-  error?: {message: string};
+  error?: string;
 };
