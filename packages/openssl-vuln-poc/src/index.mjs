@@ -127,6 +127,7 @@ export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
 
     console.info(
       // eslint-disable-line no-console
+      // eslint-disable-line no-console
       `Installing Morello test dependencies on ${this.sshOpts.host}`
     );
     await Promise.all([

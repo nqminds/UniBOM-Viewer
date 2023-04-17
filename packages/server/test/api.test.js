@@ -11,7 +11,7 @@ function checkLength(item) {
 }
 
 import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
-import scriptPaths from "../src/script-paths.mjs";
+import testCases from "../src/test-cases.mjs";
 
 function getAllGoodRequests() {
   return [
@@ -84,7 +84,7 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     expect(response.error.text).toEqual(`"${message}"`);
   });
   test("should respond with 501 if incorrect config", async () => {
-    jest.replaceProperty(scriptPaths, "purecap", {
+    jest.replaceProperty(testCases, "purecap", {
       goodCert: null,
       maliciousCert: null,
     });
@@ -92,11 +92,11 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     expect(response.statusCode).toEqual(501);
   });
   test("should return error message if incorrect config", async () => {
-    jest.replaceProperty(scriptPaths, "purecap", {
+    jest.replaceProperty(testCases, "purecap", {
       goodCert: null,
       maliciousCert: null,
     });
-    jest.replaceProperty(scriptPaths, "hybrid", {
+    jest.replaceProperty(testCases, "hybrid", {
       goodCert: null,
       maliciousCert: null,
     });

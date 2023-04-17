@@ -1,3 +1,4 @@
+// eslint-disable no-console
 import { execFile } from "node:child_process";
 import { Readable } from "node:stream";
 import { promisify } from "node:util";
@@ -152,6 +153,7 @@ export async function runTest({
         // TODO: assuming this happens rarely, we should probably be throwing an error
         console.warn(
           // eslint-disable-line no-console
+          // eslint-disable-line no-console
           `
           Client OpenSSL cmd failed with error code ${execFileError.code}. ` +
             `Stderr was ${execFileError.stderr}.\n` +
@@ -177,6 +179,7 @@ export async function runTest({
     } catch (error) {
       const execFileError = /** @type {PromisifiedExecFileException} */ (error);
       console.info(
+        // eslint-disable-line no-console
         // eslint-disable-line no-console
         `Server OpenSSL cmd failed with error code ${execFileError.code}`
       );
