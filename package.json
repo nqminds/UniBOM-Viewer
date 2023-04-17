@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "test": "npm run test --workspaces --if-present",
-    "lint": "eslint --cache --cache-strategy content && prettier --check --cache .",
+    "lint": "eslint --cache --cache-strategy content . && prettier --check --cache .",
     "prepare": "husky install"
   },
   "engines": {
