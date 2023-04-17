@@ -1,5 +1,8 @@
 # OpenAPI ts schema
-packages/server/openapi-schema.ts
+/packages/server/openapi-schema.ts
 
 # input
-packages/vulnerability-analysis/input/*
+/packages/vulnerability-analysis/input/*
+
+# Next.JS generated folder
+/packages/app/.next
