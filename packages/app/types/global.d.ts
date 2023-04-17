@@ -10,7 +10,6 @@ declare interface cve {
   id: string | undefined;
   name: string;
   description: string;
-  version: string;
   licences: string;
   cwes: cwe[];
   baseScore: number;
