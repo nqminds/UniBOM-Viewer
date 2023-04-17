@@ -1,6 +1,6 @@
+/* eslint-disable jsdoc/valid-types */ // won't work until new version of @nqminds/eslint-config is released
 import { expect, describe, test, jest } from "@jest/globals";
 
-import api from "../src/api.mjs";
 import request from "supertest";
 
 function checkLength(item) {
@@ -10,10 +10,13 @@ function checkLength(item) {
   return 0;
 }
 
-import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
-import testCases from "../src/test-cases.mjs";
-
-function getAllGoodRequests() {
+/**
+ * Send a request to all known working API routes.
+ *
+ * @param {import("../src/api.mjs")["default"]} api - The express API.
+ * @returns {Promise<void>} Resolves on success.
+ */
+function getAllGoodRequests(api) {
   return [
     // request(api).get("/run-script/true/true"), // TODO: not implemented
     request(api).get("/run-script/true/false"),
@@ -23,16 +26,57 @@ function getAllGoodRequests() {
 }
 
 describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
+  /**
+   * @type {jest.Mocked<import("@nqminds/openssl-vuln-poc").MorelloOpenSSLTestCase>}
+   *
+   * Mocked `MorelloOpenSSLTestCase` that returns some dummy data.
+   */
+  let mockedOpenSSLTestCase;
+
+  beforeEach(async () => {
+    mockedOpenSSLTestCase = {
+      setup: jest.fn().mockReturnValue(Promise.resolve()),
+      run: jest.fn().mockReturnValue({
+        client: {
+          stdin: "client stdin",
+          stdout: "client stdout",
+          stderr: "client stderr",
+        },
+        server: {
+          stdin: "server stdin",
+          stdout: "server stdout",
+          stderr: "server stderr",
+          exitCode: 0,
+        },
+      }),
+    };
+
+    jest.unstable_mockModule("@nqminds/openssl-vuln-poc", () => {
+      return {
+        MorelloPurecapOpenSSLTestCase: jest.fn().mockImplementation(() => {
+          return mockedOpenSSLTestCase;
+        }),
+        MorelloHybridOpenSSLTestCase: jest.fn().mockImplementation(() => {
+          return mockedOpenSSLTestCase;
+        }),
+      };
+    });
+  });
+
   afterEach(() => {
     // restore replaced property
     jest.restoreAllMocks();
+    jest.resetModules();
   });
+
   test("should respond with 200", async () => {
-    const requests = await Promise.all(getAllGoodRequests());
+    const { default: api } = await import("../src/api.mjs");
+    const requests = await Promise.all(getAllGoodRequests(api));
     requests.forEach((res) => expect(res.statusCode).toEqual(200));
   });
   test("should return stdin string value", async () => {
-    const requests = await Promise.all(getAllGoodRequests());
+    const { default: api } = await import("../src/api.mjs");
+    const requests = await Promise.all(getAllGoodRequests(api));
     requests.forEach((res) => {
       expect(res.body).toHaveProperty("stdin");
       expect(res.body.stdin.length).not.toEqual(0);
@@ -40,7 +84,8 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     });
   });
   test("should return stdout And/Or stderr", async () => {
-    const requests = await Promise.all(getAllGoodRequests());
+    const { default: api } = await import("../src/api.mjs");
+    const requests = await Promise.all(getAllGoodRequests(api));
     requests.forEach((res) => {
       expect([res.body.stdout, res.body.stderr]).not.toEqual([
         undefined,
@@ -53,7 +98,8 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     });
   });
   test("stdout should have value string", async () => {
-    const requests = await Promise.all(getAllGoodRequests());
+    const { default: api } = await import("../src/api.mjs");
+    const requests = await Promise.all(getAllGoodRequests(api));
     requests.forEach((res) => {
       if (res.stdout) {
         expect(typeof res.stdout).toEqual("string");
@@ -61,7 +107,8 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     });
   });
   test("stderr should have value string", async () => {
-    const requests = await Promise.all(getAllGoodRequests());
+    const { default: api } = await import("../src/api.mjs");
+    const requests = await Promise.all(getAllGoodRequests(api));
     requests.forEach((res) => {
       if (res.stderr) {
         expect(typeof res.stdout).toEqual("string");
@@ -69,37 +116,53 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     });
   });
   test("should respond with 500 if unexpected error occurs", async () => {
-    jest.spyOn(MorelloPurecapOpenSSLTestCase, "run").mockImplementation(() => {
+    jest.spyOn(mockedOpenSSLTestCase, "run").mockImplementation(() => {
       throw new Error("Unexpected error!");
     });
+    const { default: api } = await import("../src/api.mjs");
     const response = await request(api).get("/run-script/true/false");
     expect(response.statusCode).toEqual(500);
   });
   test("should return error message if unexpected error", async () => {
     const message = "HELP an error occured!";
-    jest.spyOn(MorelloPurecapOpenSSLTestCase, "run").mockImplementation(() => {
+    jest.spyOn(mockedOpenSSLTestCase, "run").mockImplementation(() => {
       throw new Error(message);
     });
+    const { default: api } = await import("../src/api.mjs");
     const response = await request(api).get("/run-script/true/false");
     expect(response.error.text).toEqual(`"${message}"`);
   });
   test("should respond with 501 if incorrect config", async () => {
-    jest.replaceProperty(testCases, "purecap", {
-      goodCert: null,
-      maliciousCert: null,
+    jest.unstable_mockModule("../src/test-cases.mjs", () => {
+      return {
+        default: {
+          purecap: {
+            goodCert: null,
+            maliciousCert: null,
+          },
+        },
+      };
     });
+    const { default: api } = await import("../src/api.mjs");
     const response = await request(api).get("/run-script/true/false");
     expect(response.statusCode).toEqual(501);
   });
   test("should return error message if incorrect config", async () => {
-    jest.replaceProperty(testCases, "purecap", {
-      goodCert: null,
-      maliciousCert: null,
+    jest.unstable_mockModule("../src/test-cases.mjs", () => {
+      return {
+        default: {
+          purecap: {
+            goodCert: null,
+            maliciousCert: null,
+          },
+          hybrid: {
+            goodCert: null,
+            maliciousCert: null,
+          },
+        },
+      };
     });
-    jest.replaceProperty(testCases, "hybrid", {
-      goodCert: null,
-      maliciousCert: null,
-    });
+    const { default: api } = await import("../src/api.mjs");
 
     const response_purecap_good = await request(api).get(
       "/run-script/true/true"
