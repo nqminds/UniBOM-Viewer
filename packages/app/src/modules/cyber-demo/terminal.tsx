@@ -9,7 +9,7 @@ import {Delete, Circle} from "@mui/icons-material";
 const TerminalContainer = styled(Paper)(({theme: {spacing, terminal}}) => ({
   marginBottom: spacing(2),
   background: terminal.background,
-  minHeight: 500,
+  height: 600,
   overflowY: "scroll",
 }));
 
