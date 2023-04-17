@@ -11,7 +11,6 @@ const TerminalContainer = styled(Paper)(({theme: {spacing, terminal}}) => ({
   background: terminal.background,
   minHeight: 500,
   overflowY: "scroll",
-  height: 500,
 }));
 
 const DecorativeBar = styled("div")(({theme: {spacing, terminal}}) => ({
