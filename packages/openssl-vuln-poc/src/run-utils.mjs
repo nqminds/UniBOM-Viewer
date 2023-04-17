@@ -1,4 +1,5 @@
-// eslint-disable no-console
+/* eslint-disable no-console, promise/prefer-await-to-then
+ */
 import { execFile } from "node:child_process";
 import { Readable } from "node:stream";
 import { promisify } from "node:util";
@@ -128,18 +129,25 @@ export async function runTest({
       );
     });
 
-    try {
-      await serverProcess;
-      await promisify(setTimeout)(1000);
-      abortController.abort("Aborting OpenSSL client as OpenSSL server closed");
-    } catch (error) {
-      await promisify(setTimeout)(1000);
-      abortController.abort(
-        `Aborting OpenSSL client as OpenSSL server exited due to ${error}`
-      );
-      // Handle error here
-      console.error("Error:", error); // eslint-disable-line no-console
-    }
+    serverProcess
+      .then(
+        async () => {
+          await promisify(setTimeout)(1000);
+          abortController.abort(
+            "Aborting OpenSSL client as OpenSSL server closed"
+          );
+        },
+        async (error) => {
+          await promisify(setTimeout)(1000);
+          abortController.abort(
+            `Aborting OpenSSL client as OpenSSL server exited due to ${error}`
+          );
+        }
+      )
+      .catch((error) => {
+        // Handle error here
+        console.error("Error:", error);
+      });
 
     /** @type {RunLogs["client"] | undefined} */
     let clientOutput;
@@ -179,7 +187,6 @@ export async function runTest({
     } catch (error) {
       const execFileError = /** @type {PromisifiedExecFileException} */ (error);
       console.info(
-        // eslint-disable-line no-console
         // eslint-disable-line no-console
         `Server OpenSSL cmd failed with error code ${execFileError.code}`
       );
