@@ -74,9 +74,10 @@ export default function Terminal({data, error, isLoading}: props) {
         if (data.stdout) {
           display.push(formatOutput(data.stdout));
         }
-        if (data.stderr) {
-          display.push(formatOutput(data.stderr));
-        }
+        // TODO: Temporarily remove STDERR from the terminal for the purposes of demoing
+        // if (data.stderr) {
+        //   display.push(formatOutput(data.stderr));
+        // }
         setTerminalDisplay(display);
       }
     }
