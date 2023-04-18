@@ -122,5 +122,5 @@ ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking
 ### Client
 
 ```bash
-ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"openssl s_client -connect 127.0.0.1:31050 -key certs/client.key.pem -cert certs/client.cert.pem -CAfile certs/malicious-client-cacert.pem -state; exit $?"'
+printf 'Hello World from my OpenSSL Client!\nQ\n' | ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"openssl s_client -connect 127.0.0.1:31050 -key certs/client.key.pem -cert certs/client.cert.pem -CAfile certs/malicious-client-cacert.pem -state; exit $?"'
 ```

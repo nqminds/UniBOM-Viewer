@@ -149,9 +149,9 @@ export class LocalHostTestCase extends OpenSSLTestCase {
           "Using default temp DH parameters\n" +
           "ACCEPT\n" +
           "-----BEGIN SSL SESSION PARAMETERS-----\n" +
-          "MIIEnwIBAQICAwQEAhMCBCAEqhx3zBv46zfSy3MDOH4MwoyBBapx978fBeIzFnUJ\n" +
-          "WAQwjiksZKfFdRU9M9MdrqYYRXOfSZrBKdlsOfD6h/zhDcIjWYnBjG9J9SHxRPbD\n" +
-          "TTJGoQYCBGQ+TBOiBAICHCCjggQTMIIEDzCCAvegAwIBAgIBATANBgkqhkiG9w0B\n" +
+          "MIIEngIBAQICAwQEAhMCBCC1tUsNyzvRfPQeOblo6nyUG3tDx7QyWbfO4vI3hnWM\n" +
+          "3gQwMywHiYaOhFHOo924SQTf2+r8azFYtGU/K9Tcc7zTECEBOgULlxJHqM7HEysm\n" +
+          "hGHUoQYCBGRGYOqiBAICHCCjggQTMIIEDzCCAvegAwIBAgIBATANBgkqhkiG9w0B\n" +
           "AQsFADBsMQswCQYDVQQGEwJGUjEMMAoGA1UECAwDSWRGMQ4wDAYDVQQHDAVQYXJp\n" +
           "czEQMA4GA1UECgwHRGF0YURvZzEZMBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDES\n" +
           "MBAGA1UEAwwJS3JhZnRDZXJ0MB4XDTIyMTEwNDE1NDEwMloXDTI3MDUxMjE1NDEw\n" +
@@ -173,7 +173,7 @@ export class LocalHostTestCase extends OpenSSLTestCase {
           "rFTs/5svIXUla9VOQsLhpXotEUC5gYciScbDXmVTG4KZ7EO55iByzqnYUGrdyf+z\n" +
           "ZxBkZaD3Wgr+EuXZeHmVH4CVKdyN3EcsKRSaX3Vg0OBINere0oblg5xbtPRaeX4j\n" +
           "/+EGKgy1cVTcbu986Lf5/wnArbQwf+lkYl8rWowej54B/7Owgb+bxQcv7Z2pYlJw\n" +
-          "zhZpTfQIqASkBgQEAQAAAKUDAgEBrgcCBQDgRTfYswMCAR0=\n" +
+          "zhZpTfQIqASkBgQEAQAAAKUDAgEBrgYCBHFE9MCzAwIBHQ==\n" +
           "-----END SSL SESSION PARAMETERS-----\n" +
           "Client certificate\n" +
           "-----BEGIN CERTIFICATE-----\n" +
@@ -211,7 +211,23 @@ export class LocalHostTestCase extends OpenSSLTestCase {
           "Shared groups: x25519:secp256r1:x448:secp521r1:secp384r1:ffdhe2048:ffdhe3072:ffdhe4096:ffdhe6144:ffdhe8192\n" +
           "CIPHER is TLS_AES_256_GCM_SHA384\n" +
           "Secure Renegotiation IS supported\n" +
-          "Hello World from my OpenSSL Client!DONE\n",
+          "Hello World from my OpenSSL Client!\n" +
+          "Q\n" +
+          "DONE\n" +
+          "shutting down SSL\n" +
+          "CONNECTION CLOSED\n" +
+          "   0 items in the session cache\n" +
+          "   0 client connects (SSL_connect())\n" +
+          "   0 client renegotiates (SSL_connect())\n" +
+          "   0 client connects that finished\n" +
+          "   1 server accepts (SSL_accept())\n" +
+          "   0 server renegotiates (SSL_accept())\n" +
+          "   1 server accepts that finished\n" +
+          "   0 session cache hits\n" +
+          "   0 session cache misses\n" +
+          "   0 session cache timeouts\n" +
+          "   0 callback cache hits\n" +
+          "   0 cache full overflows (128 allowed)\n",
         stderr:
           "verify depth is 1\n" +
           "SSL_accept:before SSL initialization\n" +
@@ -270,7 +286,9 @@ export class MorelloHybridOpenSSLTestCase extends MorelloOpenSSLTestCase {
     return {
       client: {
         stdout:
-          "Hello World from my OpenSSL Client!CONNECTED(00000003)\r\n" +
+          "Hello World from my OpenSSL Client!\r\n" +
+          "Q\r\n" +
+          "CONNECTED(00000003)\r\n" +
           "SSL_connect:before SSL initialization\r\n" +
           "SSL_connect:SSLv3/TLS write client hello\r\n" +
           "SSL_connect:SSLv3/TLS write client hello\r\n" +
@@ -410,7 +428,9 @@ export class MorelloPurecapOpenSSLTestCase extends MorelloOpenSSLTestCase {
     return {
       client: {
         stdout:
-          "Hello World from my OpenSSL Client!CONNECTED(00000003)\r\n" +
+          "Hello World from my OpenSSL Client!\r\n" +
+          "Q\r\n" +
+          "CONNECTED(00000003)\r\n" +
           "SSL_connect:before SSL initialization\r\n" +
           "SSL_connect:SSLv3/TLS write client hello\r\n" +
           "SSL_connect:SSLv3/TLS write client hello\r\n" +

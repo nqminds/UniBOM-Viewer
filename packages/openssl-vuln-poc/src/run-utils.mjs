@@ -136,9 +136,9 @@ export async function runTest({
     });
 
     clientProcess.child.on("spawn", () => {
-      Readable.from("Hello World from my OpenSSL Client!").pipe(
-        clientProcess.child.stdin
-      );
+      Readable.from(
+        "Hello World from my OpenSSL Client!" + "\nQ\n" // quit command, see https://www.openssl.org/docs/man1.1.1/man1/openssl-s_client.html
+      ).pipe(clientProcess.child.stdin);
     });
 
     serverProcess
