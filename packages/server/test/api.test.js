@@ -51,7 +51,7 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
       }),
     };
 
-    jest.unstable_mockModule("@nqminds/openssl-vuln-poc", () => {
+    const opensslVulnPocMockImplementation = () => {
       return {
         MorelloPurecapOpenSSLTestCase: jest.fn().mockImplementation(() => {
           return mockedOpenSSLTestCase;
@@ -63,7 +63,17 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
           return mockedOpenSSLTestCase;
         }),
       };
-    });
+    };
+
+    jest.unstable_mockModule(
+      "@nqminds/openssl-vuln-poc",
+      opensslVulnPocMockImplementation
+    );
+    // we're mocking the mocks, so that all the constructors return the same value
+    jest.unstable_mockModule(
+      "@nqminds/openssl-vuln-poc/src/__mocks__/index.mjs",
+      opensslVulnPocMockImplementation
+    );
   });
 
   afterEach(() => {
