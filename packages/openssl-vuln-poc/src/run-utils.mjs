@@ -210,7 +210,7 @@ export async function runTest({
       server: {
         ...serverOutput,
         stdin: serverStdIn.join(", "),
-        exitCode: serverProcess.child.exitCode || 0x82 /* Killed by SIGINT */,
+        exitCode: serverProcess.child.exitCode ?? 0x82 /* Killed by SIGINT */,
       },
     });
   } catch (error) {

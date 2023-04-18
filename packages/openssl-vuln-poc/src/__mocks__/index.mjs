@@ -259,7 +259,7 @@ export class LocalHostTestCase extends OpenSSLTestCase {
           "SSL_accept:SSLv3/TLS write session ticket\n" +
           "SSL3 alert read:warning:close notify\n" +
           "SSL3 alert write:warning:close notify\n",
-        exitCode: 130,
+        exitCode: 0,
       },
     };
   }
