@@ -116,7 +116,7 @@ scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r ./certs scp:/
 (For `purecap`, use `/usr/local/bin/openssl`)
 
 ```bash
-ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"/usr/local64/bin/openssl s_server -accept 31050 -CAfile certs/cacert.pem -cert certs/server.cert.pem -key certs/server.key.pem -state -verify 1; exit $?"'
+ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"/usr/local64/bin/openssl s_server -accept 31050 -CAfile certs/cacert.pem -cert certs/server.cert.pem -naccept 1 -key certs/server.key.pem -state -verify 1; exit $?"'
 ```
 
 ### Client

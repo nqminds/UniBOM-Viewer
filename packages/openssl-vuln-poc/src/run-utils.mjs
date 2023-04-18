@@ -93,6 +93,8 @@ export async function runTest({
       "certs/cacert.pem",
       "-cert",
       "certs/server.cert.pem",
+      "-naccept",
+      "1", // close after accepting 1 connection
       "-key",
       "certs/server.key.pem",
       "-state",

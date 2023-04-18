@@ -144,7 +144,7 @@ export class LocalHostTestCase extends OpenSSLTestCase {
         stdin: `openssl, s_client, -connect, 127.0.0.1:${port}, -key, certs/client.key.pem, -cert, certs/client.cert.pem, -CAfile, certs/malicious-client-cacert.pem, -state`,
       },
       server: {
-        stdin: `openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -key, certs/server.key.pem, -state, -verify, 1`,
+        stdin: `openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -naccept, 1, -key, certs/server.key.pem, -state, -verify, 1`,
         stdout:
           "Using default temp DH parameters\n" +
           "ACCEPT\n" +
@@ -359,7 +359,7 @@ export class MorelloHybridOpenSSLTestCase extends MorelloOpenSSLTestCase {
         stdin: `openssl, s_client, -connect, 127.0.0.1:${port}, -key, certs/client.key.pem, -cert, certs/client.cert.pem, -CAfile, certs/malicious-client-cacert.pem, -state`,
       },
       server: {
-        stdin: `/usr/local64/bin/openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -key, certs/server.key.pem, -state, -verify, 1`,
+        stdin: `/usr/local64/bin/openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -naccept, 1, -key, certs/server.key.pem, -state, -verify, 1`,
         stdout:
           "verify depth is 1\r\n" +
           "Using default temp DH parameters\r\n" +
@@ -499,7 +499,7 @@ export class MorelloPurecapOpenSSLTestCase extends MorelloOpenSSLTestCase {
         stdin: `openssl, s_client, -connect, 127.0.0.1:${port}, -key, certs/client.key.pem, -cert, certs/client.cert.pem, -CAfile, certs/malicious-client-cacert.pem, -state`,
       },
       server: {
-        stdin: `/usr/local64/bin/openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -key, certs/server.key.pem, -state, -verify, 1`,
+        stdin: `/usr/local64/bin/openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -naccept, 1, -key, certs/server.key.pem, -state, -verify, 1`,
         stdout:
           "verify depth is 1\r\n" +
           "Using default temp DH parameters\r\n" +
