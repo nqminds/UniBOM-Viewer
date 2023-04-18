@@ -266,6 +266,219 @@ export class LocalHostTestCase extends OpenSSLTestCase {
 }
 
 /**
+ * Same as {@link LocalHostTestCase}, except with a normal certificate,
+ * so should exit without any errors.
+ */
+export class LocalHostTestCaseSafeCert extends LocalHostTestCase {
+  async run({ port } = {}) {
+    return {
+      client: {
+        stdout:
+          "CONNECTED(00000003)\n" +
+          "---\n" +
+          "Certificate chain\n" +
+          " 0 s:C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server\n" +
+          "   i:C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\n" +
+          "   a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA256\n" +
+          "   v:NotBefore: Nov 11 16:45:40 2022 GMT; NotAfter: May 19 16:45:40 2027 GMT\n" +
+          " 1 s:C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\n" +
+          "   i:C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\n" +
+          "   a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA256\n" +
+          "   v:NotBefore: Nov 11 16:45:27 2022 GMT; NotAfter: Nov  8 16:45:27 2032 GMT\n" +
+          "---\n" +
+          "Server certificate\n" +
+          "-----BEGIN CERTIFICATE-----\n" +
+          "MIIESjCCAzKgAwIBAgIBATANBgkqhkiG9w0BAQsFADBmMQswCQYDVQQGEwJVUzEL\n" +
+          "MAkGA1UECAwCTlkxDDAKBgNVBAcMA05ZQzEQMA4GA1UECgwHRGF0YURvZzEZMBcG\n" +
+          "A1UECwwQU2VjdXJpdHlSZXNlYXJjaDEPMA0GA1UEAwwGUm9vdENBMB4XDTIyMTEx\n" +
+          "MTE2NDU0MFoXDTI3MDUxOTE2NDU0MFowWDELMAkGA1UEBhMCVVMxCzAJBgNVBAgM\n" +
+          "Ak5ZMRAwDgYDVQQKDAdEYXRhRG9nMRkwFwYDVQQLDBBTZWN1cml0eVJlc2VhcmNo\n" +
+          "MQ8wDQYDVQQDDAZzZXJ2ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB\n" +
+          "AQCKQYWsjzdTriGdFJPotaVvDCvKj4M7x0EoK6a+kUw8m7ZUx9dY8PTLMEJQCoRD\n" +
+          "A3AHG392VxlOpjsBDP1pbBlWlpVd3gtOWCwzD8Ynr7LvnWopnjCtKxzwOqHB30FB\n" +
+          "1+QjJgfK6q1Op810W/z8TWyYgxJdYbw9jiPz33qigTRinW4m4LqQW1jlnIzx/shG\n" +
+          "zVJoAgQbVWr2QvBjkpYHnknIWog67VjAdZIa5YI6uyqqui/hGhCMoo1Rllp/asZ+\n" +
+          "Ty/eSFoGo+DnCeAOkgAzQa6Uq1xsE7QzMeU1hicskqgdMajEvWrqIhJ18N5EvB48\n" +
+          "KD9e27ThKKqfHW5CyaaB85KJAgMBAAGjggEPMIIBCzAMBgNVHRMBAf8EAjAAMB0G\n" +
+          "A1UdDgQWBBTyKzovS+qCMzBd4yU5E8j0/nzCuTCBowYDVR0jBIGbMIGYgBTs1/q5\n" +
+          "Gj+N3mk/mHeLyrTkwlu9eKFqpGgwZjELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAk5Z\n" +
+          "MQwwCgYDVQQHDANOWUMxEDAOBgNVBAoMB0RhdGFEb2cxGTAXBgNVBAsMEFNlY3Vy\n" +
+          "aXR5UmVzZWFyY2gxDzANBgNVBAMMBlJvb3RDQYIUW/Ka5OiVXoUJpWWBqC/bnts/\n" +
+          "Th0wEQYJYIZIAYb4QgEBBAQDAgZAMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUEDDAK\n" +
+          "BggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEAi3RVc7s2JIWX9rwXI+fW0C80\n" +
+          "Z7kfT7Dn6S1WZdYAELnmlfSiZ8BIfXqE3ZN60lYdUfq0o5YbSyXmv5wRXb5ZLFOG\n" +
+          "yZ9nFc+RfU0RZhaQx9rW01DAcJPezufZ8d4zr0s62e4V9k2FKGPaKGygSBnSK385\n" +
+          "M6c0ejTXyISDUYBEoMNvBnE/kNSal30f9quzqRjtD/9xpkDBW3q0osQ1/vsAyxiq\n" +
+          "csVPmyCcZzdgihK/eHEHPQnr9hZqapzQCCZScGSUWaV22EP4nuqSf6LqlrFTtFWL\n" +
+          "P43R0H7LuJK34ts/o8HwPPCRLiZ95r/zTH2+n/nvkgBnAWn8uwnykEr4oKu3hA==\n" +
+          "-----END CERTIFICATE-----\n" +
+          "subject=C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server\n" +
+          "issuer=C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\n" +
+          "---\n" +
+          "Acceptable client certificate CA names\n" +
+          "C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\n" +
+          "Requested Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224\n" +
+          "Shared Requested Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512\n" +
+          "Peer signing digest: SHA256\n" +
+          "Peer signature type: RSA-PSS\n" +
+          "Server Temp Key: X25519, 253 bits\n" +
+          "---\n" +
+          "SSL handshake has read 2787 bytes and written 1737 bytes\n" +
+          "Verification: OK\n" +
+          "---\n" +
+          "New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384\n" +
+          "Server public key is 2048 bit\n" +
+          "Secure Renegotiation IS NOT supported\n" +
+          "Compression: NONE\n" +
+          "Expansion: NONE\n" +
+          "No ALPN negotiated\n" +
+          "Early data was not sent\n" +
+          "Verify return code: 0 (ok)\n" +
+          "---\n",
+        stderr:
+          "SSL_connect:before SSL initialization\n" +
+          "SSL_connect:SSLv3/TLS write client hello\n" +
+          "SSL_connect:SSLv3/TLS write client hello\n" +
+          "SSL_connect:SSLv3/TLS read server hello\n" +
+          "Can't use SSL_get_servername\n" +
+          "SSL_connect:TLSv1.3 read encrypted extensions\n" +
+          "SSL_connect:SSLv3/TLS read server certificate request\n" +
+          "depth=1 C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\n" +
+          "verify return:1\n" +
+          "depth=0 C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server\n" +
+          "verify return:1\n" +
+          "SSL_connect:SSLv3/TLS read server certificate\n" +
+          "SSL_connect:TLSv1.3 read server certificate verify\n" +
+          "SSL_connect:SSLv3/TLS read finished\n" +
+          "SSL_connect:SSLv3/TLS write change cipher spec\n" +
+          "SSL_connect:SSLv3/TLS write client certificate\n" +
+          "SSL_connect:SSLv3/TLS write certificate verify\n" +
+          "SSL_connect:SSLv3/TLS write finished\n" +
+          "DONE\n" +
+          "SSL3 alert write:warning:close notify\n",
+        stdin: `openssl, s_client, -connect, 127.0.0.1:${port}, -key, certs/client.key.pem, -cert, certs/client.cert.pem, -CAfile, certs/cacert.pem, -state`,
+      },
+      server: {
+        stdout:
+          "Using default temp DH parameters\n" +
+          "ACCEPT\n" +
+          "-----BEGIN SSL SESSION PARAMETERS-----\n" +
+          "MIIEngIBAQICAwQEAhMCBCBkm2MYv5XRkNo3PJNZ46iN3fiVAnBwk+DWVn+RWwKr\n" +
+          "+AQw24D8gz9x3Q9wijyDWBD9Dbll8mud0VKESsRaGGioLuXx36Nn28YdD5bb3R2e\n" +
+          "MbTuoQYCBGRGZx+iBAICHCCjggQTMIIEDzCCAvegAwIBAgIBATANBgkqhkiG9w0B\n" +
+          "AQsFADBsMQswCQYDVQQGEwJGUjEMMAoGA1UECAwDSWRGMQ4wDAYDVQQHDAVQYXJp\n" +
+          "czEQMA4GA1UECgwHRGF0YURvZzEZMBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDES\n" +
+          "MBAGA1UEAwwJS3JhZnRDZXJ0MB4XDTIyMTEwNDE1NDEwMloXDTI3MDUxMjE1NDEw\n" +
+          "MlowZjELMAkGA1UEBhMCRlIxDDAKBgNVBAgMA0lkRjEQMA4GA1UECgwHRGF0YURv\n" +
+          "ZzEZMBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDEcMBoGA1UEAwwTTWFsaWNpb3Vz\n" +
+          "Q2xpZW50Q2VydDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPQF8hvb\n" +
+          "Dz6ahB2bngA3b+hf9RqsSy79vcQmZx791iCYY+8Svdes6G8NFZMv/8h875bLB9m+\n" +
+          "xhbVxBGwr9ReQj16jNAlfmpXgaKrRG01P2pmjR//LvBvzkU5ki/Buc5RtjkEp1Ly\n" +
+          "8bcR97LMovHRdNnLD7uAddnT/DPeRmzn4GAIFfzUhvW7zt8jZvtO2jwKFlM4UBrM\n" +
+          "8t616GwBjqWJoaYGQ9165EfCqhfdUUyQWEYRWLYsSM1Q4ciqdHp8PcFAxDG7ILni\n" +
+          "WUlMYOsppm49ffZFiUSE6fiu3maK+Y63mRsODkHK8tJBz7oIIULfBKRgR3kwsPdN\n" +
+          "CYX2X4od78nglHkCAwEAAaOBwTCBvjAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBQr\n" +
+          "x2XGHx2wX6ZJqkufShvxmm2XWjAfBgNVHSMEGDAWgBQHtbgFs6+sQi8K+hT/9V7K\n" +
+          "gPQydDARBglghkgBhvhCAQEEBAMCBaAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQW\n" +
+          "MBQGCCsGAQUFBwMCBggrBgEFBQcDBDAsBgNVHREEJTAjoCEGCCsGAQUFBwgJoBUM\n" +
+          "E+a1i+ivlUBvdmVyZmxvdy5jb20wDQYJKoZIhvcNAQELBQADggEBAAhXaVy0G+qb\n" +
+          "CL2y5n/D9wwsUJwmgJMjo76rxN1eHruHQW3golukwhvYcejVQ0OwaoA4jTcacH7h\n" +
+          "8xBsD2CsGjBaex/BnRAPYr4vgvTxyEuI5AiI3ecNSr77CtvNwT0Xd3JpmoPGKykR\n" +
+          "rFTs/5svIXUla9VOQsLhpXotEUC5gYciScbDXmVTG4KZ7EO55iByzqnYUGrdyf+z\n" +
+          "ZxBkZaD3Wgr+EuXZeHmVH4CVKdyN3EcsKRSaX3Vg0OBINere0oblg5xbtPRaeX4j\n" +
+          "/+EGKgy1cVTcbu986Lf5/wnArbQwf+lkYl8rWowej54B/7Owgb+bxQcv7Z2pYlJw\n" +
+          "zhZpTfQIqASkBgQEAQAAAKUDAgEVrgYCBCrtaGizAwIBHQ==\n" +
+          "-----END SSL SESSION PARAMETERS-----\n" +
+          "Client certificate\n" +
+          "-----BEGIN CERTIFICATE-----\n" +
+          "MIIEDzCCAvegAwIBAgIBATANBgkqhkiG9w0BAQsFADBsMQswCQYDVQQGEwJGUjEM\n" +
+          "MAoGA1UECAwDSWRGMQ4wDAYDVQQHDAVQYXJpczEQMA4GA1UECgwHRGF0YURvZzEZ\n" +
+          "MBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDESMBAGA1UEAwwJS3JhZnRDZXJ0MB4X\n" +
+          "DTIyMTEwNDE1NDEwMloXDTI3MDUxMjE1NDEwMlowZjELMAkGA1UEBhMCRlIxDDAK\n" +
+          "BgNVBAgMA0lkRjEQMA4GA1UECgwHRGF0YURvZzEZMBcGA1UECwwQU2VjdXJpdHlS\n" +
+          "ZXNlYXJjaDEcMBoGA1UEAwwTTWFsaWNpb3VzQ2xpZW50Q2VydDCCASIwDQYJKoZI\n" +
+          "hvcNAQEBBQADggEPADCCAQoCggEBAPQF8hvbDz6ahB2bngA3b+hf9RqsSy79vcQm\n" +
+          "Zx791iCYY+8Svdes6G8NFZMv/8h875bLB9m+xhbVxBGwr9ReQj16jNAlfmpXgaKr\n" +
+          "RG01P2pmjR//LvBvzkU5ki/Buc5RtjkEp1Ly8bcR97LMovHRdNnLD7uAddnT/DPe\n" +
+          "Rmzn4GAIFfzUhvW7zt8jZvtO2jwKFlM4UBrM8t616GwBjqWJoaYGQ9165EfCqhfd\n" +
+          "UUyQWEYRWLYsSM1Q4ciqdHp8PcFAxDG7ILniWUlMYOsppm49ffZFiUSE6fiu3maK\n" +
+          "+Y63mRsODkHK8tJBz7oIIULfBKRgR3kwsPdNCYX2X4od78nglHkCAwEAAaOBwTCB\n" +
+          "vjAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBQrx2XGHx2wX6ZJqkufShvxmm2XWjAf\n" +
+          "BgNVHSMEGDAWgBQHtbgFs6+sQi8K+hT/9V7KgPQydDARBglghkgBhvhCAQEEBAMC\n" +
+          "BaAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcD\n" +
+          "BDAsBgNVHREEJTAjoCEGCCsGAQUFBwgJoBUME+a1i+ivlUBvdmVyZmxvdy5jb20w\n" +
+          "DQYJKoZIhvcNAQELBQADggEBAAhXaVy0G+qbCL2y5n/D9wwsUJwmgJMjo76rxN1e\n" +
+          "HruHQW3golukwhvYcejVQ0OwaoA4jTcacH7h8xBsD2CsGjBaex/BnRAPYr4vgvTx\n" +
+          "yEuI5AiI3ecNSr77CtvNwT0Xd3JpmoPGKykRrFTs/5svIXUla9VOQsLhpXotEUC5\n" +
+          "gYciScbDXmVTG4KZ7EO55iByzqnYUGrdyf+zZxBkZaD3Wgr+EuXZeHmVH4CVKdyN\n" +
+          "3EcsKRSaX3Vg0OBINere0oblg5xbtPRaeX4j/+EGKgy1cVTcbu986Lf5/wnArbQw\n" +
+          "f+lkYl8rWowej54B/7Owgb+bxQcv7Z2pYlJwzhZpTfQIqAQ=\n" +
+          "-----END CERTIFICATE-----\n" +
+          "subject=C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\n" +
+          "issuer=C = FR, ST = IdF, L = Paris, O = DataDog, OU = SecurityResearch, CN = KraftCert\n" +
+          "Shared ciphers:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA\n" +
+          "Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224:DSA+SHA224:DSA+SHA256:DSA+SHA384:DSA+SHA512\n" +
+          "Shared Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224\n" +
+          "Peer signing digest: SHA256\n" +
+          "Peer signature type: RSA-PSS\n" +
+          "Supported groups: x25519:secp256r1:x448:secp521r1:secp384r1:ffdhe2048:ffdhe3072:ffdhe4096:ffdhe6144:ffdhe8192\n" +
+          "Shared groups: x25519:secp256r1:x448:secp521r1:secp384r1:ffdhe2048:ffdhe3072:ffdhe4096:ffdhe6144:ffdhe8192\n" +
+          "CIPHER is TLS_AES_256_GCM_SHA384\n" +
+          "Secure Renegotiation IS supported\n" +
+          "Hello World from my OpenSSL Client!\n" +
+          "Q\n" +
+          "DONE\n" +
+          "shutting down SSL\n" +
+          "CONNECTION CLOSED\n" +
+          "   0 items in the session cache\n" +
+          "   0 client connects (SSL_connect())\n" +
+          "   0 client renegotiates (SSL_connect())\n" +
+          "   0 client connects that finished\n" +
+          "   1 server accepts (SSL_accept())\n" +
+          "   0 server renegotiates (SSL_accept())\n" +
+          "   1 server accepts that finished\n" +
+          "   0 session cache hits\n" +
+          "   0 session cache misses\n" +
+          "   0 session cache timeouts\n" +
+          "   0 callback cache hits\n" +
+          "   0 cache full overflows (128 allowed)\n",
+        stderr:
+          "verify depth is 1\n" +
+          "SSL_accept:before SSL initialization\n" +
+          "SSL_accept:before SSL initialization\n" +
+          "SSL_accept:SSLv3/TLS read client hello\n" +
+          "SSL_accept:SSLv3/TLS write server hello\n" +
+          "SSL_accept:SSLv3/TLS write change cipher spec\n" +
+          "SSL_accept:TLSv1.3 write encrypted extensions\n" +
+          "SSL_accept:SSLv3/TLS write certificate request\n" +
+          "SSL_accept:SSLv3/TLS write certificate\n" +
+          "SSL_accept:TLSv1.3 write server certificate verify\n" +
+          "SSL_accept:SSLv3/TLS write finished\n" +
+          "SSL_accept:TLSv1.3 early data\n" +
+          "SSL_accept:TLSv1.3 early data\n" +
+          "depth=0 C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\n" +
+          "verify error:num=20:unable to get local issuer certificate\n" +
+          "verify return:1\n" +
+          "depth=0 C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\n" +
+          "verify error:num=21:unable to verify the first certificate\n" +
+          "verify return:1\n" +
+          "depth=0 C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\n" +
+          "verify return:1\n" +
+          "SSL_accept:SSLv3/TLS read client certificate\n" +
+          "SSL_accept:SSLv3/TLS read certificate verify\n" +
+          "SSL_accept:SSLv3/TLS read finished\n" +
+          "SSL_accept:SSLv3/TLS write session ticket\n" +
+          "SSL_accept:SSLv3/TLS write session ticket\n" +
+          "SSL3 alert read:warning:close notify\n" +
+          "SSL3 alert write:warning:close notify\n",
+        stdin: `openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -naccept, 1, -key, certs/server.key.pem, -state, -verify, 1`,
+        exitCode: 0,
+      },
+    };
+  }
+}
+
+/**
  *
  */
 export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
@@ -413,6 +626,435 @@ export class MorelloHybridOpenSSLTestCase extends MorelloOpenSSLTestCase {
 }
 
 /**
+ * Same as {@link MorelloHybridOpenSSLTestCase}, except with a normal
+ * certificate, so should exit without any errors.
+ */
+export class MorelloHybridOpenSSLTestCaseSafeCert extends MorelloHybridOpenSSLTestCase {
+  /**
+   * @inheritdoc
+   * @returns {Promise<RunLogs>} logs
+   */
+  async run({ port } = {}) {
+    await promisify(setTimeout)(6000);
+    return {
+      client: {
+        stdout:
+          "Hello World from my OpenSSL Client!\r\n" +
+          "Q\r\n" +
+          "CONNECTED(00000003)\r\n" +
+          "SSL_connect:before SSL initialization\r\n" +
+          "SSL_connect:SSLv3/TLS write client hello\r\n" +
+          "SSL_connect:SSLv3/TLS write client hello\r\n" +
+          "SSL_connect:SSLv3/TLS read server hello\r\n" +
+          "Can't use SSL_get_servername\r\n" +
+          "SSL_connect:TLSv1.3 read encrypted extensions\r\n" +
+          "SSL_connect:SSLv3/TLS read server certificate request\r\n" +
+          "depth=1 C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "verify return:1\r\n" +
+          "depth=0 C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server\r\n" +
+          "verify return:1\r\n" +
+          "SSL_connect:SSLv3/TLS read server certificate\r\n" +
+          "SSL_connect:TLSv1.3 read server certificate verify\r\n" +
+          "SSL_connect:SSLv3/TLS read finished\r\n" +
+          "SSL_connect:SSLv3/TLS write change cipher spec\r\n" +
+          "SSL_connect:SSLv3/TLS write client certificate\r\n" +
+          "SSL_connect:SSLv3/TLS write certificate verify\r\n" +
+          "SSL_connect:SSLv3/TLS write finished\r\n" +
+          "---\r\n" +
+          "Certificate chain\r\n" +
+          " 0 s:C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server\r\n" +
+          "   i:C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          " 1 s:C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "   i:C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "---\r\n" +
+          "Server certificate\r\n" +
+          "-----BEGIN CERTIFICATE-----\r\n" +
+          "MIIESjCCAzKgAwIBAgIBATANBgkqhkiG9w0BAQsFADBmMQswCQYDVQQGEwJVUzEL\r\n" +
+          "MAkGA1UECAwCTlkxDDAKBgNVBAcMA05ZQzEQMA4GA1UECgwHRGF0YURvZzEZMBcG\r\n" +
+          "A1UECwwQU2VjdXJpdHlSZXNlYXJjaDEPMA0GA1UEAwwGUm9vdENBMB4XDTIyMTEx\r\n" +
+          "MTE2NDU0MFoXDTI3MDUxOTE2NDU0MFowWDELMAkGA1UEBhMCVVMxCzAJBgNVBAgM\r\n" +
+          "Ak5ZMRAwDgYDVQQKDAdEYXRhRG9nMRkwFwYDVQQLDBBTZWN1cml0eVJlc2VhcmNo\r\n" +
+          "MQ8wDQYDVQQDDAZzZXJ2ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB\r\n" +
+          "AQCKQYWsjzdTriGdFJPotaVvDCvKj4M7x0EoK6a+kUw8m7ZUx9dY8PTLMEJQCoRD\r\n" +
+          "A3AHG392VxlOpjsBDP1pbBlWlpVd3gtOWCwzD8Ynr7LvnWopnjCtKxzwOqHB30FB\r\n" +
+          "1+QjJgfK6q1Op810W/z8TWyYgxJdYbw9jiPz33qigTRinW4m4LqQW1jlnIzx/shG\r\n" +
+          "zVJoAgQbVWr2QvBjkpYHnknIWog67VjAdZIa5YI6uyqqui/hGhCMoo1Rllp/asZ+\r\n" +
+          "Ty/eSFoGo+DnCeAOkgAzQa6Uq1xsE7QzMeU1hicskqgdMajEvWrqIhJ18N5EvB48\r\n" +
+          "KD9e27ThKKqfHW5CyaaB85KJAgMBAAGjggEPMIIBCzAMBgNVHRMBAf8EAjAAMB0G\r\n" +
+          "A1UdDgQWBBTyKzovS+qCMzBd4yU5E8j0/nzCuTCBowYDVR0jBIGbMIGYgBTs1/q5\r\n" +
+          "Gj+N3mk/mHeLyrTkwlu9eKFqpGgwZjELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAk5Z\r\n" +
+          "MQwwCgYDVQQHDANOWUMxEDAOBgNVBAoMB0RhdGFEb2cxGTAXBgNVBAsMEFNlY3Vy\r\n" +
+          "aXR5UmVzZWFyY2gxDzANBgNVBAMMBlJvb3RDQYIUW/Ka5OiVXoUJpWWBqC/bnts/\r\n" +
+          "Th0wEQYJYIZIAYb4QgEBBAQDAgZAMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUEDDAK\r\n" +
+          "BggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEAi3RVc7s2JIWX9rwXI+fW0C80\r\n" +
+          "Z7kfT7Dn6S1WZdYAELnmlfSiZ8BIfXqE3ZN60lYdUfq0o5YbSyXmv5wRXb5ZLFOG\r\n" +
+          "yZ9nFc+RfU0RZhaQx9rW01DAcJPezufZ8d4zr0s62e4V9k2FKGPaKGygSBnSK385\r\n" +
+          "M6c0ejTXyISDUYBEoMNvBnE/kNSal30f9quzqRjtD/9xpkDBW3q0osQ1/vsAyxiq\r\n" +
+          "csVPmyCcZzdgihK/eHEHPQnr9hZqapzQCCZScGSUWaV22EP4nuqSf6LqlrFTtFWL\r\n" +
+          "P43R0H7LuJK34ts/o8HwPPCRLiZ95r/zTH2+n/nvkgBnAWn8uwnykEr4oKu3hA==\r\n" +
+          "-----END CERTIFICATE-----\r\n" +
+          "subject=C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server\r\n" +
+          "\r\n" +
+          "issuer=C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "\r\n" +
+          "---\r\n" +
+          "Acceptable client certificate CA names\r\n" +
+          "C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "Requested Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224\r\n" +
+          "Shared Requested Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512\r\n" +
+          "Peer signing digest: SHA256\r\n" +
+          "Peer signature type: RSA-PSS\r\n" +
+          "Server Temp Key: X25519, 253 bits\r\n" +
+          "---\r\n" +
+          "SSL handshake has read 2787 bytes and written 1737 bytes\r\n" +
+          "Verification: OK\r\n" +
+          "---\r\n" +
+          "New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384\r\n" +
+          "Server public key is 2048 bit\r\n" +
+          "Secure Renegotiation IS NOT supported\r\n" +
+          "Compression: NONE\r\n" +
+          "Expansion: NONE\r\n" +
+          "No ALPN negotiated\r\n" +
+          "Early data was not sent\r\n" +
+          "Verify return code: 0 (ok)\r\n" +
+          "---\r\n" +
+          "SSL_connect:SSL negotiation finished successfully\r\n" +
+          "SSL_connect:SSL negotiation finished successfully\r\n" +
+          "---\r\n" +
+          "Post-Handshake New Session Ticket arrived:\r\n" +
+          "SSL-Session:\r\n" +
+          "    Protocol  : TLSv1.3\r\n" +
+          "    Cipher    : TLS_AES_256_GCM_SHA384\r\n" +
+          "    Session-ID: 5B953A8D40B9ACCB5EB67B04F360372C3DE709A2B8603F46BE4AA1A40F2442A1\r\n" +
+          "    Session-ID-ctx: \r\n" +
+          "    Resumption PSK: 57B5B8B45A72D874E5613DEA254E4906DB84273A2927F86337CA07CF0910F012BD9CC7C38B548ED1DC368ED08C6111CF\r\n" +
+          "    PSK identity: None\r\n" +
+          "    PSK identity hint: None\r\n" +
+          "    SRP username: None\r\n" +
+          "    TLS session ticket lifetime hint: 7200 (seconds)\r\n" +
+          "    TLS session ticket:\r\n" +
+          "    0000 - 01 d1 82 66 56 fd c0 e5-41 a5 d6 07 8c b1 06 3e   ...fV...A......>\r\n" +
+          "    0010 - c5 b6 17 a0 66 cf 23 41-bc 50 68 99 4b 55 8b 64   ....f.#A.Ph.KU.d\r\n" +
+          "    0020 - 53 78 2d f4 a2 95 cb e6-ea 15 9f a7 37 ce ed 64   Sx-.........7..d\r\n" +
+          "    0030 - ca db 60 36 f0 fe 62 c1-f1 f4 92 92 fe 32 c1 c7   ..`6..b......2..\r\n" +
+          "    0040 - 9d ad ff d3 af 04 fb 5d-83 df c9 30 b9 1d 74 1e   .......]...0..t.\r\n" +
+          '    0050 - 3a 57 f8 b3 e5 22 20 45-80 2d 64 2a 15 ac cf 55   :W..." E.-d*...U\r\n' +
+          '    0060 - 83 21 d6 cc 2d 72 6f ee-aa db 89 da 22 d1 8b 9a   .!..-ro....."...\r\n' +
+          "    0070 - 9e a2 ab 87 03 da 2b d7-c5 23 b1 0f 93 a1 b9 f4   ......+..#......\r\n" +
+          "    0080 - 03 3d dc 9c 18 91 44 b5-c4 1c 64 d8 c5 24 f6 79   .=....D...d..$.y\r\n" +
+          "    0090 - c7 79 04 47 16 10 bb 02-d3 c0 18 6f 06 c4 a2 9d   .y.G.......o....\r\n" +
+          "    00a0 - 50 f3 73 ad dc 97 91 0f-2b 26 4b e7 78 b1 ee d5   P.s.....+&K.x...\r\n" +
+          "    00b0 - 2a 3d 02 ca e7 c4 a9 1c-a8 b8 e1 7e 58 c6 99 1a   *=.........~X...\r\n" +
+          "    00c0 - 4b 72 4e c2 27 b7 87 4a-b8 4b af b9 44 f1 95 8d   KrN.'..J.K..D...\r\n" +
+          "    00d0 - a3 75 a7 3a 59 25 d2 72-20 85 45 1d 5d 8c 1e d8   .u.:Y%.r .E.]...\r\n" +
+          "    00e0 - 7a 7a 5d 53 41 f7 de e8-43 48 44 92 94 e9 7f 3b   zz]SA...CHD....;\r\n" +
+          "    00f0 - 8b 26 cf a4 df 2a de 03-46 ad 40 73 2e 41 4f de   .&...*..F.@s.AO.\r\n" +
+          "    0100 - 7d 89 93 f8 f0 0b 03 6c-26 28 af ea ef 58 bb 1e   }......l&(...X..\r\n" +
+          "    0110 - 3e b5 5a 82 8e ff 9c 08-a8 0e 21 c9 0d f0 84 5e   >.Z.......!....^\r\n" +
+          "    0120 - 8f 79 57 c8 4c 1d 68 1c-55 b8 50 56 b2 56 72 17   .yW.L.h.U.PV.Vr.\r\n" +
+          "    0130 - 8d ce 4c d0 a4 83 c4 ad-85 35 cc 85 67 24 b5 8c   ..L......5..g$..\r\n" +
+          "    0140 - 5f 1e bb 42 92 7d d0 c8-9d 53 bd b5 9b 94 c3 ea   _..B.}...S......\r\n" +
+          "    0150 - 46 23 c7 6b 92 66 c1 31-6a 03 74 b2 ed 44 0a 68   F#.k.f.1j.t..D.h\r\n" +
+          "    0160 - 3b b3 77 74 20 b6 93 99-cc dd 8d 55 72 0a 01 47   ;.wt ......Ur..G\r\n" +
+          "    0170 - 7d 4c f6 f2 df 72 82 f1-8c c6 9f 3a 6a c1 f9 cf   }L...r.....:j...\r\n" +
+          "    0180 - a4 da d6 5d dd b1 8a db-98 13 fc 7e 2e f8 c9 bd   ...].......~....\r\n" +
+          "    0190 - 61 65 f4 00 80 71 a1 03-65 11 b8 cf 0a 31 f9 40   ae...q..e....1.@\r\n" +
+          "    01a0 - 88 c6 e9 32 5b f2 36 8d-2b 2e f3 60 62 3e 35 07   ...2[.6.+..`b>5.\r\n" +
+          "    01b0 - c5 59 ef 9f 8b 0e 98 ea-c8 b0 a9 e0 d5 74 c0 7c   .Y...........t.|\r\n" +
+          "    01c0 - 07 1e 58 34 f9 47 df f4-35 3b e2 60 81 92 bf 75   ..X4.G..5;.`...u\r\n" +
+          "    01d0 - bc 1a c4 e9 08 20 d7 43-fa 11 6f e9 36 86 3d 65   ..... .C..o.6.=e\r\n" +
+          "    01e0 - 59 49 2a 1b a4 67 cf 57-c0 14 8a 2e 3b 19 da f5   YI*..g.W....;...\r\n" +
+          "    01f0 - b4 f1 0d 54 c2 5f 20 28-5b b0 39 08 d9 27 68 e3   ...T._ ([.9..'h.\r\n" +
+          "    0200 - e3 dc 92 b9 62 77 78 70-4f a8 08 6f 46 fc 84 2c   ....bwxpO..oF..,\r\n" +
+          "    0210 - dc 64 d5 d8 dd d4 2e 00-b1 cb 69 86 75 6b d9 a8   .d........i.uk..\r\n" +
+          "    0220 - b2 48 cf f1 be 27 08 32-5f ce da 3f 50 47 e2 13   .H...'.2_..?PG..\r\n" +
+          "    0230 - db d3 b2 1f fe 03 4c 53-92 45 bf d2 0a 5c ee 62   ......LS.E...\\.b\r\n" +
+          "    0240 - e6 78 4f 2f 7b 28 b8 24-3d b2 e5 6b 60 38 74 4b   .xO/{(.$=..k`8tK\r\n" +
+          "    0250 - b5 d9 7e 90 cf f8 cd e3-a5 09 4a ad dc 3c 16 a1   ..~.......J..<..\r\n" +
+          "    0260 - e9 e6 02 c6 a8 03 0a c1-5f 92 ee f6 57 2c 3d f3   ........_...W,=.\r\n" +
+          '    0270 - e6 fd f1 7f 94 22 08 c3-c0 4f 86 b1 81 52 8d 26   ....."...O...R.&\r\n' +
+          "    0280 - 42 d4 70 2b 8c 24 dd 42-83 1c e9 06 a3 70 f5 9f   B.p+.$.B.....p..\r\n" +
+          "    0290 - 02 55 8d 65 09 c2 4f a1-98 cd c7 96 a7 2b 17 f4   .U.e..O......+..\r\n" +
+          "    02a0 - 6e 85 f6 e3 4b e6 0c d3-e7 63 08 8d ed bc 00 b8   n...K....c......\r\n" +
+          `    02b0 - e9 2a 7d cc a9 27 22 30-b8 be a2 18 26 5e 28 51   .*}..'"0....&^(Q\r\n` +
+          "    02c0 - 36 06 16 5c 42 4c 71 f7-e9 01 34 33 ad 7f 66 0b   6..\\BLq...43..f.\r\n" +
+          "    02d0 - 6a f6 0f 96 a4 aa 84 9c-d6 5f 4b 68 58 9d b9 7a   j........_KhX..z\r\n" +
+          "    02e0 - 75 e3 34 ac 99 4d 41 f8-46 ac bf fc fe ec 92 1e   u.4..MA.F.......\r\n" +
+          "    02f0 - d6 a4 46 ce af d3 87 81-3c ec ff a8 3e 42 40 89   ..F.....<...>B@.\r\n" +
+          "    0300 - 53 6f 61 20 0c 25 9f 96-d6 cb ec b2 8c 92 59 70   Soa .%........Yp\r\n" +
+          "    0310 - fa 78 e9 ef 60 34 9f ab-1e 39 21 e4 f7 5f b3 0e   .x..`4...9!.._..\r\n" +
+          "    0320 - 0c 27 e3 cb 1a 84 87 25-23 14 43 52 af 3d 10 3a   .'.....%#.CR.=.:\r\n" +
+          "    0330 - b3 7a 15 7e 7e b9 29 cf-a2 17 13 0c a3 4a ea 9d   .z.~~.)......J..\r\n" +
+          "    0340 - 33 85 9f 2f 06 d3 12 a8-56 94 01 0f 1d 11 7a af   3../....V.....z.\r\n" +
+          "    0350 - db f7 3b 3c e0 f1 77 92-91 f9 ad a8 c9 ed 2b e2   ..;<..w.......+.\r\n" +
+          '    0360 - e1 f5 44 42 5d f7 24 c6-2e 3c 22 e2 8b 85 37 61   ..DB].$..<"...7a\r\n' +
+          '    0370 - 71 c3 2f 52 d4 9a 7c 22-17 7e aa af 56 5c 50 7d   q./R..|".~..V\\P}\r\n' +
+          "    0380 - df f6 b7 c2 2b 09 17 52-e3 24 03 f9 3d fc 84 e1   ....+..R.$..=...\r\n" +
+          "    0390 - 1a 4f 64 34 ff da 9f d1-30 82 28 74 ec 23 93 8c   .Od4....0.(t.#..\r\n" +
+          "    03a0 - d8 54 53 50 d7 1e bd 8a-c2 4d f0 c6 71 89 41 83   .TSP.....M..q.A.\r\n" +
+          "    03b0 - 39 ba eb 6c 99 d4 06 bb-4b 5d 0f e2 5b a0 24 1f   9..l....K]..[.$.\r\n" +
+          "    03c0 - dc c0 90 2e 4c dc ec 10-49 46 8b 5f 8f 26 c0 34   ....L...IF._.&.4\r\n" +
+          "    03d0 - ce 6e 52 aa bf bd ac fb-38 a4 29 5c 57 eb 1e 86   .nR.....8.)\\W...\r\n" +
+          "    03e0 - 86 ee 56 89 87 c5 6b 6c-f3 ba d4 65 f0 b5 31 28   ..V...kl...e..1(\r\n" +
+          "    03f0 - 4c f6 0c f7 55 b6 45 70-fe 19 8a 6e f1 21 c6 5d   L...U.Ep...n.!.]\r\n" +
+          "    0400 - 39 a1 a9 e4 ee 08 d1 28-d7 36 2e 61 a3 12 c0 bd   9......(.6.a....\r\n" +
+          "    0410 - 70 04 56 82 8b ae 3e bc-75 64 c7 4f 76 9a f9 5d   p.V...>.ud.Ov..]\r\n" +
+          "    0420 - 2e 77 ef 7a 55 d4 dc 65-49 cb e4 26 f9 32 9d f5   .w.zU..eI..&.2..\r\n" +
+          "    0430 - fe f8 a1 cc 4a bd d1 a2-85 4a 7e 6e 0b d7 16 6a   ....J....J~n...j\r\n" +
+          "    0440 - 8f 43 33 84 96 92 54 f0-25 be 02 80 eb 6c 0a 68   .C3...T.%....l.h\r\n" +
+          "    0450 - ba a8 ec 82 bb f5 bb 8f-76 da e0 33 9f 38 b4 8c   ........v..3.8..\r\n" +
+          "    0460 - 37 4e 02 2c 4a 31 3d 34-c4 e9 28 48 3a f5 e8 f5   7N.,J1=4..(H:...\r\n" +
+          "    0470 - 12 d6 81 fd fd 71 94 7b-ed 13 65 1e c1 62 34 20   .....q.{..e..b4 \r\n" +
+          "    0480 - 3b 0a 0f c3 2d ca 97 9d-cb d2 20 41 a5 4d f5 96   ;...-..... A.M..\r\n" +
+          "    0490 - 6f 2f c1 30 d1 e2 14 7a-a5 58 53 ff 1d 89 cb 09   o/.0...z.XS.....\r\n" +
+          "    04a0 - 2a eb d4 03 d0 a7 2e e1-fd cb 62 43 ee 3a 1f 87   *.........bC.:..\r\n" +
+          "    04b0 - bf 54 0a 1d 9f 6d 6a d5-3e 11 03 ea 0e a0 fa 11   .T...mj.>.......\r\n" +
+          "    04c0 - 9c e8 c9 7a fd 3c b6 16-a9 46 99 11 2e e6 0b ed   ...z.<...F......\r\n" +
+          "    04d0 - 02 b9 ba f4 ed cd b1 17-56 36 47 0b 82 12 45 31   ........V6G...E1\r\n" +
+          "    04e0 - 32 2c 46 c2 6e 3f 26 a0-87 a3 09 39 96 2c 09 42   2,F.n?&....9.,.B\r\n" +
+          "\r\n" +
+          "    Start Time: 1682335114\r\n" +
+          "    Timeout   : 7200 (sec)\r\n" +
+          "    Verify return code: 0 (ok)\r\n" +
+          "    Extended master secret: no\r\n" +
+          "    Max Early Data: 0\r\n" +
+          "---\r\n" +
+          "SSL_connect:SSLv3/TLS read server session ticket\r\n" +
+          "read R BLOCK\r\n" +
+          "SSL_connect:SSL negotiation finished successfully\r\n" +
+          "SSL_connect:SSL negotiation finished successfully\r\n" +
+          "---\r\n" +
+          "Post-Handshake New Session Ticket arrived:\r\n" +
+          "SSL-Session:\r\n" +
+          "    Protocol  : TLSv1.3\r\n" +
+          "    Cipher    : TLS_AES_256_GCM_SHA384\r\n" +
+          "    Session-ID: 6885B687093DAC426A2766C489620D6ED76EADC03557EAEEDC0E8C61A2C5F438\r\n" +
+          "    Session-ID-ctx: \r\n" +
+          "    Resumption PSK: 4FDDD2AF1BA000287527DB7F798B40DB57E5FBB3A559EF573E2FDED68CA4FC2DC3A92A724B118E58FA48FFE16D8BB8EB\r\n" +
+          "    PSK identity: None\r\n" +
+          "    PSK identity hint: None\r\n" +
+          "    SRP username: None\r\n" +
+          "    TLS session ticket lifetime hint: 7200 (seconds)\r\n" +
+          "    TLS session ticket:\r\n" +
+          "    0000 - 01 d1 82 66 56 fd c0 e5-41 a5 d6 07 8c b1 06 3e   ...fV...A......>\r\n" +
+          "    0010 - 9b da 39 ca 92 95 d4 7a-14 5b 1e 9d c4 b8 21 77   ..9....z.[....!w\r\n" +
+          '    0020 - 96 15 73 c2 b1 22 f9 3a-18 e9 38 58 2b 55 e8 ad   ..s..".:..8X+U..\r\n' +
+          "    0030 - 42 96 97 5e e8 ae b4 e5-a2 db 00 75 08 5a 36 0a   B..^.......u.Z6.\r\n" +
+          "    0040 - 28 50 88 7a 2c 20 c7 3f-52 62 8f 67 03 20 14 41   (P.z, .?Rb.g. .A\r\n" +
+          "    0050 - a9 6d d5 56 58 7e 39 e6-e3 92 24 6c ca 95 e6 dc   .m.VX~9...$l....\r\n" +
+          "    0060 - b9 1a 40 21 bc 35 06 56-dd 9e d8 a2 80 0e 55 57   ..@!.5.V......UW\r\n" +
+          "    0070 - 24 dc c6 18 46 11 31 1c-86 88 2a dc 67 2a 36 96   $...F.1...*.g*6.\r\n" +
+          "    0080 - 21 6a 15 27 f6 91 62 70-8a b1 7f a0 ff 74 bc d7   !j.'..bp.....t..\r\n" +
+          "    0090 - 7c f5 4c bb db 29 cb 30-1d ff 27 d3 6f 7e b9 68   |.L..).0..'.o~.h\r\n" +
+          "    00a0 - da 11 41 f5 3c 25 f2 1e-c4 63 b9 24 2e 1e 1b b3   ..A.<%...c.$....\r\n" +
+          '    00b0 - 58 22 ff 9f 5e 83 f2 e9-df a7 3c c0 e1 e6 a8 73   X"..^.....<....s\r\n' +
+          "    00c0 - 74 c5 b0 41 38 5b 84 5e-65 93 d9 7a a5 74 4c 13   t..A8[.^e..z.tL.\r\n" +
+          "    00d0 - e6 56 38 dc 98 2e 97 c0-7b 24 37 6d f9 59 6d ff   .V8.....{$7m.Ym.\r\n" +
+          "    00e0 - 57 fd 92 ed fe 51 b8 9d-ce de b0 7e f3 25 c4 62   W....Q.....~.%.b\r\n" +
+          "    00f0 - f6 6f ee 13 2f be 41 71-bf 1d e1 86 9d 47 f6 3b   .o../.Aq.....G.;\r\n" +
+          "    0100 - a9 a6 86 72 b1 4b 07 df-87 63 4d d2 44 27 ee bb   ...r.K...cM.D'..\r\n" +
+          "    0110 - bb cc 97 c2 b6 5d db f3-ff 93 47 3a af 6b 29 8f   .....]....G:.k).\r\n" +
+          "    0120 - 6e f0 fd 2a 56 cc d2 c1-74 56 1f 56 98 bc 86 12   n..*V...tV.V....\r\n" +
+          "    0130 - 94 48 de be e5 ec 03 52-5d 3b f8 60 e0 a8 52 a7   .H.....R];.`..R.\r\n" +
+          "    0140 - 21 1a 8e 56 8a f6 d8 94-99 cc 27 5c a6 ca 75 29   !..V......'\\..u)\r\n" +
+          "    0150 - e8 de 84 b1 79 17 23 f8-8d 89 38 41 dc 3b f3 16   ....y.#...8A.;..\r\n" +
+          "    0160 - 0f a7 89 81 d1 2f a5 a5-70 ba a7 1f 71 79 84 18   ...../..p...qy..\r\n" +
+          "    0170 - d6 a7 c4 ec ac 18 45 fd-3b ab b5 89 41 28 41 b4   ......E.;...A(A.\r\n" +
+          "    0180 - 5d de cc bd 41 2d 66 4a-24 61 4a 73 68 ac 73 4a   ]...A-fJ$aJsh.sJ\r\n" +
+          "    0190 - f2 9c f9 af 87 ee 7f b8-66 8d 00 a6 d1 1d c5 58   ........f......X\r\n" +
+          "    01a0 - ce 10 15 84 c2 1d ea c5-09 ff f9 c3 8d fe 5c d4   ..............\\.\r\n" +
+          "    01b0 - 2f 37 0c 02 c2 9e dd b1-d8 e6 f0 2d a6 f3 ad fc   /7.........-....\r\n" +
+          '    01c0 - f7 fb b7 c9 8b 35 9c 10-08 ce 49 8a a1 8a a2 22   .....5....I...."\r\n' +
+          "    01d0 - 53 20 2b 7d 62 45 a7 06-3b 6a 4f 6e 2f 23 d9 2a   S +}bE..;jOn/#.*\r\n" +
+          "    01e0 - b9 af ae 61 b0 58 f5 ad-c4 9f 9e bc 27 6a 58 44   ...a.X......'jXD\r\n" +
+          "    01f0 - 0c 7d 31 f2 ca c1 ad 1e-e0 ed a1 a1 e1 e7 f2 9e   .}1.............\r\n" +
+          "    0200 - 20 8b ac f0 56 d7 58 57-9e fe 76 aa 26 44 43 0d    ...V.XW..v.&DC.\r\n" +
+          "    0210 - 18 ff 04 0e 01 29 92 0d-c0 f7 35 c4 ae 1f ad f2   .....)....5.....\r\n" +
+          "    0220 - 0c cc 7b a7 10 a6 2d 29-12 d6 48 77 7e 76 9a 34   ..{...-)..Hw~v.4\r\n" +
+          "    0230 - 20 c7 2e c9 bd d7 1d 80-ae 5f 1a 5e e7 dc 02 a0    ........_.^....\r\n" +
+          "    0240 - 0f db cd c8 c2 95 10 64-54 45 6e cd 79 67 57 b4   .......dTEn.ygW.\r\n" +
+          "    0250 - 68 2b fb 94 ce 24 d3 d7-1b 9b 31 80 6c 8e 34 6b   h+...$....1.l.4k\r\n" +
+          "    0260 - c6 4f 92 72 26 ac d6 3f-a8 fb 6e a3 9b d8 df 7c   .O.r&..?..n....|\r\n" +
+          "    0270 - 26 5c 74 fd ec f9 78 0c-c2 56 b9 ef 08 b1 c3 3a   &\\t...x..V.....:\r\n" +
+          "    0280 - 94 53 10 f1 cc 83 f0 ce-7a fd 2b 56 d3 c3 51 cc   .S......z.+V..Q.\r\n" +
+          '    0290 - 6b 07 57 68 6a 53 e9 5a-0a 22 fa 96 31 78 c3 01   k.WhjS.Z."..1x..\r\n' +
+          "    02a0 - 8a 5c 76 f0 92 28 5b cf-3e 13 fe 08 fa 5e 2f 27   .\\v..([.>....^/'\r\n" +
+          "    02b0 - e4 dd 2b 80 1c 01 a7 43-f3 77 06 93 23 d2 5b c9   ..+....C.w..#.[.\r\n" +
+          "    02c0 - 46 e3 6f cf 12 ad 1c 5b-b4 aa de 3c 08 db 58 18   F.o....[...<..X.\r\n" +
+          "    02d0 - f4 41 80 a8 56 79 df 66-d5 42 c2 84 92 b2 8c b2   .A..Vy.f.B......\r\n" +
+          "    02e0 - 16 d8 09 4c fe 36 7c 9d-4b fb 91 c8 0f 2f 52 72   ...L.6|.K..../Rr\r\n" +
+          "    02f0 - a4 9d 5f 8b 06 f5 a5 3c-8a 9e 88 97 c2 99 08 4a   .._....<.......J\r\n" +
+          "    0300 - e5 6c 6a 37 51 bd 88 e4-69 e3 7a 20 b4 f6 20 e4   .lj7Q...i.z .. .\r\n" +
+          "    0310 - d5 3d 0b 0c 1e f9 4e ae-de 52 3a 6b 2b df df 30   .=....N..R:k+..0\r\n" +
+          "    0320 - f3 db 59 1d 48 cd 41 ea-77 4e d1 fa 97 4d 86 86   ..Y.H.A.wN...M..\r\n" +
+          "    0330 - e0 0a 79 2e 0e 47 d1 72-7e cb c7 5a 3c 5d 07 0b   ..y..G.r~..Z<]..\r\n" +
+          "    0340 - 65 f1 3b 06 c8 3b cc 28-76 cf dc 09 4c 7c 18 1b   e.;..;.(v...L|..\r\n" +
+          "    0350 - 0c 6e 05 7b b2 6d 75 25-8c fb ee 01 9f 24 94 ea   .n.{.mu%.....$..\r\n" +
+          "    0360 - bd 39 55 58 49 76 02 54-b0 70 24 c3 81 88 e2 6a   .9UXIv.T.p$....j\r\n" +
+          "    0370 - 38 54 4f 2d 04 d0 f9 d6-70 95 7e 82 d2 60 a4 7b   8TO-....p.~..`.{\r\n" +
+          "    0380 - b8 a0 7b e0 6d 10 59 cd-66 59 95 ec 7d 69 45 6d   ..{.m.Y.fY..}iEm\r\n" +
+          "    0390 - d1 06 aa 11 1a b6 af 4b-e0 85 bb 68 ae 88 51 a2   .......K...h..Q.\r\n" +
+          "    03a0 - d5 b5 87 9e 5d 98 03 24-2d 25 04 a7 82 0d 87 48   ....]..$-%.....H\r\n" +
+          "    03b0 - fc e5 4a 45 d7 b0 2d af-6e 81 91 19 0d e7 a2 68   ..JE..-.n......h\r\n" +
+          "    03c0 - ae ea ff fc bf 87 82 aa-c4 ed 15 55 ba ee 00 a8   ...........U....\r\n" +
+          "    03d0 - d7 af 53 1b 32 35 38 a2-7e 3e da fe d8 77 70 d3   ..S.258.~>...wp.\r\n" +
+          "    03e0 - 20 15 58 f7 2f 28 50 ae-87 8c f8 62 b4 97 90 4d    .X./(P....b...M\r\n" +
+          "    03f0 - 60 86 5d c1 a5 c8 2d 13-d9 4b c4 f3 01 0f 9c 5d   `.]...-..K.....]\r\n" +
+          "    0400 - fe f0 cb 5c 4f 8c 8f 8e-d9 56 6c 2d 36 f8 ec b8   ...\\O....Vl-6...\r\n" +
+          "    0410 - f3 56 6a a9 b2 44 4f 80-d5 42 ee 0a e1 5c 0a 4f   .Vj..DO..B...\\.O\r\n" +
+          "    0420 - 85 aa 5e 9b b3 fd c9 de-cc 09 90 fe dd 57 aa 89   ..^..........W..\r\n" +
+          "    0430 - 3d 6b 01 e0 90 b6 1d 99-b3 53 87 2b 8a 80 45 7f   =k.......S.+..E.\r\n" +
+          "    0440 - 53 cb 4e 5d dc 6c 1c 66-aa 2b ae 66 4f ab 73 50   S.N].l.f.+.fO.sP\r\n" +
+          "    0450 - a0 b5 fa 75 ac 4a 04 15-e1 2d 8e 0d e1 72 67 d8   ...u.J...-...rg.\r\n" +
+          "    0460 - ed 7f 86 c3 a9 39 5b 04-15 40 ec 1f f3 6b 44 36   .....9[..@...kD6\r\n" +
+          "    0470 - 19 ce 16 25 31 2c 71 55-a7 be da e5 24 93 78 c1   ...%1,qU....$.x.\r\n" +
+          "    0480 - e3 d3 2d 39 e9 43 68 d3-0a 1b 6c 75 06 27 6b 84   ..-9.Ch...lu.'k.\r\n" +
+          "    0490 - 27 ba 95 6c 2a 53 b6 3f-dd de 37 6a 7c 87 8d fe   '..l*S.?..7j|...\r\n" +
+          "    04a0 - cc cb a4 ae 31 39 c4 ae-51 3a c4 69 f6 e1 1c bd   ....19..Q:.i....\r\n" +
+          "    04b0 - df 89 e5 67 95 44 eb 8b-4a e7 51 72 bc 8b d4 18   ...g.D..J.Qr....\r\n" +
+          "    04c0 - 71 c1 53 9d 32 58 80 58-e0 b6 f0 29 d2 3c 7c 54   q.S.2X.X...).<|T\r\n" +
+          "    04d0 - 1e 40 86 ae 26 1f f9 f3-69 92 dc d7 8b ac c4 68   .@..&...i......h\r\n" +
+          "    04e0 - 13 12 64 60 6a a0 99 cd-3d 73 5a 74 7b a9 50 27   ..d`j...=sZt{.P'\r\n" +
+          "\r\n" +
+          "    Start Time: 1682335114\r\n" +
+          "    Timeout   : 7200 (sec)\r\n" +
+          "    Verify return code: 0 (ok)\r\n" +
+          "    Extended master secret: no\r\n" +
+          "    Max Early Data: 0\r\n" +
+          "---\r\n" +
+          "SSL_connect:SSLv3/TLS read server session ticket\r\n" +
+          "read R BLOCK\r\n" +
+          "DONE\r\n" +
+          "SSL3 alert write:warning:close notify\r\n",
+        stderr:
+          "Warning: Permanently added '[127.0.0.2]:2222' (ED25519) to the list of known hosts.\r\n" +
+          "ControlSocket /home/alois/.ssh/controlmasters/root@127.0.0.2:2222 already exists, disabling multiplexing\r\n" +
+          "Connection to 127.0.0.2 closed.\r\n",
+        stdin: `openssl, s_client, -connect, 127.0.0.1:${port}, -key, certs/client.key.pem, -cert, certs/client.cert.pem, -CAfile, certs/cacert.pem, -state`,
+      },
+      server: {
+        stdout:
+          "verify depth is 1\r\n" +
+          "Using default temp DH parameters\r\n" +
+          "ACCEPT\r\n" +
+          "SSL_accept:before SSL initialization\r\n" +
+          "SSL_accept:before SSL initialization\r\n" +
+          "SSL_accept:SSLv3/TLS read client hello\r\n" +
+          "SSL_accept:SSLv3/TLS write server hello\r\n" +
+          "SSL_accept:SSLv3/TLS write change cipher spec\r\n" +
+          "SSL_accept:TLSv1.3 write encrypted extensions\r\n" +
+          "SSL_accept:SSLv3/TLS write certificate request\r\n" +
+          "SSL_accept:SSLv3/TLS write certificate\r\n" +
+          "SSL_accept:TLSv1.3 write server certificate verify\r\n" +
+          "SSL_accept:SSLv3/TLS write finished\r\n" +
+          "SSL_accept:TLSv1.3 early data\r\n" +
+          "SSL_accept:TLSv1.3 early data\r\n" +
+          "depth=0 C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\r\n" +
+          "verify error:num=20:unable to get local issuer certificate\r\n" +
+          "verify return:1\r\n" +
+          "depth=0 C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\r\n" +
+          "verify error:num=21:unable to verify the first certificate\r\n" +
+          "verify return:1\r\n" +
+          "depth=0 C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\r\n" +
+          "verify return:1\r\n" +
+          "SSL_accept:SSLv3/TLS read client certificate\r\n" +
+          "SSL_accept:SSLv3/TLS read certificate verify\r\n" +
+          "SSL_accept:SSLv3/TLS read finished\r\n" +
+          "SSL_accept:SSLv3/TLS write session ticket\r\n" +
+          "SSL_accept:SSLv3/TLS write session ticket\r\n" +
+          "-----BEGIN SSL SESSION PARAMETERS-----\r\n" +
+          "MIIEngIBAQICAwQEAhMCBCBMHcY/xGS3015driWJprnFaDNm1M6HPxAOjnfLuspX\r\n" +
+          "DQQwT93SrxugACh1J9t/eYtA21fl+7OlWe9XPi/e1oyk/C3DqSpySxGOWPpI/+Ft\r\n" +
+          "i7jroQYCBGRGZYqiBAICHCCjggQTMIIEDzCCAvegAwIBAgIBATANBgkqhkiG9w0B\r\n" +
+          "AQsFADBsMQswCQYDVQQGEwJGUjEMMAoGA1UECAwDSWRGMQ4wDAYDVQQHDAVQYXJp\r\n" +
+          "czEQMA4GA1UECgwHRGF0YURvZzEZMBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDES\r\n" +
+          "MBAGA1UEAwwJS3JhZnRDZXJ0MB4XDTIyMTEwNDE1NDEwMloXDTI3MDUxMjE1NDEw\r\n" +
+          "MlowZjELMAkGA1UEBhMCRlIxDDAKBgNVBAgMA0lkRjEQMA4GA1UECgwHRGF0YURv\r\n" +
+          "ZzEZMBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDEcMBoGA1UEAwwTTWFsaWNpb3Vz\r\n" +
+          "Q2xpZW50Q2VydDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPQF8hvb\r\n" +
+          "Dz6ahB2bngA3b+hf9RqsSy79vcQmZx791iCYY+8Svdes6G8NFZMv/8h875bLB9m+\r\n" +
+          "xhbVxBGwr9ReQj16jNAlfmpXgaKrRG01P2pmjR//LvBvzkU5ki/Buc5RtjkEp1Ly\r\n" +
+          "8bcR97LMovHRdNnLD7uAddnT/DPeRmzn4GAIFfzUhvW7zt8jZvtO2jwKFlM4UBrM\r\n" +
+          "8t616GwBjqWJoaYGQ9165EfCqhfdUUyQWEYRWLYsSM1Q4ciqdHp8PcFAxDG7ILni\r\n" +
+          "WUlMYOsppm49ffZFiUSE6fiu3maK+Y63mRsODkHK8tJBz7oIIULfBKRgR3kwsPdN\r\n" +
+          "CYX2X4od78nglHkCAwEAAaOBwTCBvjAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBQr\r\n" +
+          "x2XGHx2wX6ZJqkufShvxmm2XWjAfBgNVHSMEGDAWgBQHtbgFs6+sQi8K+hT/9V7K\r\n" +
+          "gPQydDARBglghkgBhvhCAQEEBAMCBaAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQW\r\n" +
+          "MBQGCCsGAQUFBwMCBggrBgEFBQcDBDAsBgNVHREEJTAjoCEGCCsGAQUFBwgJoBUM\r\n" +
+          "E+a1i+ivlUBvdmVyZmxvdy5jb20wDQYJKoZIhvcNAQELBQADggEBAAhXaVy0G+qb\r\n" +
+          "CL2y5n/D9wwsUJwmgJMjo76rxN1eHruHQW3golukwhvYcejVQ0OwaoA4jTcacH7h\r\n" +
+          "8xBsD2CsGjBaex/BnRAPYr4vgvTxyEuI5AiI3ecNSr77CtvNwT0Xd3JpmoPGKykR\r\n" +
+          "rFTs/5svIXUla9VOQsLhpXotEUC5gYciScbDXmVTG4KZ7EO55iByzqnYUGrdyf+z\r\n" +
+          "ZxBkZaD3Wgr+EuXZeHmVH4CVKdyN3EcsKRSaX3Vg0OBINere0oblg5xbtPRaeX4j\r\n" +
+          "/+EGKgy1cVTcbu986Lf5/wnArbQwf+lkYl8rWowej54B/7Owgb+bxQcv7Z2pYlJw\r\n" +
+          "zhZpTfQIqASkBgQEAQAAAKUDAgEVrgYCBGcM4UqzAwIBHQ==\r\n" +
+          "-----END SSL SESSION PARAMETERS-----\r\n" +
+          "Client certificate\r\n" +
+          "-----BEGIN CERTIFICATE-----\r\n" +
+          "MIIEDzCCAvegAwIBAgIBATANBgkqhkiG9w0BAQsFADBsMQswCQYDVQQGEwJGUjEM\r\n" +
+          "MAoGA1UECAwDSWRGMQ4wDAYDVQQHDAVQYXJpczEQMA4GA1UECgwHRGF0YURvZzEZ\r\n" +
+          "MBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDESMBAGA1UEAwwJS3JhZnRDZXJ0MB4X\r\n" +
+          "DTIyMTEwNDE1NDEwMloXDTI3MDUxMjE1NDEwMlowZjELMAkGA1UEBhMCRlIxDDAK\r\n" +
+          "BgNVBAgMA0lkRjEQMA4GA1UECgwHRGF0YURvZzEZMBcGA1UECwwQU2VjdXJpdHlS\r\n" +
+          "ZXNlYXJjaDEcMBoGA1UEAwwTTWFsaWNpb3VzQ2xpZW50Q2VydDCCASIwDQYJKoZI\r\n" +
+          "hvcNAQEBBQADggEPADCCAQoCggEBAPQF8hvbDz6ahB2bngA3b+hf9RqsSy79vcQm\r\n" +
+          "Zx791iCYY+8Svdes6G8NFZMv/8h875bLB9m+xhbVxBGwr9ReQj16jNAlfmpXgaKr\r\n" +
+          "RG01P2pmjR//LvBvzkU5ki/Buc5RtjkEp1Ly8bcR97LMovHRdNnLD7uAddnT/DPe\r\n" +
+          "Rmzn4GAIFfzUhvW7zt8jZvtO2jwKFlM4UBrM8t616GwBjqWJoaYGQ9165EfCqhfd\r\n" +
+          "UUyQWEYRWLYsSM1Q4ciqdHp8PcFAxDG7ILniWUlMYOsppm49ffZFiUSE6fiu3maK\r\n" +
+          "+Y63mRsODkHK8tJBz7oIIULfBKRgR3kwsPdNCYX2X4od78nglHkCAwEAAaOBwTCB\r\n" +
+          "vjAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBQrx2XGHx2wX6ZJqkufShvxmm2XWjAf\r\n" +
+          "BgNVHSMEGDAWgBQHtbgFs6+sQi8K+hT/9V7KgPQydDARBglghkgBhvhCAQEEBAMC\r\n" +
+          "BaAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcD\r\n" +
+          "BDAsBgNVHREEJTAjoCEGCCsGAQUFBwgJoBUME+a1i+ivlUBvdmVyZmxvdy5jb20w\r\n" +
+          "DQYJKoZIhvcNAQELBQADggEBAAhXaVy0G+qbCL2y5n/D9wwsUJwmgJMjo76rxN1e\r\n" +
+          "HruHQW3golukwhvYcejVQ0OwaoA4jTcacH7h8xBsD2CsGjBaex/BnRAPYr4vgvTx\r\n" +
+          "yEuI5AiI3ecNSr77CtvNwT0Xd3JpmoPGKykRrFTs/5svIXUla9VOQsLhpXotEUC5\r\n" +
+          "gYciScbDXmVTG4KZ7EO55iByzqnYUGrdyf+zZxBkZaD3Wgr+EuXZeHmVH4CVKdyN\r\n" +
+          "3EcsKRSaX3Vg0OBINere0oblg5xbtPRaeX4j/+EGKgy1cVTcbu986Lf5/wnArbQw\r\n" +
+          "f+lkYl8rWowej54B/7Owgb+bxQcv7Z2pYlJwzhZpTfQIqAQ=\r\n" +
+          "-----END CERTIFICATE-----\r\n" +
+          "subject=C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\r\n" +
+          "issuer=C = FR, ST = IdF, L = Paris, O = DataDog, OU = SecurityResearch, CN = KraftCert\r\n" +
+          "Shared ciphers:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA\r\n" +
+          "Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:ECDSA+SHA1:RSA+SHA224:RSA+SHA1:DSA+SHA224:DSA+SHA1:DSA+SHA256:DSA+SHA384:DSA+SHA512\r\n" +
+          "Shared Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224\r\n" +
+          "Peer signing digest: SHA256\r\n" +
+          "Peer signature type: RSA-PSS\r\n" +
+          "Supported groups: x25519:secp256r1:x448:secp521r1:secp384r1\r\n" +
+          "Shared groups: x25519:secp256r1:x448:secp521r1:secp384r1\r\n" +
+          "CIPHER is TLS_AES_256_GCM_SHA384\r\n" +
+          "Secure Renegotiation IS supported\r\n" +
+          "Hello World from my OpenSSL Client!\r\n" +
+          "SSL3 alert read:warning:close notify\r\n" +
+          "DONE\r\n" +
+          "shutting down SSL\r\n" +
+          "SSL3 alert write:warning:close notify\r\n" +
+          "CONNECTION CLOSED\r\n" +
+          "   0 items in the session cache\r\n" +
+          "   0 client connects (SSL_connect())\r\n" +
+          "   0 client renegotiates (SSL_connect())\r\n" +
+          "   0 client connects that finished\r\n" +
+          "   1 server accepts (SSL_accept())\r\n" +
+          "   0 server renegotiates (SSL_accept())\r\n" +
+          "   1 server accepts that finished\r\n" +
+          "   0 session cache hits\r\n" +
+          "   0 session cache misses\r\n" +
+          "   0 session cache timeouts\r\n" +
+          "   0 callback cache hits\r\n" +
+          "   0 cache full overflows (128 allowed)\r\n",
+        stderr:
+          "Warning: Permanently added '[127.0.0.2]:2222' (ED25519) to the list of known hosts.\r\n" +
+          "ControlSocket /home/alois/.ssh/controlmasters/root@127.0.0.2:2222 already exists, disabling multiplexing\r\n" +
+          "Connection to 127.0.0.2 closed.\r\n",
+        stdin: `/usr/local64/bin/openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -naccept, 1, -key, certs/server.key.pem, -state, -verify, 1`,
+        exitCode: 0,
+      },
+    };
+  }
+}
+
+/**
  * Runs the OpenSSL test case on a Morello Purecap system.
  *
  * The OpenSSL server should throw a CHERI `SIGPROT`.
@@ -549,6 +1191,435 @@ export class MorelloPurecapOpenSSLTestCase extends MorelloOpenSSLTestCase {
           "ControlSocket /home/alois/.ssh/controlmasters/root@127.0.0.2:2222 already exists, disabling multiplexing\r\n" +
           "Connection to 127.0.0.2 closed.\r\n",
         exitCode: 162,
+      },
+    };
+  }
+}
+
+/**
+ * Same as {@link MorelloPurecapOpenSSLTestCase}, except with a normal
+ * certificate, so should exit without any errors.
+ */
+export class MorelloPurecapOpenSSLTestCaseSafeCert extends MorelloPurecapOpenSSLTestCase {
+  /**
+   * @inheritdoc
+   * @returns {Promise<RunLogs>} logs
+   */
+  async run({ port } = {}) {
+    await promisify(setTimeout)(6000);
+    return {
+      client: {
+        stdout:
+          "Hello World from my OpenSSL Client!\r\n" +
+          "Q\r\n" +
+          "CONNECTED(00000003)\r\n" +
+          "SSL_connect:before SSL initialization\r\n" +
+          "SSL_connect:SSLv3/TLS write client hello\r\n" +
+          "SSL_connect:SSLv3/TLS write client hello\r\n" +
+          "SSL_connect:SSLv3/TLS read server hello\r\n" +
+          "Can't use SSL_get_servername\r\n" +
+          "SSL_connect:TLSv1.3 read encrypted extensions\r\n" +
+          "SSL_connect:SSLv3/TLS read server certificate request\r\n" +
+          "depth=1 C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "verify return:1\r\n" +
+          "depth=0 C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server\r\n" +
+          "verify return:1\r\n" +
+          "SSL_connect:SSLv3/TLS read server certificate\r\n" +
+          "SSL_connect:TLSv1.3 read server certificate verify\r\n" +
+          "SSL_connect:SSLv3/TLS read finished\r\n" +
+          "SSL_connect:SSLv3/TLS write change cipher spec\r\n" +
+          "SSL_connect:SSLv3/TLS write client certificate\r\n" +
+          "SSL_connect:SSLv3/TLS write certificate verify\r\n" +
+          "SSL_connect:SSLv3/TLS write finished\r\n" +
+          "---\r\n" +
+          "Certificate chain\r\n" +
+          " 0 s:C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server\r\n" +
+          "   i:C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          " 1 s:C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "   i:C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "---\r\n" +
+          "Server certificate\r\n" +
+          "-----BEGIN CERTIFICATE-----\r\n" +
+          "MIIESjCCAzKgAwIBAgIBATANBgkqhkiG9w0BAQsFADBmMQswCQYDVQQGEwJVUzEL\r\n" +
+          "MAkGA1UECAwCTlkxDDAKBgNVBAcMA05ZQzEQMA4GA1UECgwHRGF0YURvZzEZMBcG\r\n" +
+          "A1UECwwQU2VjdXJpdHlSZXNlYXJjaDEPMA0GA1UEAwwGUm9vdENBMB4XDTIyMTEx\r\n" +
+          "MTE2NDU0MFoXDTI3MDUxOTE2NDU0MFowWDELMAkGA1UEBhMCVVMxCzAJBgNVBAgM\r\n" +
+          "Ak5ZMRAwDgYDVQQKDAdEYXRhRG9nMRkwFwYDVQQLDBBTZWN1cml0eVJlc2VhcmNo\r\n" +
+          "MQ8wDQYDVQQDDAZzZXJ2ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB\r\n" +
+          "AQCKQYWsjzdTriGdFJPotaVvDCvKj4M7x0EoK6a+kUw8m7ZUx9dY8PTLMEJQCoRD\r\n" +
+          "A3AHG392VxlOpjsBDP1pbBlWlpVd3gtOWCwzD8Ynr7LvnWopnjCtKxzwOqHB30FB\r\n" +
+          "1+QjJgfK6q1Op810W/z8TWyYgxJdYbw9jiPz33qigTRinW4m4LqQW1jlnIzx/shG\r\n" +
+          "zVJoAgQbVWr2QvBjkpYHnknIWog67VjAdZIa5YI6uyqqui/hGhCMoo1Rllp/asZ+\r\n" +
+          "Ty/eSFoGo+DnCeAOkgAzQa6Uq1xsE7QzMeU1hicskqgdMajEvWrqIhJ18N5EvB48\r\n" +
+          "KD9e27ThKKqfHW5CyaaB85KJAgMBAAGjggEPMIIBCzAMBgNVHRMBAf8EAjAAMB0G\r\n" +
+          "A1UdDgQWBBTyKzovS+qCMzBd4yU5E8j0/nzCuTCBowYDVR0jBIGbMIGYgBTs1/q5\r\n" +
+          "Gj+N3mk/mHeLyrTkwlu9eKFqpGgwZjELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAk5Z\r\n" +
+          "MQwwCgYDVQQHDANOWUMxEDAOBgNVBAoMB0RhdGFEb2cxGTAXBgNVBAsMEFNlY3Vy\r\n" +
+          "aXR5UmVzZWFyY2gxDzANBgNVBAMMBlJvb3RDQYIUW/Ka5OiVXoUJpWWBqC/bnts/\r\n" +
+          "Th0wEQYJYIZIAYb4QgEBBAQDAgZAMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUEDDAK\r\n" +
+          "BggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAQEAi3RVc7s2JIWX9rwXI+fW0C80\r\n" +
+          "Z7kfT7Dn6S1WZdYAELnmlfSiZ8BIfXqE3ZN60lYdUfq0o5YbSyXmv5wRXb5ZLFOG\r\n" +
+          "yZ9nFc+RfU0RZhaQx9rW01DAcJPezufZ8d4zr0s62e4V9k2FKGPaKGygSBnSK385\r\n" +
+          "M6c0ejTXyISDUYBEoMNvBnE/kNSal30f9quzqRjtD/9xpkDBW3q0osQ1/vsAyxiq\r\n" +
+          "csVPmyCcZzdgihK/eHEHPQnr9hZqapzQCCZScGSUWaV22EP4nuqSf6LqlrFTtFWL\r\n" +
+          "P43R0H7LuJK34ts/o8HwPPCRLiZ95r/zTH2+n/nvkgBnAWn8uwnykEr4oKu3hA==\r\n" +
+          "-----END CERTIFICATE-----\r\n" +
+          "subject=C = US, ST = NY, O = DataDog, OU = SecurityResearch, CN = server\r\n" +
+          "\r\n" +
+          "issuer=C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "\r\n" +
+          "---\r\n" +
+          "Acceptable client certificate CA names\r\n" +
+          "C = US, ST = NY, L = NYC, O = DataDog, OU = SecurityResearch, CN = RootCA\r\n" +
+          "Requested Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224\r\n" +
+          "Shared Requested Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512\r\n" +
+          "Peer signing digest: SHA256\r\n" +
+          "Peer signature type: RSA-PSS\r\n" +
+          "Server Temp Key: X25519, 253 bits\r\n" +
+          "---\r\n" +
+          "SSL handshake has read 2787 bytes and written 1737 bytes\r\n" +
+          "Verification: OK\r\n" +
+          "---\r\n" +
+          "New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384\r\n" +
+          "Server public key is 2048 bit\r\n" +
+          "Secure Renegotiation IS NOT supported\r\n" +
+          "Compression: NONE\r\n" +
+          "Expansion: NONE\r\n" +
+          "No ALPN negotiated\r\n" +
+          "Early data was not sent\r\n" +
+          "Verify return code: 0 (ok)\r\n" +
+          "---\r\n" +
+          "SSL_connect:SSL negotiation finished successfully\r\n" +
+          "SSL_connect:SSL negotiation finished successfully\r\n" +
+          "---\r\n" +
+          "Post-Handshake New Session Ticket arrived:\r\n" +
+          "SSL-Session:\r\n" +
+          "    Protocol  : TLSv1.3\r\n" +
+          "    Cipher    : TLS_AES_256_GCM_SHA384\r\n" +
+          "    Session-ID: 0F72967754F48D0B6D780ECA3567095E9D5B3C7E9FF6E1A04EBB87019C66E514\r\n" +
+          "    Session-ID-ctx: \r\n" +
+          "    Resumption PSK: 2D57C2B4D53979B6F44D499D06E3C4F43B1932D9562CE20D753E1F517C9B8FC601A3CCFD69E9CD9972F2793C2EE2C01B\r\n" +
+          "    PSK identity: None\r\n" +
+          "    PSK identity hint: None\r\n" +
+          "    SRP username: None\r\n" +
+          "    TLS session ticket lifetime hint: 7200 (seconds)\r\n" +
+          "    TLS session ticket:\r\n" +
+          "    0000 - 53 eb ad ba 8f 95 18 2a-93 f5 ba fb 84 99 46 10   S......*......F.\r\n" +
+          "    0010 - f6 2c ff 67 5e 10 6a a8-18 b2 38 3e 53 5b a6 e5   .,.g^.j...8>S[..\r\n" +
+          "    0020 - d4 63 f0 52 aa ef 0c 79-e8 6c d6 1c 21 3f 1f 6e   .c.R...y.l..!?.n\r\n" +
+          "    0030 - 9c 92 59 33 00 82 51 47-d9 01 be e5 c4 88 49 6d   ..Y3..QG......Im\r\n" +
+          "    0040 - ca 04 33 dd 91 5b b4 20-00 72 3e 56 ec be f4 91   ..3..[. .r>V....\r\n" +
+          "    0050 - f2 e7 3a 55 4e cb 08 3a-70 cf 53 97 4c 18 63 25   ..:UN..:p.S.L.c%\r\n" +
+          "    0060 - eb 51 c0 fd 42 95 af 9d-09 c7 2f 94 1a f6 0b ae   .Q..B...../.....\r\n" +
+          "    0070 - f7 bc 70 b3 69 5b fd d9-f9 14 50 f4 1c 25 6e 33   ..p.i[....P..%n3\r\n" +
+          "    0080 - ac 31 f5 b8 f3 59 8f f4-32 bc 7e ef b5 d8 80 f7   .1...Y..2.~.....\r\n" +
+          "    0090 - b8 bc ee a8 5a 11 c4 9a-23 33 5f ca 53 41 fc 72   ....Z...#3_.SA.r\r\n" +
+          "    00a0 - 57 cc 4d 9a 98 8a 07 df-41 a7 30 c0 3e c8 c2 9e   W.M.....A.0.>...\r\n" +
+          "    00b0 - ed 88 ea fc 80 49 9f 19-8c 28 89 b1 35 99 ed 8b   .....I...(..5...\r\n" +
+          "    00c0 - 92 40 c5 7f b7 8c e2 18-76 d6 b2 ce de 86 4b e1   .@......v.....K.\r\n" +
+          "    00d0 - c9 12 95 2f 5f d2 d4 0a-fa 89 93 2a b5 5c 82 72   .../_......*.\\.r\r\n" +
+          "    00e0 - 74 e3 c1 eb 18 c8 2c 5c-a4 18 39 a9 25 b0 61 81   t.....,\\..9.%.a.\r\n" +
+          "    00f0 - f1 af a8 ac 3e 7c 4e e6-39 df 91 2b 73 fd 26 c0   ....>|N.9..+s.&.\r\n" +
+          "    0100 - c6 8a dd ae 42 9d 84 c3-e4 08 2c 21 96 6e 0a 0d   ....B.....,!.n..\r\n" +
+          "    0110 - be 6e b2 3a 18 cf 0b cd-46 a6 dc 94 29 6b c2 8c   .n.:....F...)k..\r\n" +
+          "    0120 - ac 4f 68 d0 21 74 83 00-48 59 ba d8 76 cb f9 af   .Oh.!t..HY..v...\r\n" +
+          "    0130 - e7 e7 50 53 c2 2e e8 33-d6 c8 1e 0e 9e a4 f0 f1   ..PS...3........\r\n" +
+          "    0140 - f9 28 36 34 a3 44 a4 b6-8c 0b c1 85 13 15 e1 b4   .(64.D..........\r\n" +
+          "    0150 - 58 16 d6 e7 48 73 07 d4-69 9e 4e a1 18 b5 c6 b5   X...Hs..i.N.....\r\n" +
+          "    0160 - 9d fb 59 5f 44 de b0 55-fd 74 11 07 f2 a0 72 e9   ..Y_D..U.t....r.\r\n" +
+          "    0170 - 2b 6d 8e 5f 6b 5f f1 55-52 ad 85 44 2f fa ae a4   +m._k_.UR..D/...\r\n" +
+          "    0180 - ad 6d ff 8a fe 02 6f a9-bb 0b 9b a3 7f 7a e4 91   .m....o......z..\r\n" +
+          "    0190 - d1 43 e7 c6 98 64 4d 76-ef 1b 0d 0e a6 37 f6 4d   .C...dMv.....7.M\r\n" +
+          "    01a0 - 9f e0 a9 41 80 b4 ef d3-cf 74 0d 18 7a 50 a0 4d   ...A.....t..zP.M\r\n" +
+          "    01b0 - 49 36 f7 35 6e 0c 5e 75-74 05 ae 91 6d a3 21 25   I6.5n.^ut...m.!%\r\n" +
+          "    01c0 - 3b 29 ce 48 34 df b0 81-c3 16 a8 cd 06 fe 7a bf   ;).H4.........z.\r\n" +
+          "    01d0 - ba a6 6b cc a3 28 ce 77-5c 29 29 1e 4d 76 c8 fd   ..k..(.w\\)).Mv..\r\n" +
+          "    01e0 - 7d bc 92 06 05 50 51 1d-0c 5f 34 dd 15 bc f0 dd   }....PQ.._4.....\r\n" +
+          "    01f0 - 00 71 95 85 a9 2f 5f d0-3e 45 0b 5f 29 ee 1c 14   .q.../_.>E._)...\r\n" +
+          "    0200 - 34 23 9b 72 7b 79 2e 52-b9 79 08 a0 36 b9 a6 c0   4#.r{y.R.y..6...\r\n" +
+          "    0210 - d8 bb c1 9e 71 55 98 c1-60 4b b5 fd a5 6d 2c 27   ....qU..`K...m,'\r\n" +
+          "    0220 - 90 d1 07 f9 c9 6c 1d c3-a5 4d 8e cd 90 4d 7f ad   .....l...M...M..\r\n" +
+          "    0230 - 79 50 b8 45 ec 0e bb 90-2e fa e4 d0 3a 74 92 9f   yP.E........:t..\r\n" +
+          "    0240 - b7 6d fa 5a 1a 7f 54 ca-5d 30 4f a9 32 41 9a bf   .m.Z..T.]0O.2A..\r\n" +
+          "    0250 - 04 8a 72 95 5a 63 59 8c-bd 6e f7 7c aa 51 0d a0   ..r.ZcY..n.|.Q..\r\n" +
+          "    0260 - c0 b6 0a 2d cd 93 16 78-67 1f b0 66 11 f0 95 47   ...-...xg..f...G\r\n" +
+          "    0270 - d2 62 97 67 1b bd ed ff-95 0d 9d 51 8b a5 89 66   .b.g.......Q...f\r\n" +
+          "    0280 - 5a b5 fc 27 e2 5c 15 5a-99 e2 41 fe 31 1e 57 0c   Z..'.\\.Z..A.1.W.\r\n" +
+          "    0290 - 9b bc eb 9e 77 8d cf 4d-07 51 f4 70 ec e1 ca 4d   ....w..M.Q.p...M\r\n" +
+          "    02a0 - 17 97 82 71 1d 21 32 46-3f 77 6f 0c 9d c0 5b 8a   ...q.!2F?wo...[.\r\n" +
+          "    02b0 - 59 ac 59 0d 18 c9 3b d9-59 27 1d b5 c9 30 4f 85   Y.Y...;.Y'...0O.\r\n" +
+          "    02c0 - 0f 4e 00 5b b5 f2 ad 70-d0 f2 5c 29 a9 30 f9 d5   .N.[...p..\\).0..\r\n" +
+          "    02d0 - 31 af 34 e4 a2 6f ba 78-01 25 ef 26 40 7b 0a 4b   1.4..o.x.%.&@{.K\r\n" +
+          "    02e0 - d6 24 a2 bd 13 7e b6 9d-cd cf 4e c2 01 42 78 3b   .$...~....N..Bx;\r\n" +
+          "    02f0 - 29 2b e2 56 8d f9 bc 12-85 e0 a3 51 c0 a2 0d 26   )+.V.......Q...&\r\n" +
+          "    0300 - c6 7e 5d f5 82 c3 88 49-c6 93 2c ea 72 c6 a4 e5   .~]....I..,.r...\r\n" +
+          "    0310 - f4 a3 28 2d cb 71 fa 0e-d2 77 4c e6 a4 ba 21 41   ..(-.q...wL...!A\r\n" +
+          "    0320 - 14 0d 3f 11 52 32 8b e6-07 a6 47 b5 06 20 c2 d0   ..?.R2....G.. ..\r\n" +
+          "    0330 - fc b3 36 33 eb f3 e7 76-2e f6 ca 1e 26 4c b2 51   ..63...v....&L.Q\r\n" +
+          '    0340 - fa d8 ce d5 bd 2f 1d e1-4e d8 cd c0 22 a6 a5 da   ...../..N..."...\r\n' +
+          "    0350 - 00 df 52 8a bd f6 f0 98-7e 9f 78 98 af 04 71 3c   ..R.....~.x...q<\r\n" +
+          "    0360 - 5f 38 54 e5 bd 25 61 99-23 8c 42 f9 24 23 99 7f   _8T..%a.#.B.$#..\r\n" +
+          "    0370 - 01 88 a7 78 02 c8 ac b1-94 c1 58 12 7a f9 69 4f   ...x......X.z.iO\r\n" +
+          "    0380 - 68 bf 72 99 ae 09 a2 a3-55 ff e9 d2 a7 94 7a 56   h.r.....U.....zV\r\n" +
+          "    0390 - 64 78 b7 3c 0c 3d 95 83-2e 74 ea 14 a3 57 c0 9a   dx.<.=...t...W..\r\n" +
+          "    03a0 - 19 6c b2 d6 dd a3 b1 9b-d0 d1 bd a8 53 8b 90 02   .l..........S...\r\n" +
+          "    03b0 - 55 16 55 a0 fa 0f 7d 87-17 a5 01 52 b3 64 6b 21   U.U...}....R.dk!\r\n" +
+          "    03c0 - c0 fa 82 3a 40 5a f6 fa-00 63 2b 2d 42 b8 52 bf   ...:@Z...c+-B.R.\r\n" +
+          "    03d0 - 2f 03 90 21 69 c8 7f 02-a6 ea c9 d1 7c f1 95 b1   /..!i.......|...\r\n" +
+          "    03e0 - 69 1d a3 c1 87 6f 93 67-4b f9 68 a0 36 3c 2a 68   i....o.gK.h.6<*h\r\n" +
+          "    03f0 - 6d 89 fb 02 fb d0 b0 33-cb cd 35 34 53 e8 49 10   m......3..54S.I.\r\n" +
+          '    0400 - 84 d1 cb f7 1b a0 a5 22-e4 fb 6f 40 a5 0b f9 74   ......."..o@...t\r\n' +
+          "    0410 - f4 a1 1d 53 fb 29 4e 6a-5f c3 f2 a9 ae 78 02 12   ...S.)Nj_....x..\r\n" +
+          "    0420 - 43 e6 35 73 e0 64 93 17-f4 a4 e1 68 a4 e3 89 2d   C.5s.d.....h...-\r\n" +
+          "    0430 - ce c9 5c 66 33 61 a2 49-06 d4 85 4d 9f 58 01 b4   ..\\f3a.I...M.X..\r\n" +
+          "    0440 - 6f 38 52 02 0a 65 a3 3a-01 f3 c1 3e 6f 51 36 2c   o8R..e.:...>oQ6,\r\n" +
+          "    0450 - 1d 3b 01 1e ff 04 26 21-27 18 ca 6c 5b 6e 54 d0   .;....&!'..l[nT.\r\n" +
+          "    0460 - 02 8c db 7c 46 5c 85 a7-16 15 9d 18 a5 a9 94 09   ...|F\\..........\r\n" +
+          "    0470 - 7d 47 ec db de a8 3f 09-d4 ec c5 3e 40 f8 bd 95   }G....?....>@...\r\n" +
+          "    0480 - 9d 0f 39 fb f2 44 51 f9-0e df 14 cb 47 2a e7 d8   ..9..DQ.....G*..\r\n" +
+          "    0490 - 53 c4 8f 14 61 d5 8b 1e-11 61 b9 b6 b5 e4 46 f2   S...a....a....F.\r\n" +
+          "    04a0 - 8e 36 51 53 0b 35 3d 8c-4a b3 78 55 10 70 ba 3f   .6QS.5=.J.xU.p.?\r\n" +
+          "    04b0 - d6 34 47 ab 0e bd 4e 50-da 20 9c 74 72 e5 9e d3   .4G...NP. .tr...\r\n" +
+          "    04c0 - 37 f7 4a 0e 94 27 c6 72-a9 5d a0 c8 de ef 35 46   7.J..'.r.]....5F\r\n" +
+          "    04d0 - 64 e1 58 9b ee 2b 1c a1-32 f6 50 3f e8 29 f8 41   d.X..+..2.P?.).A\r\n" +
+          "    04e0 - 44 1e ce 30 92 eb c5 56-4f a3 b2 2d 40 56 91 3f   D..0...VO..-@V.?\r\n" +
+          "\r\n" +
+          "    Start Time: 1681831425\r\n" +
+          "    Timeout   : 7200 (sec)\r\n" +
+          "    Verify return code: 0 (ok)\r\n" +
+          "    Extended master secret: no\r\n" +
+          "    Max Early Data: 0\r\n" +
+          "---\r\n" +
+          "SSL_connect:SSLv3/TLS read server session ticket\r\n" +
+          "read R BLOCK\r\n" +
+          "SSL_connect:SSL negotiation finished successfully\r\n" +
+          "SSL_connect:SSL negotiation finished successfully\r\n" +
+          "---\r\n" +
+          "Post-Handshake New Session Ticket arrived:\r\n" +
+          "SSL-Session:\r\n" +
+          "    Protocol  : TLSv1.3\r\n" +
+          "    Cipher    : TLS_AES_256_GCM_SHA384\r\n" +
+          "    Session-ID: 18B726FB52D8760B9D34D012DF5D260AB0DCB7067878B167C9D29A8081F51AB4\r\n" +
+          "    Session-ID-ctx: \r\n" +
+          "    Resumption PSK: 7004F1ABB7BCCC01630B001CC85C33AB2431A68416F5035E304596F8055AAB165300A7A2C829849750AF3EE6FDC00901\r\n" +
+          "    PSK identity: None\r\n" +
+          "    PSK identity hint: None\r\n" +
+          "    SRP username: None\r\n" +
+          "    TLS session ticket lifetime hint: 7200 (seconds)\r\n" +
+          "    TLS session ticket:\r\n" +
+          "    0000 - 53 eb ad ba 8f 95 18 2a-93 f5 ba fb 84 99 46 10   S......*......F.\r\n" +
+          "    0010 - 4e b3 81 d4 43 c5 c6 18-b7 6c 7b 7f e5 e0 dd 60   N...C....l{....`\r\n" +
+          "    0020 - 2e 1f 59 9d 85 14 ff d7-65 54 d5 1c c0 5f 07 85   ..Y.....eT..._..\r\n" +
+          "    0030 - 61 52 4f 96 a4 ff fd 0f-9d ce 2a 62 67 06 00 ae   aRO.......*bg...\r\n" +
+          "    0040 - e1 49 2d dc b6 7d 9f 7b-ba 39 b0 a3 12 33 ca f2   .I-..}.{.9...3..\r\n" +
+          "    0050 - c7 07 97 33 9b f1 b2 29-b7 ed 16 d3 fe ab 8d a1   ...3...)........\r\n" +
+          "    0060 - 46 ab f5 4a 05 76 6f 10-3e 2d bf c4 ac 24 41 23   F..J.vo.>-...$A#\r\n" +
+          "    0070 - f8 9f 6d 82 be 20 ea 7f-93 1d 86 b7 78 dd 90 25   ..m.. ......x..%\r\n" +
+          "    0080 - 72 5e 48 ea d5 2e ac 66-e1 eb 4d ae f6 44 80 bc   r^H....f..M..D..\r\n" +
+          "    0090 - f9 f7 5d bd 10 e0 d9 f4-38 b1 13 db 85 91 a4 c9   ..].....8.......\r\n" +
+          "    00a0 - 56 8f 32 16 e9 8d ea 2b-96 1d 79 d8 6f 04 fd a5   V.2....+..y.o...\r\n" +
+          "    00b0 - 99 b4 4e 49 21 cf 99 f5-30 15 82 d1 01 2c a6 35   ..NI!...0....,.5\r\n" +
+          "    00c0 - 2d b7 29 9a f5 b9 52 94-46 1f 5f cb 8a 25 65 d8   -.)...R.F._..%e.\r\n" +
+          "    00d0 - e1 e9 25 83 3c 28 12 3a-7c 7e d2 7d 93 a3 a9 f7   ..%.<(.:|~.}....\r\n" +
+          "    00e0 - 70 e7 97 ca 95 52 15 88-32 4e 7b 38 bb d2 08 fe   p....R..2N{8....\r\n" +
+          '    00f0 - 16 22 f5 d5 a7 9a 00 37-1f d3 1a 40 a7 a6 17 80   .".....7...@....\r\n' +
+          "    0100 - e3 a1 2a d6 f6 63 32 00-12 cf 74 fc 9b 3d 1e 38   ..*..c2...t..=.8\r\n" +
+          "    0110 - f3 76 aa 9d f0 32 d0 89-bf 0c 01 99 dc 96 9d c7   .v...2..........\r\n" +
+          "    0120 - 52 62 a9 7a dc 2b 62 3c-23 f2 85 b1 34 f3 29 0c   Rb.z.+b<#...4.).\r\n" +
+          "    0130 - 94 3b 9b be 71 44 9c 75-5e 3c e3 8f ac 32 41 1f   .;..qD.u^<...2A.\r\n" +
+          "    0140 - 5c 5d eb 36 0a c6 03 c7-6e 44 de 44 16 02 e7 d0   \\].6....nD.D....\r\n" +
+          "    0150 - b5 be b6 ae 0d 07 b1 37-df 19 cb 38 e4 66 2b 05   .......7...8.f+.\r\n" +
+          "    0160 - 81 f2 77 9a 13 c2 10 94-b2 8d a0 4d 0e 17 39 31   ..w........M..91\r\n" +
+          "    0170 - 83 5f 9c 4b f9 c3 77 be-b1 70 dc 29 90 f3 e3 0e   ._.K..w..p.)....\r\n" +
+          "    0180 - a6 18 14 f6 7f f9 9c e3-4f b0 25 3f ce c5 69 1b   ........O.%?..i.\r\n" +
+          "    0190 - 59 bb 25 6b 68 dd 9c bd-c6 fe 2a 51 a2 56 89 82   Y.%kh.....*Q.V..\r\n" +
+          "    01a0 - 09 aa 15 9d cf 0a 8b b1-6e bb 4a c0 d1 a4 c3 a1   ........n.J.....\r\n" +
+          "    01b0 - 62 28 49 b8 e1 e6 47 47-d7 2c 86 f7 7a 6a a4 ae   b(I...GG.,..zj..\r\n" +
+          "    01c0 - 2d 5c 97 4b 6b b0 5a 02-eb d8 a0 b7 fd 69 fd 3c   -\\.Kk.Z......i.<\r\n" +
+          "    01d0 - 4e 0d ab cd f3 b2 73 46-8a 09 15 6b 5e 6f 04 4e   N.....sF...k^o.N\r\n" +
+          "    01e0 - 29 cb 33 7e 20 33 9b 1f-ba 73 48 8a 2e 65 9e 37   ).3~ 3...sH..e.7\r\n" +
+          "    01f0 - 37 a3 aa b9 68 88 24 38-2c 23 49 24 dd 79 cb 01   7...h.$8,#I$.y..\r\n" +
+          "    0200 - 88 6a 92 5e 62 37 3a bc-95 7e 5b a3 cc 0f 4c e0   .j.^b7:..~[...L.\r\n" +
+          '    0210 - 59 77 e2 c7 5f fb 6c d2-22 6b b3 a9 a6 9f ce 80   Yw.._.l."k......\r\n' +
+          "    0220 - 97 c6 67 9b c3 67 eb 26-2e 4c a5 74 41 a5 12 6d   ..g..g.&.L.tA..m\r\n" +
+          "    0230 - 0d 37 fe 6e a3 19 8f 78-e0 e1 eb 3d e3 ff 7f 21   .7.n...x...=...!\r\n" +
+          "    0240 - e4 82 17 26 f1 45 bf c9-38 43 02 fb ac 12 9f 9a   ...&.E..8C......\r\n" +
+          "    0250 - 7c 13 34 de a9 46 05 0d-f0 18 99 14 18 b3 4c 0f   |.4..F........L.\r\n" +
+          "    0260 - f9 57 94 57 3c ed 44 93-13 81 a6 65 c0 3a 2c 26   .W.W<.D....e.:,&\r\n" +
+          "    0270 - 65 45 41 67 44 2c ff 85-90 d1 57 7f 04 5e 8a 49   eEAgD,....W..^.I\r\n" +
+          "    0280 - 82 66 bc 21 ce a1 96 e9-ac be 1e a8 b0 de 94 d5   .f.!............\r\n" +
+          "    0290 - 16 59 dc 1c 2d e6 4e 50-3f a3 09 8e 7c f5 82 61   .Y..-.NP?...|..a\r\n" +
+          "    02a0 - 42 42 04 e8 ce d7 1c f8-bf b6 04 d5 f8 fb c0 ae   BB..............\r\n" +
+          "    02b0 - 98 9f c5 09 bc f5 36 08-4e 5d 18 25 3e a1 ba 67   ......6.N].%>..g\r\n" +
+          "    02c0 - d5 a5 57 82 7f 58 04 49-1d da 40 ee 46 c4 ca 42   ..W..X.I..@.F..B\r\n" +
+          '    02d0 - 7d ec 1d 9d 7f c4 b2 0c-5a 2d 22 b2 3a a8 b3 59   }.......Z-".:..Y\r\n' +
+          "    02e0 - c5 41 00 35 91 56 4b b1-bc d2 9f d8 62 f4 f3 b8   .A.5.VK.....b...\r\n" +
+          "    02f0 - 3e e9 21 e7 b3 3e 1d 39-60 ab 14 9b 94 7a 1f 48   >.!..>.9`....z.H\r\n" +
+          "    0300 - 3f 4b 84 9b e2 24 fa 1f-9a 5e fd 1e e1 ec 63 59   ?K...$...^....cY\r\n" +
+          "    0310 - 2d 82 15 03 1f f0 35 c3-b7 23 71 46 fc f3 a2 35   -.....5..#qF...5\r\n" +
+          "    0320 - 09 67 6f da 90 20 cf 15-10 e6 40 09 b2 3f fa c9   .go.. ....@..?..\r\n" +
+          "    0330 - ae ed 6f 29 a3 e6 eb 32-e5 3a ce fd cf b1 81 ec   ..o)...2.:......\r\n" +
+          "    0340 - 11 61 81 14 8a 94 1b 5f-96 ab fe d4 36 5f 03 4d   .a....._....6_.M\r\n" +
+          "    0350 - 10 2a 5c f1 cc b8 b6 bc-37 3e 48 17 20 7b 34 31   .*\\.....7>H. {41\r\n" +
+          "    0360 - e9 7e 0b 38 c5 82 df b1-77 ec cb 2e 79 a2 ad 2e   .~.8....w...y...\r\n" +
+          "    0370 - af 16 fd 50 ab fa 6a f6-ee dc 2f ce 83 87 7e 9b   ...P..j.../...~.\r\n" +
+          "    0380 - 4e 9a 97 1f 57 31 82 a9-40 5c 6a 81 b1 d0 b3 f5   N...W1..@\\j.....\r\n" +
+          "    0390 - 57 c8 54 e5 17 48 9a f4-68 d4 e9 8c c8 0f 1c 91   W.T..H..h.......\r\n" +
+          "    03a0 - e7 7c 90 81 53 9b 84 0e-39 4d 61 6b b3 4c 53 fb   .|..S...9Mak.LS.\r\n" +
+          "    03b0 - 82 51 fd 94 c6 5e 4e 89-63 0e d3 fa 77 4d 18 24   .Q...^N.c...wM.$\r\n" +
+          "    03c0 - 71 fe a0 e9 cf 33 45 af-4c a4 05 9d cf e1 1d 04   q....3E.L.......\r\n" +
+          "    03d0 - 9e 36 1a 28 3e e9 4b d7-88 c4 08 3f 28 be a8 b4   .6.(>.K....?(...\r\n" +
+          "    03e0 - 2f ef 97 65 10 6c 29 5f-77 8f 92 71 f4 54 e0 41   /..e.l)_w..q.T.A\r\n" +
+          "    03f0 - 89 8e 6c 96 e6 64 90 65-b0 60 8d 52 76 77 1e 81   ..l..d.e.`.Rvw..\r\n" +
+          "    0400 - 8c c0 f2 f9 17 a6 24 d0-04 e3 76 31 d0 aa 89 47   ......$...v1...G\r\n" +
+          '    0410 - da fd 9e 17 fe 79 02 a4-26 45 22 1d fa d8 7d 59   .....y..&E"...}Y\r\n' +
+          '    0420 - 10 fd 5c d6 8f 99 a7 4a-b1 22 e4 d1 8d b4 21 7d   ..\\....J."....!}\r\n' +
+          "    0430 - 98 17 99 4f 80 eb d2 01-41 1d 82 0a 88 6c 9e 4c   ...O....A....l.L\r\n" +
+          "    0440 - 6b 26 04 63 55 4e bb a7-b6 10 b7 a3 76 2b e6 b7   k&.cUN......v+..\r\n" +
+          "    0450 - 11 aa a2 d8 2e 13 c0 ba-75 3a d5 0f d5 1e c7 9a   ........u:......\r\n" +
+          "    0460 - 90 36 d8 f6 ee fb f2 cb-50 bc 06 dd 0a 7f f0 9b   .6......P.......\r\n" +
+          "    0470 - 3e 43 3d be d3 3e af 9d-37 9a 0b d9 86 34 3c c0   >C=..>..7....4<.\r\n" +
+          "    0480 - 25 29 27 d8 83 6c 73 72-20 70 ab 6b b1 ac f8 cd   %)'..lsr p.k....\r\n" +
+          "    0490 - 7b e7 05 8e cf 08 32 a3-f6 83 76 d7 f7 63 8d 05   {.....2...v..c..\r\n" +
+          "    04a0 - ad b6 0d 0c 2a 74 d6 97-c7 06 79 61 4e ed 19 e4   ....*t....yaN...\r\n" +
+          "    04b0 - 3e d2 2b 7a 7d 72 e3 bd-d7 05 eb 77 f6 c9 bf 32   >.+z}r.....w...2\r\n" +
+          "    04c0 - 04 15 9c 34 2e 17 80 16-52 e2 32 48 0a fc 88 48   ...4....R.2H...H\r\n" +
+          '    04d0 - d2 32 e2 6f 5d 28 b2 50-1c f1 7f 22 2e c3 ef 61   .2.o](.P..."...a\r\n' +
+          "    04e0 - ed f9 55 78 aa 2c 6b 8c-34 76 fd 89 57 77 a3 6f   ..Ux.,k.4v..Ww.o\r\n" +
+          "\r\n" +
+          "    Start Time: 1681831426\r\n" +
+          "    Timeout   : 7200 (sec)\r\n" +
+          "    Verify return code: 0 (ok)\r\n" +
+          "    Extended master secret: no\r\n" +
+          "    Max Early Data: 0\r\n" +
+          "---\r\n" +
+          "SSL_connect:SSLv3/TLS read server session ticket\r\n" +
+          "read R BLOCK\r\n" +
+          "DONE\r\n" +
+          "SSL3 alert write:warning:close notify\r\n",
+        stderr:
+          "Warning: Permanently added '[127.0.0.2]:2222' (ED25519) to the list of known hosts.\r\n" +
+          "ControlSocket /home/alois/.ssh/controlmasters/root@127.0.0.2:2222 already exists, disabling multiplexing\r\n" +
+          "Connection to 127.0.0.2 closed.\r\n",
+        stdin: `openssl, s_client, -connect, 127.0.0.1:${port}, -key, certs/client.key.pem, -cert, certs/client.cert.pem, -CAfile, certs/cacert.pem, -state`,
+      },
+      server: {
+        stdout:
+          "verify depth is 1\r\n" +
+          "Using default temp DH parameters\r\n" +
+          "ACCEPT\r\n" +
+          "SSL_accept:before SSL initialization\r\n" +
+          "SSL_accept:before SSL initialization\r\n" +
+          "SSL_accept:SSLv3/TLS read client hello\r\n" +
+          "SSL_accept:SSLv3/TLS write server hello\r\n" +
+          "SSL_accept:SSLv3/TLS write change cipher spec\r\n" +
+          "SSL_accept:TLSv1.3 write encrypted extensions\r\n" +
+          "SSL_accept:SSLv3/TLS write certificate request\r\n" +
+          "SSL_accept:SSLv3/TLS write certificate\r\n" +
+          "SSL_accept:TLSv1.3 write server certificate verify\r\n" +
+          "SSL_accept:SSLv3/TLS write finished\r\n" +
+          "SSL_accept:TLSv1.3 early data\r\n" +
+          "SSL_accept:TLSv1.3 early data\r\n" +
+          "depth=0 C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\r\n" +
+          "verify error:num=20:unable to get local issuer certificate\r\n" +
+          "verify return:1\r\n" +
+          "depth=0 C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\r\n" +
+          "verify error:num=21:unable to verify the first certificate\r\n" +
+          "verify return:1\r\n" +
+          "depth=0 C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\r\n" +
+          "verify return:1\r\n" +
+          "SSL_accept:SSLv3/TLS read client certificate\r\n" +
+          "SSL_accept:SSLv3/TLS read certificate verify\r\n" +
+          "SSL_accept:SSLv3/TLS read finished\r\n" +
+          "SSL_accept:SSLv3/TLS write session ticket\r\n" +
+          "SSL_accept:SSLv3/TLS write session ticket\r\n" +
+          "-----BEGIN SSL SESSION PARAMETERS-----\r\n" +
+          "MIIEnwIBAQICAwQEAhMCBCCjZtOzj/zLRjVSthZ8Zdp68kMP8JIIxbgOnrHsGLqp\r\n" +
+          "DAQwcATxq7e8zAFjCwAcyFwzqyQxpoQW9QNeMEWW+AVaqxZTAKeiyCmEl1CvPub9\r\n" +
+          "wAkBoQYCBGQ+tf6iBAICHCCjggQTMIIEDzCCAvegAwIBAgIBATANBgkqhkiG9w0B\r\n" +
+          "AQsFADBsMQswCQYDVQQGEwJGUjEMMAoGA1UECAwDSWRGMQ4wDAYDVQQHDAVQYXJp\r\n" +
+          "czEQMA4GA1UECgwHRGF0YURvZzEZMBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDES\r\n" +
+          "MBAGA1UEAwwJS3JhZnRDZXJ0MB4XDTIyMTEwNDE1NDEwMloXDTI3MDUxMjE1NDEw\r\n" +
+          "MlowZjELMAkGA1UEBhMCRlIxDDAKBgNVBAgMA0lkRjEQMA4GA1UECgwHRGF0YURv\r\n" +
+          "ZzEZMBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDEcMBoGA1UEAwwTTWFsaWNpb3Vz\r\n" +
+          "Q2xpZW50Q2VydDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPQF8hvb\r\n" +
+          "Dz6ahB2bngA3b+hf9RqsSy79vcQmZx791iCYY+8Svdes6G8NFZMv/8h875bLB9m+\r\n" +
+          "xhbVxBGwr9ReQj16jNAlfmpXgaKrRG01P2pmjR//LvBvzkU5ki/Buc5RtjkEp1Ly\r\n" +
+          "8bcR97LMovHRdNnLD7uAddnT/DPeRmzn4GAIFfzUhvW7zt8jZvtO2jwKFlM4UBrM\r\n" +
+          "8t616GwBjqWJoaYGQ9165EfCqhfdUUyQWEYRWLYsSM1Q4ciqdHp8PcFAxDG7ILni\r\n" +
+          "WUlMYOsppm49ffZFiUSE6fiu3maK+Y63mRsODkHK8tJBz7oIIULfBKRgR3kwsPdN\r\n" +
+          "CYX2X4od78nglHkCAwEAAaOBwTCBvjAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBQr\r\n" +
+          "x2XGHx2wX6ZJqkufShvxmm2XWjAfBgNVHSMEGDAWgBQHtbgFs6+sQi8K+hT/9V7K\r\n" +
+          "gPQydDARBglghkgBhvhCAQEEBAMCBaAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQW\r\n" +
+          "MBQGCCsGAQUFBwMCBggrBgEFBQcDBDAsBgNVHREEJTAjoCEGCCsGAQUFBwgJoBUM\r\n" +
+          "E+a1i+ivlUBvdmVyZmxvdy5jb20wDQYJKoZIhvcNAQELBQADggEBAAhXaVy0G+qb\r\n" +
+          "CL2y5n/D9wwsUJwmgJMjo76rxN1eHruHQW3golukwhvYcejVQ0OwaoA4jTcacH7h\r\n" +
+          "8xBsD2CsGjBaex/BnRAPYr4vgvTxyEuI5AiI3ecNSr77CtvNwT0Xd3JpmoPGKykR\r\n" +
+          "rFTs/5svIXUla9VOQsLhpXotEUC5gYciScbDXmVTG4KZ7EO55iByzqnYUGrdyf+z\r\n" +
+          "ZxBkZaD3Wgr+EuXZeHmVH4CVKdyN3EcsKRSaX3Vg0OBINere0oblg5xbtPRaeX4j\r\n" +
+          "/+EGKgy1cVTcbu986Lf5/wnArbQwf+lkYl8rWowej54B/7Owgb+bxQcv7Z2pYlJw\r\n" +
+          "zhZpTfQIqASkBgQEAQAAAKUDAgEVrgcCBQCAa8zKswMCAR0=\r\n" +
+          "-----END SSL SESSION PARAMETERS-----\r\n" +
+          "Client certificate\r\n" +
+          "-----BEGIN CERTIFICATE-----\r\n" +
+          "MIIEDzCCAvegAwIBAgIBATANBgkqhkiG9w0BAQsFADBsMQswCQYDVQQGEwJGUjEM\r\n" +
+          "MAoGA1UECAwDSWRGMQ4wDAYDVQQHDAVQYXJpczEQMA4GA1UECgwHRGF0YURvZzEZ\r\n" +
+          "MBcGA1UECwwQU2VjdXJpdHlSZXNlYXJjaDESMBAGA1UEAwwJS3JhZnRDZXJ0MB4X\r\n" +
+          "DTIyMTEwNDE1NDEwMloXDTI3MDUxMjE1NDEwMlowZjELMAkGA1UEBhMCRlIxDDAK\r\n" +
+          "BgNVBAgMA0lkRjEQMA4GA1UECgwHRGF0YURvZzEZMBcGA1UECwwQU2VjdXJpdHlS\r\n" +
+          "ZXNlYXJjaDEcMBoGA1UEAwwTTWFsaWNpb3VzQ2xpZW50Q2VydDCCASIwDQYJKoZI\r\n" +
+          "hvcNAQEBBQADggEPADCCAQoCggEBAPQF8hvbDz6ahB2bngA3b+hf9RqsSy79vcQm\r\n" +
+          "Zx791iCYY+8Svdes6G8NFZMv/8h875bLB9m+xhbVxBGwr9ReQj16jNAlfmpXgaKr\r\n" +
+          "RG01P2pmjR//LvBvzkU5ki/Buc5RtjkEp1Ly8bcR97LMovHRdNnLD7uAddnT/DPe\r\n" +
+          "Rmzn4GAIFfzUhvW7zt8jZvtO2jwKFlM4UBrM8t616GwBjqWJoaYGQ9165EfCqhfd\r\n" +
+          "UUyQWEYRWLYsSM1Q4ciqdHp8PcFAxDG7ILniWUlMYOsppm49ffZFiUSE6fiu3maK\r\n" +
+          "+Y63mRsODkHK8tJBz7oIIULfBKRgR3kwsPdNCYX2X4od78nglHkCAwEAAaOBwTCB\r\n" +
+          "vjAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBQrx2XGHx2wX6ZJqkufShvxmm2XWjAf\r\n" +
+          "BgNVHSMEGDAWgBQHtbgFs6+sQi8K+hT/9V7KgPQydDARBglghkgBhvhCAQEEBAMC\r\n" +
+          "BaAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcD\r\n" +
+          "BDAsBgNVHREEJTAjoCEGCCsGAQUFBwgJoBUME+a1i+ivlUBvdmVyZmxvdy5jb20w\r\n" +
+          "DQYJKoZIhvcNAQELBQADggEBAAhXaVy0G+qbCL2y5n/D9wwsUJwmgJMjo76rxN1e\r\n" +
+          "HruHQW3golukwhvYcejVQ0OwaoA4jTcacH7h8xBsD2CsGjBaex/BnRAPYr4vgvTx\r\n" +
+          "yEuI5AiI3ecNSr77CtvNwT0Xd3JpmoPGKykRrFTs/5svIXUla9VOQsLhpXotEUC5\r\n" +
+          "gYciScbDXmVTG4KZ7EO55iByzqnYUGrdyf+zZxBkZaD3Wgr+EuXZeHmVH4CVKdyN\r\n" +
+          "3EcsKRSaX3Vg0OBINere0oblg5xbtPRaeX4j/+EGKgy1cVTcbu986Lf5/wnArbQw\r\n" +
+          "f+lkYl8rWowej54B/7Owgb+bxQcv7Z2pYlJwzhZpTfQIqAQ=\r\n" +
+          "-----END CERTIFICATE-----\r\n" +
+          "subject=C = FR, ST = IdF, O = DataDog, OU = SecurityResearch, CN = MaliciousClientCert\r\n" +
+          "issuer=C = FR, ST = IdF, L = Paris, O = DataDog, OU = SecurityResearch, CN = KraftCert\r\n" +
+          "Shared ciphers:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA\r\n" +
+          "Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:ECDSA+SHA1:RSA+SHA224:RSA+SHA1:DSA+SHA224:DSA+SHA1:DSA+SHA256:DSA+SHA384:DSA+SHA512\r\n" +
+          "Shared Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:Ed25519:Ed448:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224\r\n" +
+          "Peer signing digest: SHA256\r\n" +
+          "Peer signature type: RSA-PSS\r\n" +
+          "Supported groups: x25519:secp256r1:x448:secp521r1:secp384r1\r\n" +
+          "Shared groups: x25519:secp256r1:x448:secp521r1:secp384r1\r\n" +
+          "CIPHER is TLS_AES_256_GCM_SHA384\r\n" +
+          "Secure Renegotiation IS supported\r\n" +
+          "Hello World from my OpenSSL Client!\r\n" +
+          "SSL3 alert read:warning:close notify\r\n" +
+          "DONE\r\n" +
+          "shutting down SSL\r\n" +
+          "SSL3 alert write:warning:close notify\r\n" +
+          "CONNECTION CLOSED\r\n" +
+          "   0 items in the session cache\r\n" +
+          "   0 client connects (SSL_connect())\r\n" +
+          "   0 client renegotiates (SSL_connect())\r\n" +
+          "   0 client connects that finished\r\n" +
+          "   1 server accepts (SSL_accept())\r\n" +
+          "   0 server renegotiates (SSL_accept())\r\n" +
+          "   1 server accepts that finished\r\n" +
+          "   0 session cache hits\r\n" +
+          "   0 session cache misses\r\n" +
+          "   0 session cache timeouts\r\n" +
+          "   0 callback cache hits\r\n" +
+          "   0 cache full overflows (128 allowed)\r\n",
+        stderr:
+          "Warning: Permanently added '[127.0.0.2]:2222' (ED25519) to the list of known hosts.\r\n" +
+          "ControlSocket /home/alois/.ssh/controlmasters/root@127.0.0.2:2222 already exists, disabling multiplexing\r\n" +
+          "Connection to 127.0.0.2 closed.\r\n",
+        stdin: `/usr/local/bin/openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -naccept, 1, -key, certs/server.key.pem, -state, -verify, 1`,
+        exitCode: 0,
       },
     };
   }

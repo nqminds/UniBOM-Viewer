@@ -114,6 +114,24 @@ export class LocalHostTestCase extends OpenSSLTestCase {
 }
 
 /**
+ * Same as {@link LocalHostTestCase}, except with a normal
+ * certificate, so should exit without any errors.
+ */
+export class LocalHostTestCaseSafeCert extends LocalHostTestCase {
+  /**
+   * @inheritdoc
+   */
+  async run({ port } = {}) {
+    // runs tests with default options on localhost
+    return await runTest({
+      sshOpts: null,
+      port,
+      maliciousClientCA: false,
+    });
+  }
+}
+
+/**
  * Helper functions that apply to all Morello test cases.
  */
 export class MorelloOpenSSLTestCase extends OpenSSLTestCase {
@@ -222,6 +240,24 @@ export class MorelloHybridOpenSSLTestCase extends MorelloOpenSSLTestCase {
 }
 
 /**
+ * Same as {@link MorelloHybridOpenSSLTestCase}, except with a normal
+ * certificate, so should exit without any errors.
+ */
+export class MorelloHybridOpenSSLTestCaseSafeCert extends MorelloHybridOpenSSLTestCase {
+  /**
+   * @inheritdoc
+   */
+  async run({ port } = {}) {
+    return await runTest({
+      maliciousClientCA: false,
+      sshOpts: this.sshOpts,
+      serverOpensslBinary: "/usr/local64/bin/openssl",
+      port,
+    });
+  }
+}
+
+/**
  * Runs the OpenSSL test case on a Morello Purecap system.
  *
  * The OpenSSL server should throw a CHERI `SIGPROT`.
@@ -233,6 +269,24 @@ export class MorelloPurecapOpenSSLTestCase extends MorelloOpenSSLTestCase {
    */
   async run({ port } = {}) {
     return await runTest({
+      sshOpts: this.sshOpts,
+      serverOpensslBinary: "/usr/local/bin/openssl",
+      port,
+    });
+  }
+}
+
+/**
+ * Same as {@link MorelloPurecapOpenSSLTestCase}, except with a normal
+ * certificate, so should exit without any errors.
+ */
+export class MorelloPurecapOpenSSLTestCaseSafeCert extends MorelloPurecapOpenSSLTestCase {
+  /**
+   * @inheritdoc
+   */
+  async run({ port } = {}) {
+    return await runTest({
+      maliciousClientCA: false,
       sshOpts: this.sshOpts,
       serverOpensslBinary: "/usr/local/bin/openssl",
       port,
