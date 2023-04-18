@@ -1,8 +1,10 @@
 import {
   LocalHostTestCase,
-  MorelloPurecapOpenSSLTestCase,
+  // MorelloPurecapOpenSSLTestCase, // MOCKED SINCE BROKEN
   MorelloHybridOpenSSLTestCase,
 } from "@nqminds/openssl-vuln-poc";
+
+import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc/src/__mocks__/index.mjs";
 
 /**
  * Mocked up Good certificate test case.
