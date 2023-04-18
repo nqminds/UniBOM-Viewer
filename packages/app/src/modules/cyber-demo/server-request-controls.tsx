@@ -16,6 +16,11 @@ const ButtonContainer = styled("div")(() => ({
   justifyContent: "center",
 }));
 
+const StyledDivider = styled(Divider)(({theme: {spacing}}) => ({
+  marginTop: spacing(1),
+  marginBottom: spacing(1),
+}));
+
 const servers = [
   {
     name: "Morello Purecap",
@@ -33,7 +38,7 @@ const servers = [
           the CPU preventing the instruction from running, and throwing a{" "}
           <code>SIGPROT</code> CHERI protection violation.
         </Typography>
-        <Divider />
+        <StyledDivider />
         <Typography variant="subtitle1">
           Expected behavior with malicious certificates:
         </Typography>
@@ -80,7 +85,7 @@ const servers = [
           bypass the stack canary, and so the buffer overflow will be detected,
           and the process will be aborted with a <code>SIGABRT</code> signal.
         </Typography>
-        <Divider />
+        <StyledDivider />
         <Typography variant="subtitle1">
           Expected behavior with malicious certificates:
         </Typography>
