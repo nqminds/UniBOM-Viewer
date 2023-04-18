@@ -24,6 +24,7 @@
   "exports": {
     ".": {
       "default": "./src/index.mjs"
-    }
+    },
+    "./src/__mocks__/index.mjs": "./src/__mocks__/index.mjs"
   }
 }
