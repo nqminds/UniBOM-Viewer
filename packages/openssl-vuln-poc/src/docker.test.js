@@ -4,11 +4,13 @@ import { DockerServer } from "./docker.mjs";
 
 const DOCKER_SETUP_TIMEOUT = 10 * 60 * 1000;
 
+const DOCKER_SERVER_NAME = "nqminds-openssl-vuln-poc-server-docker-test-js";
+
 // skip tests if running in CI
 (process.env.CI ? describe.skip : describe)("DockerServer", () => {
   const dockerServer = new DockerServer({
     // change defaults to avoid conflicts with other DockerServer tests
-    name: "nqminds-openssl-vuln-poc-server-docker-test-js",
+    name: DOCKER_SERVER_NAME,
     port: 2223,
   });
   describe("#pullImage", () => {
@@ -34,6 +36,10 @@ const DOCKER_SETUP_TIMEOUT = 10 * 60 * 1000;
         await dockerServer.setup();
 
         expect(dockerServer.process.exitCode).toBe(null);
+
+        await expect(dockerServer.throwIfRunning()).rejects.toThrow(
+          `The podman container ${DOCKER_SERVER_NAME} is already running.`
+        );
       },
       DOCKER_SETUP_TIMEOUT
     );
