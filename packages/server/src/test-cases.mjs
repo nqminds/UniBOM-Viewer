@@ -1,11 +1,14 @@
 import {
-  // MorelloPurecapOpenSSLTestCase, // MOCKED SINCE BROKEN
-  MorelloPurecapOpenSSLTestCaseSafeCert,
+  // MorelloPurecapOpenSSLTestCase, // MOCKED SINCE BROKEN (see https://github.com/nqminds/cyber/issues/23)
+  // MorelloPurecapOpenSSLTestCaseSafeCert, // MOCKED SINCE BROKEN (see https://github.com/nqminds/cyber/issues/23)
   MorelloHybridOpenSSLTestCase,
   MorelloHybridOpenSSLTestCaseSafeCert,
 } from "@nqminds/openssl-vuln-poc";
 
-import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc/src/__mocks__/index.mjs";
+import {
+  MorelloPurecapOpenSSLTestCase,
+  MorelloPurecapOpenSSLTestCaseSafeCert,
+} from "@nqminds/openssl-vuln-poc/src/__mocks__/index.mjs";
 
 export default {
   purecap: {
