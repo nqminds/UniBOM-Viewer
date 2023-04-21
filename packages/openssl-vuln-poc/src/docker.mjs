@@ -172,6 +172,7 @@ export class DockerServer {
       if (error.code === 125) {
         return; // container doesn't exist, which is great!
       }
+      throw error;
     }
   }
 
