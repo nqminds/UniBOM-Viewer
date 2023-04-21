@@ -16,9 +16,11 @@ const __dirname = dirname(__filename);
 /**
  * @typedef {object} RunLogs Result from a {@link OpenSSLTestCase} run.
  * @property {object} client - OpenSSL client logs.
+ * @property {string} client.stdin - OpenSSL client command and args (**NOT STDIN**)
  * @property {string} client.stdout - OpenSSL client stdout output.
  * @property {string} client.stderr - OpenSSL client stderr output.
  * @property {object} server - OpenSSL server logs.
+ * @property {string} server.stdin - OpenSSL server command and args (**NOT STDIN**).
  * @property {string} server.stdout - OpenSSL server stdout output.
  * @property {string} server.stderr - OpenSSL server stderr output.
  * @property {import("node:child_process").ChildProcess.exitCode} server.exitCode -
@@ -157,7 +159,7 @@ export async function runTest({
         console.error("Error:", error);
       });
 
-    /** @type {RunLogs["client"] | undefined} */
+    /** @type {{stdout: string, stderr: string} | undefined} */
     let clientOutput;
     try {
       clientOutput = await clientProcess;
@@ -173,7 +175,6 @@ export async function runTest({
       }
 
       clientOutput = {
-        stdin: clientStdIn.join(", "),
         stdout: execFileError.stdout,
         stderr: execFileError.stderr,
       };
@@ -183,7 +184,7 @@ export async function runTest({
       "Client OpenSSL process is done, killing OpenSSL Server"
     );
 
-    /** @type {RunLogs["server"] | undefined} */
+    /** @type {{stdout: string, stderr: string} | undefined} */
     let serverOutput;
     try {
       serverOutput = await serverProcess;
@@ -194,16 +195,19 @@ export async function runTest({
       );
 
       serverOutput = {
-        stdin: serverStdIn.join(", "),
         stdout: execFileError.stdout,
         stderr: execFileError.stderr,
       };
     }
 
     return /** @type {RunLogs} */ ({
-      client: clientOutput,
+      client: {
+        ...clientOutput,
+        stdin: clientStdIn.join(", "),
+      },
       server: {
         ...serverOutput,
+        stdin: serverStdIn.join(", "),
         exitCode: serverProcess.child.exitCode || 0x82 /* Killed by SIGINT */,
       },
     });

@@ -141,6 +141,7 @@ export class LocalHostTestCase extends OpenSSLTestCase {
           "SSL_connect:SSLv3/TLS write finished\n" +
           "DONE\n" +
           "SSL3 alert write:warning:close notify\n",
+        stdin: `openssl, s_client, -connect, 127.0.0.1:${port}, -key, certs/client.key.pem, -cert, certs/client.cert.pem, -CAfile, certs/malicious-client-cacert.pem, -state`,
       },
       server: {
         stdin: `openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -key, certs/server.key.pem, -state, -verify, 1`,
@@ -355,6 +356,7 @@ export class MorelloHybridOpenSSLTestCase extends MorelloOpenSSLTestCase {
           "Warning: Permanently added '[127.0.0.2]:2222' (ED25519) to the list of known hosts.\r\n" +
           "ControlSocket /home/alois/.ssh/controlmasters/root@127.0.0.2:2222 already exists, disabling multiplexing\r\n" +
           "Connection to 127.0.0.2 closed.\r\n",
+        stdin: `openssl, s_client, -connect, 127.0.0.1:${port}, -key, certs/client.key.pem, -cert, certs/client.cert.pem, -CAfile, certs/malicious-client-cacert.pem, -state`,
       },
       server: {
         stdin: `/usr/local64/bin/openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -key, certs/server.key.pem, -state, -verify, 1`,
@@ -494,6 +496,7 @@ export class MorelloPurecapOpenSSLTestCase extends MorelloOpenSSLTestCase {
           "Warning: Permanently added '[127.0.0.2]:2222' (ED25519) to the list of known hosts.\r\n" +
           "ControlSocket /home/alois/.ssh/controlmasters/root@127.0.0.2:2222 already exists, disabling multiplexing\r\n" +
           "Connection to 127.0.0.2 closed.\r\n",
+        stdin: `openssl, s_client, -connect, 127.0.0.1:${port}, -key, certs/client.key.pem, -cert, certs/client.cert.pem, -CAfile, certs/malicious-client-cacert.pem, -state`,
       },
       server: {
         stdin: `/usr/local64/bin/openssl, s_server, -accept, ${port}, -CAfile, certs/cacert.pem, -cert, certs/server.cert.pem, -key, certs/server.key.pem, -state, -verify, 1`,

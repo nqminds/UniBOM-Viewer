@@ -10,10 +10,12 @@ export function expectValidRunLogs(runLogsObj) {
   return expect(runLogsObj).toEqual(
     expect.objectContaining({
       client: expect.objectContaining({
+        stdin: expect.any(String),
         stdout: expect.any(String),
         stderr: expect.any(String),
       }),
       server: expect.objectContaining({
+        stdin: expect.any(String),
         stdout: expect.any(String),
         stderr: expect.any(String),
         exitCode: expect.any(Number),
