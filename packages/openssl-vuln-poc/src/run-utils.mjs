@@ -160,8 +160,6 @@ export async function runTest({
     /** @type {RunLogs["client"] | undefined} */
     let clientOutput;
     try {
-      // TODO: should we throw an error if the client OpenSSL process exits
-      // without being killed/aborted?
       clientOutput = await clientProcess;
     } catch (error) {
       const execFileError = /** @type {PromisifiedExecFileException} */ (error);
