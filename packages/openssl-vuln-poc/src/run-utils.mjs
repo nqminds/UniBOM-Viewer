@@ -191,9 +191,16 @@ export async function runTest({
       };
     }
 
-    abortController.abort(
-      "Client OpenSSL process is done, killing OpenSSL Server"
-    );
+    /**
+     * @type {number} milliseconds to wait before killing server.
+     * The server should close by itself under normal conditions.
+     */
+    const KILL_SERVER_TIMEOUT = 1000;
+    setTimeout(() => {
+      abortController.abort(
+        `Client OpenSSL process has been done for ${KILL_SERVER_TIMEOUT}ms, killing OpenSSL Server`
+      );
+    }, KILL_SERVER_TIMEOUT);
 
     /** @type {{stdout: string, stderr: string} | undefined} */
     let serverOutput;
