@@ -17,13 +17,16 @@ export default function DemoDescriptor() {
           guards.
         </Typography>
       </ul>
-      <Image
-        src="/ssh-design.svg"
-        alt="OpenSSL memory protection diagram"
-        width={800}
-        height={400}
-        priority
-      />
+      <div>
+        <Image
+          src="/ssh-design.svg"
+          alt="OpenSSL memory protection diagram"
+          width={0}
+          height={0}
+          sizes="100vw"
+          style={{width: "100%", height: "auto"}}
+        />
+      </div>
     </Paper>
   );
 }
