@@ -6,12 +6,17 @@ export default function DemoDescriptor() {
   return (
     <Paper>
       <h1>Interactive Demo description</h1>
-      <Typography>
-        This demo shows how the same exploit issued against a PureCap version of
-        OpenSSL on a Morello CPU, actively defends against exploits the same
-        exploit on an unprotected system results in unprotected memory based
-        exploit.
-      </Typography>
+      <Typography>This demo shows the same exploit issued against:</Typography>
+      <ul>
+        <Typography component="li">
+          a PureCap version of OpenSSL on a Morello CPU, where the hardware
+          actively defends against exploits.
+        </Typography>
+        <Typography component="li">
+          a non-Purecap system, where protection relies on bypassable software
+          guards.
+        </Typography>
+      </ul>
       <Image
         src="/ssh-design.svg"
         alt="OpenSSL memory protection diagram"
