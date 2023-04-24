@@ -116,11 +116,11 @@ scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r ./certs scp:/
 (For `purecap`, use `/usr/local/bin/openssl`)
 
 ```bash
-ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"/usr/local64/bin/openssl s_server -accept 31050 -CAfile certs/cacert.pem -cert certs/server.cert.pem -key certs/server.key.pem -state -verify 1; exit $?"'
+ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"/usr/local64/bin/openssl s_server -accept 31050 -CAfile certs/cacert.pem -cert certs/server.cert.pem -naccept 1 -key certs/server.key.pem -state -verify 1; exit $?"'
 ```
 
 ### Client
 
 ```bash
-ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"openssl s_client -connect 127.0.0.1:31050 -key certs/client.key.pem -cert certs/client.cert.pem -CAfile certs/malicious-client-cacert.pem -state; exit $?"'
+printf 'Hello World from my OpenSSL Client!\nQ\n' | ssh -o RequestTTY=force -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ssh://root@127.0.0.2:2222 sh -c '"openssl s_client -connect 127.0.0.1:31050 -key certs/client.key.pem -cert certs/client.cert.pem -CAfile certs/malicious-client-cacert.pem -state; exit $?"'
 ```

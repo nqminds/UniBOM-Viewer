@@ -47,6 +47,8 @@ const __dirname = dirname(__filename);
  * @param {object} [opts] - Optional options.
  * @param {string} [opts.clientOpensslBinary] - The openssl CLI binary to use for the client.
  * @param {string} [opts.serverOpensslBinary] - The openssl CLI binary to use for the server.
+ * @param {boolean} [opts.maliciousClientCA] - If `true` (default),
+ * send a malicious certificate with the client to the server.
  * @param {SSHOpts} [opts.sshOpts] - If set, SSH to the given host, and run the
  * test there.
  * @param {number} [opts.port] - The port to use for the OpenSSL test.
@@ -55,6 +57,7 @@ const __dirname = dirname(__filename);
 export async function runTest({
   clientOpensslBinary = "openssl",
   serverOpensslBinary = "openssl",
+  maliciousClientCA = true,
   sshOpts = null,
   port = 31050,
 } = {}) {
@@ -93,6 +96,8 @@ export async function runTest({
       "certs/cacert.pem",
       "-cert",
       "certs/server.cert.pem",
+      "-naccept",
+      "1", // close after accepting 1 connection
       "-key",
       "certs/server.key.pem",
       "-state",
@@ -114,7 +119,11 @@ export async function runTest({
       });
     }
 
-    console.info(`Running OpenSSL malicious client payload on port ${port}`);
+    console.info(
+      `Running OpenSSL ${
+        maliciousClientCA ? "malicious" : ""
+      } client payload on port ${port}`
+    );
 
     const clientStdIn = [
       clientOpensslBinary,
@@ -126,7 +135,9 @@ export async function runTest({
       "-cert",
       "certs/client.cert.pem",
       "-CAfile",
-      "certs/malicious-client-cacert.pem",
+      `certs/${
+        maliciousClientCA ? "malicious-client-cacert.pem" : "cacert.pem"
+      }`,
       "-state",
     ];
     const clientProcess = execFileFunc(clientStdIn, {
@@ -134,9 +145,9 @@ export async function runTest({
     });
 
     clientProcess.child.on("spawn", () => {
-      Readable.from("Hello World from my OpenSSL Client!").pipe(
-        clientProcess.child.stdin
-      );
+      Readable.from(
+        "Hello World from my OpenSSL Client!" + "\nQ\n" // quit command, see https://www.openssl.org/docs/man1.1.1/man1/openssl-s_client.html
+      ).pipe(clientProcess.child.stdin);
     });
 
     serverProcess
@@ -208,7 +219,7 @@ export async function runTest({
       server: {
         ...serverOutput,
         stdin: serverStdIn.join(", "),
-        exitCode: serverProcess.child.exitCode || 0x82 /* Killed by SIGINT */,
+        exitCode: serverProcess.child.exitCode ?? 0x82 /* Killed by SIGINT */,
       },
     });
   } catch (error) {

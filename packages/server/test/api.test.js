@@ -62,6 +62,16 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
         LocalHostTestCase: jest.fn().mockImplementation(() => {
           return mockedOpenSSLTestCase;
         }),
+        MorelloHybridOpenSSLTestCaseSafeCert: jest
+          .fn()
+          .mockImplementation(() => {
+            return mockedOpenSSLTestCase;
+          }),
+        MorelloPurecapOpenSSLTestCaseSafeCert: jest
+          .fn()
+          .mockImplementation(() => {
+            return mockedOpenSSLTestCase;
+          }),
       };
     };
 
