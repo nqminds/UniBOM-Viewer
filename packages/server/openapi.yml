@@ -63,7 +63,7 @@ paths:
                   stderr:
                     type: string
                     description: standard error
-        "501":
+        "500":
           description: Internal Server Error
-        "502":
+        "501":
           description: Config is not implemented
