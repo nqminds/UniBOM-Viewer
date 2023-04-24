@@ -1,14 +1,18 @@
 import {
-  // MorelloPurecapOpenSSLTestCase, // MOCKED SINCE BROKEN (see https://github.com/nqminds/cyber/issues/23)
-  // MorelloPurecapOpenSSLTestCaseSafeCert, // MOCKED SINCE BROKEN (see https://github.com/nqminds/cyber/issues/23)
+  MorelloPurecapOpenSSLTestCase,
+  MorelloPurecapOpenSSLTestCaseSafeCert,
   MorelloHybridOpenSSLTestCase,
   MorelloHybridOpenSSLTestCaseSafeCert,
 } from "@nqminds/openssl-vuln-poc";
 
-import {
-  MorelloPurecapOpenSSLTestCase,
-  MorelloPurecapOpenSSLTestCaseSafeCert,
-} from "@nqminds/openssl-vuln-poc/src/__mocks__/index.mjs";
+/* If you want to mock any of these test cases to use known good outputs, you
+ * can import them from here.
+ */
+
+// import {
+//   MorelloPurecapOpenSSLTestCase,
+//   MorelloPurecapOpenSSLTestCaseSafeCert,
+// } from "@nqminds/openssl-vuln-poc/src/__mocks__/index.mjs";
 
 export default {
   purecap: {
