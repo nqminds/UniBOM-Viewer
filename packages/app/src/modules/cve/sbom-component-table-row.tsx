@@ -8,7 +8,7 @@ import {classifySeverityScore} from "./severity-map";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import CveTable from "./cve-table";
 
-const Controls = styled(Icon)(({theme: {palette, spacing}}) => ({
+const Controls = styled(Icon)(({theme: {palette}}) => ({
   background: palette.text.primary,
   borderRadius: 15,
   color: palette.background.paper,
