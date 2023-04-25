@@ -1,6 +1,8 @@
 /* eslint-disable jsdoc/valid-types */ // won't work until new version of @nqminds/eslint-config is released
 import { expect, describe, test, jest } from "@jest/globals";
 
+import { setTimeout } from "node:timers/promises";
+
 import request from "supertest";
 
 function checkLength(item) {
@@ -30,29 +32,44 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
    * @type {jest.Mocked<import("@nqminds/openssl-vuln-poc").MorelloOpenSSLTestCase>}
    *
    * Mocked `MorelloOpenSSLTestCase` that returns some dummy data.
+   *
+   * Important, `mockedOpenSSLTestCase instanceof MorelloOpenSSLTestCase` must
+   * return `true`.
    */
-  let mockedOpenSSLTestCase;
+  let mockedOpenSSLTestCase = null;
+
+  class MorelloOpenSSLTestCase {
+    constructor() {
+      // returns a singleton (this is some JavaScript magic)
+      if (mockedOpenSSLTestCase === null) {
+        mockedOpenSSLTestCase = this; // eslint-disable-line consistent-this
+      }
+      this.setup = jest.fn().mockReturnValue(Promise.resolve());
+      return mockedOpenSSLTestCase;
+    }
+  }
 
   beforeEach(async () => {
-    mockedOpenSSLTestCase = {
-      setup: jest.fn().mockReturnValue(Promise.resolve()),
-      run: jest.fn().mockReturnValue({
-        client: {
-          stdin: "client stdin",
-          stdout: "client stdout",
-          stderr: "client stderr",
-        },
-        server: {
-          stdin: "server stdin",
-          stdout: "server stdout",
-          stderr: "server stderr",
-          exitCode: 0,
-        },
-      }),
-    };
+    // make sure that `instanceof MorelloOpenSSLTestCase` works.
+    mockedOpenSSLTestCase = null;
+    new MorelloOpenSSLTestCase();
+    mockedOpenSSLTestCase.run = jest.fn().mockReturnValue({
+      client: {
+        stdin: "client stdin",
+        stdout: "client stdout",
+        stderr: "client stderr",
+      },
+      server: {
+        stdin: "server stdin",
+        stdout: "server stdout",
+        stderr: "server stderr",
+        exitCode: 0,
+      },
+    });
 
     const opensslVulnPocMockImplementation = () => {
       return {
+        MorelloOpenSSLTestCase,
         MorelloPurecapOpenSSLTestCase: jest.fn().mockImplementation(() => {
           return mockedOpenSSLTestCase;
         }),
@@ -146,6 +163,31 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     const response = await request(api).get("/run-script/true/false");
     expect(response.statusCode).toEqual(500);
   });
+
+  test("should respond with a 503 if the server is still settting up", async () => {
+    const abortSetup = new AbortController();
+    jest.spyOn(mockedOpenSSLTestCase, "setup").mockImplementation(() => {
+      return setTimeout(3000, null, { signal: abortSetup.signal });
+    });
+
+    // wait a bit for event loop to run
+    await setTimeout(1);
+
+    const { default: api } = await import("../src/api.mjs");
+    const response503 = await request(api).get("/run-script/true/false");
+    expect(response503.statusCode).toEqual(503);
+    expect(response503.error.text).toContain(
+      "Morello Server is still setting up"
+    );
+
+    abortSetup.abort("Testing setup() failure");
+    const response500 = await request(api).get("/run-script/true/false");
+    expect(response500.statusCode).toEqual(500);
+    expect(response500.error.text).toContain(
+      "Setting up the Morello Server failed"
+    );
+  });
+
   test("should return error message if unexpected error", async () => {
     const message = "HELP an error occured!";
     jest.spyOn(mockedOpenSSLTestCase, "run").mockImplementation(() => {

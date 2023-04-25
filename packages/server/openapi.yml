@@ -63,7 +63,13 @@ paths:
                   stderr:
                     type: string
                     description: standard error
-        "501":
+        "500":
           description: Internal Server Error
-        "502":
+        "501":
           description: Config is not implemented
+        "503":
+          description: |
+            Morello Server backend is still in the process of setting up
+            (usually takes 5-10 minutes to setup).
+
+            Please try again after a couple of seconds.
