@@ -29,7 +29,7 @@ let callIndex = 0;
 const getOpensllPort = (callIndexLocal) => 31050 + (callIndexLocal % 1000);
 
 api.get(
-  "/run-script/:purecap(true|false)/:goodCert(true|false)",
+  "/morello/:purecap(true|false)/:goodCert(true|false)",
   async (req, res) => {
     const { purecap, goodCert } = req.params;
     const mode = purecap === "true" ? "purecap" : "hybrid";

@@ -55,7 +55,7 @@ function getAllGoodRequests(api) {
   ];
 }
 
-describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
+describe("/morello/:purecap(true|false)/:goodCert(true|false)", () => {
   /**
    * @type {jest.Mocked<import("@nqminds/openssl-vuln-poc").MorelloOpenSSLTestCase>}
    *

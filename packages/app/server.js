@@ -20,7 +20,7 @@ app
         const {purecap, goodCert} = req.params;
         try {
           const result = await fetch(
-            `${config.get("serverAddress")}/run-script/${purecap}/${goodCert}`,
+            `${config.get("serverAddress")}/morello/${purecap}/${goodCert}`,
             {
               referrerPolicy: "strict-origin-when-cross-origin",
               body: null,
