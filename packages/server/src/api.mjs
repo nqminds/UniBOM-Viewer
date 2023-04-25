@@ -6,7 +6,7 @@ import testCases from "./test-cases.mjs";
 
 import { MorelloOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
 
-const api = express();
+const api = express.Router(); // eslint-disable-line new-cap
 
 const { username, host, sshPort, nistApiKey } = config;
 
