@@ -1,11 +1,13 @@
 ## @nqminds/cyber-demonstrator app
 
-First, run the development server:
+First, either:
 
-```bash
-cd packages/server
-npm start
-```
+- follow the steps in [../openssl-vuln-poc](../openssl-vuln-poc/README.md) to
+  start the emulated Morello environment, or
+- follow the instructions in https://github.com/nqminds/cyber/pull/27
+  to mock the server responses
+
+Then, you can run the app server with:
 
 ```bash
 cd packages/app
