@@ -43,13 +43,19 @@ const servers = [
           Expected behavior with malicious certificates:
         </Typography>
         <ul>
-          <li>Buffer overflow is prevented by the CPU</li>
-          <li>
+          <Typography component="li">
+            Buffer overflow is prevented by the CPU
+          </Typography>
+          <Typography component="li">
             OpenSSL server is killed with <code>SIGPROT</code>
-          </li>
+          </Typography>
           <li>
-            Bash shell catches <code>SIGPROT</code> and prints{" "}
-            <samp>In-address space security exception (core dumped)</samp>
+            <Typography>
+              Bash shell catches <code>SIGPROT</code> and prints
+            </Typography>
+            <samp>
+              In-address space security exception (core dumped)
+            </samp>
           </li>
         </ul>
       </>
@@ -90,12 +96,16 @@ const servers = [
           Expected behavior with malicious certificates:
         </Typography>
         <ul>
-          <li>Stack buffer overflow is detected by stack canaries</li>
-          <li>
+          <Typography component="li">
+            Stack buffer overflow is detected by stack canaries
+          </Typography>
+          <Typography component="li">
             OpenSSL server is killed with <code>SIGABRT</code>
-          </li>
+          </Typography>
           <li>
-            Bash shell catches <code>SIGABRT</code> and prints{" "}
+            <Typography>
+              Bash shell catches <code>SIGABRT</code> and prints
+            </Typography>
             <samp>Abort trap (core dumped)</samp>
           </li>
         </ul>
