@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {styled} from "@mui/system";
+import {styled} from "@mui/material/styles";
 import {Paper} from "../common";
 import {Typography, Button, Divider} from "@mui/material";
 
@@ -19,6 +19,16 @@ const ButtonContainer = styled("div")(() => ({
 const StyledDivider = styled(Divider)(({theme: {spacing}}) => ({
   marginTop: spacing(1),
   marginBottom: spacing(1),
+}));
+
+const StyledSamp = styled("samp")(({theme: {spacing, terminal}}) => ({
+  backgroundColor: terminal.background,
+  paddingTop: spacing(0.2),
+  paddingBottom: spacing(0.2),
+  paddingLeft: spacing(0.4),
+  paddingRight: spacing(0.4),
+  borderRadius: "4px",
+  fontSize: "90%",
 }));
 
 const servers = [
@@ -53,9 +63,9 @@ const servers = [
             <Typography>
               Bash shell catches <code>SIGPROT</code> and prints
             </Typography>
-            <samp>
+            <StyledSamp>
               In-address space security exception (core dumped)
-            </samp>
+            </StyledSamp>
           </li>
         </ul>
       </>
@@ -106,7 +116,7 @@ const servers = [
             <Typography>
               Bash shell catches <code>SIGABRT</code> and prints
             </Typography>
-            <samp>Abort trap (core dumped)</samp>
+            <StyledSamp>Abort trap (core dumped)</StyledSamp>
           </li>
         </ul>
       </>
