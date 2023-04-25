@@ -1,26 +1,22 @@
 import {
-  LocalHostTestCase,
-  // MorelloPurecapOpenSSLTestCase, // MOCKED SINCE BROKEN
+  // MorelloPurecapOpenSSLTestCase, // MOCKED SINCE BROKEN (see https://github.com/nqminds/cyber/issues/23)
+  // MorelloPurecapOpenSSLTestCaseSafeCert, // MOCKED SINCE BROKEN (see https://github.com/nqminds/cyber/issues/23)
   MorelloHybridOpenSSLTestCase,
+  MorelloHybridOpenSSLTestCaseSafeCert,
 } from "@nqminds/openssl-vuln-poc";
 
-import { MorelloPurecapOpenSSLTestCase } from "@nqminds/openssl-vuln-poc/src/__mocks__/index.mjs";
-
-/**
- * Mocked up Good certificate test case.
- *
- * We expect that the current server is Ubuntu 22.04, and that openssl has been
- * installed with `apt install openssl`.
- */
-const MockedUpGoodCertTestCase = LocalHostTestCase;
+import {
+  MorelloPurecapOpenSSLTestCase,
+  MorelloPurecapOpenSSLTestCaseSafeCert,
+} from "@nqminds/openssl-vuln-poc/src/__mocks__/index.mjs";
 
 export default {
   purecap: {
-    goodCert: MockedUpGoodCertTestCase,
+    goodCert: MorelloPurecapOpenSSLTestCaseSafeCert,
     maliciousCert: MorelloPurecapOpenSSLTestCase,
   },
   hybrid: {
-    goodCert: MockedUpGoodCertTestCase,
+    goodCert: MorelloHybridOpenSSLTestCaseSafeCert,
     maliciousCert: MorelloHybridOpenSSLTestCase,
   },
 };

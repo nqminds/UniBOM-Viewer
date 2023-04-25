@@ -35,13 +35,13 @@ describe("LocalHostTestCase", () => {
 
   describe("#run", () => {
     test(
-      "should be killed by SIGINT after timeout due to safe OpenSSL lib",
+      "should exit without any issues",
       async () => {
         const result = await localHostTestCase.run();
 
         expectValidRunLogs(result);
 
-        await expect(result.server.exitCode).toBe(0x82 /* killed by SIGINT */);
+        await expect(result.server.exitCode).toBe(0 /* No issues */);
       },
       OPENSSL_TEST_CASE_TIMEOUT
     );
