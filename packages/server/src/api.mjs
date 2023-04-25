@@ -87,6 +87,7 @@ api.get(
       } = await testCase.run({ port: opensslPort });
       res.send({ stdin, stdout, stderr });
     } catch (error) {
+      console.error(error); // eslint-disable-line no-console
       res.status(500).json(error.message);
     }
   }
