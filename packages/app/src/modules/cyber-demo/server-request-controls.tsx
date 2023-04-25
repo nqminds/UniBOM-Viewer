@@ -26,7 +26,7 @@ const servers = [
     name: "Morello Purecap",
     description: (
       <>
-        <Typography>
+        <Typography paragraph>
           Sends the given certificates to an OpenSSL v3.0.2 server running on{" "}
           <strong>Morello in Purecap (Pure-capability) mode</strong>.
         </Typography>
@@ -69,7 +69,7 @@ const servers = [
     name: "Morello Hybrid",
     description: (
       <>
-        <Typography>
+        <Typography paragraph>
           Sends the given certificates to an OpenSSL v3.0.2 server running on{" "}
           <strong>Morello in Hybrid (hybrid-capability) mode</strong>.
         </Typography>
