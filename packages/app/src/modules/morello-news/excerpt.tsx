@@ -1,8 +1,6 @@
 import {Button, Divider as MuiDivider, Typography} from "@mui/material";
 import {styled} from "@mui/system";
 
-import {useRouter} from "next/router";
-
 const Container = styled("div")(({theme: {spacing}}) => ({
   padding: spacing(2),
   display: "flex",
@@ -41,8 +39,6 @@ export default function Excerpt({
   excerpt,
   link,
 }: props) {
-  const router = useRouter();
-
   return (
     <Container>
       <div>
@@ -54,7 +50,7 @@ export default function Excerpt({
       </div>
       <ButtonContainer>
         <Divider />
-        <Button endIcon=">" onClick={() => router.push(link)}>
+        <Button endIcon=">" href={link}>
           Read more
         </Button>
       </ButtonContainer>
