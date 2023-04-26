@@ -44,10 +44,10 @@ export default function SbomComponentTableRow({
   const categorisedCves = data.cves.map(categoriseCves);
   const memorySafeCves = categorisedCves.map((cve) => {
     const {cwes} = cve;
-    if(cwes.find(({memoryCwe}) => memoryCwe)) {
-      return {...cve, baseSeverity: mitigated}
+    if (cwes.find(({memoryCwe}) => memoryCwe)) {
+      return {...cve, baseSeverity: mitigated};
     }
-    return cve
+    return cve;
   });
 
   return (
@@ -61,7 +61,13 @@ export default function SbomComponentTableRow({
         <TableCell>{data.licenses}</TableCell>
         <TableCell align="center">{categorisedCves.length}</TableCell>
         <SeverityBreakdown cves={categorisedCves} />
-        <TableCell align="center">{memorySafeCves.filter(({baseSeverity}) => baseSeverity!== mitigated).length}</TableCell>
+        <TableCell align="center">
+          {
+            memorySafeCves.filter(
+              ({baseSeverity}) => baseSeverity !== mitigated,
+            ).length
+          }
+        </TableCell>
         <SeverityBreakdown cves={memorySafeCves} />
         <TableCell align="center" sx={{alignItems: "center"}}>
           <Controls>{open ? <ExpandLess /> : <ExpandMore />}</Controls>

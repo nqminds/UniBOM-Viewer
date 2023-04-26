@@ -5,7 +5,7 @@ const high: cve["baseSeverity"] = "HIGH";
 const medium: cve["baseSeverity"] = "MEDIUM";
 const low: cve["baseSeverity"] = "LOW";
 const none: cve["baseSeverity"] = "NONE";
-export const mitigated: cve["baseSeverity"] = "MITIGATED"
+export const mitigated: cve["baseSeverity"] = "MITIGATED";
 
 export function severityColourMap(severity: cve["baseSeverity"]) {
   switch (severity) {
