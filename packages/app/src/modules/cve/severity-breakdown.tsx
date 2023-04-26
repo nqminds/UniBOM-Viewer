@@ -33,6 +33,7 @@ const severityCategories = [
   "MEDIUM",
   "LOW",
   "NONE",
+  "MITIGATED",
 ] as noNulls[];
 
 export default function SeverityBreakdown({cves}: props) {
