@@ -5,13 +5,14 @@ import {Table, TableBody} from "@mui/material";
 import SbomComponentTableHead from "./sbom-component-table-head";
 import SbomComponentTableRow from "./sbom-component-table-row";
 
-import {uniqBy, sortBy} from "lodash";
+import {sortBy} from "lodash";
 
 export default function SbomComponentTable({data}: props) {
   // An SBOM component that has all the (unique) CVEs of every other component
   const allComponents = data.reduce(
     (iterator: sbomComponent, component: sbomComponent) => {
-      const concatCves = uniqBy([...iterator.cves, ...component.cves], "id");
+      const concatCves = [...iterator.cves, ...component.cves];
+
       return {...iterator, cves: concatCves};
     },
     {

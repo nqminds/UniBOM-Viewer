@@ -7,6 +7,7 @@ import {classifySeverityScore, mitigated} from "./severity-map";
 
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import CveTable from "./cve-table";
+import {uniqBy} from "lodash";
 
 const Controls = styled(Icon)(({theme: {palette}}) => ({
   background: palette.text.primary,
@@ -66,7 +67,7 @@ export default function SbomComponentTableRow({
           <Controls>{open ? <ExpandLess /> : <ExpandMore />}</Controls>
         </TableCell>
       </Row>
-      <CveTable open={open} cves={categorisedCves} />
+      <CveTable open={open} cves={uniqBy(categorisedCves, "id")} />
     </>
   );
 }
