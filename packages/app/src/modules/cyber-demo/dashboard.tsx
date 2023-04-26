@@ -7,7 +7,7 @@ import axios from "axios";
 
 import {NewsReel} from "../morello-news";
 
-import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 import {useState} from "react";
 
 const fetcher = async ([purecap, goodCert]: [boolean, boolean]) => {
@@ -38,12 +38,16 @@ const DemoContainer = styled("div")(({theme: {spacing}}) => ({
 }));
 
 export default function Dashboard() {
-  const [fetchParams, setFetchParams] = useState<boolean[]>([]);
+  const [fetchParams, setFetchParams] = useState<[boolean, boolean] | null>(
+    null,
+  );
 
-  const apiRequest = useSWR(fetchParams, fetcher);
+  const apiRequest = useSWRImmutable(fetchParams, fetcher);
   function mutateRequest(purecap: boolean, goodCert: boolean) {
+    // reset current SWR cache without revalidating, so that a request is only
+    // made if we come back to the same `fetchParams`.
+    apiRequest.mutate(undefined, {revalidate: false});
     setFetchParams([purecap, goodCert]);
-    apiRequest.mutate();
   }
 
   return (
