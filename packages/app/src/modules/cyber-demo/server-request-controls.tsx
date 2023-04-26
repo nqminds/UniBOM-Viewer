@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {styled} from "@mui/system";
+import {styled} from "@mui/material/styles";
 import {Paper} from "../common";
 import {Typography, Button, Divider} from "@mui/material";
 
@@ -21,12 +21,22 @@ const StyledDivider = styled(Divider)(({theme: {spacing}}) => ({
   marginBottom: spacing(1),
 }));
 
+const StyledSamp = styled("samp")(({theme: {spacing, terminal}}) => ({
+  backgroundColor: terminal.background,
+  paddingTop: spacing(0.2),
+  paddingBottom: spacing(0.2),
+  paddingLeft: spacing(0.4),
+  paddingRight: spacing(0.4),
+  borderRadius: "4px",
+  fontSize: "90%",
+}));
+
 const servers = [
   {
     name: "Morello Purecap",
     description: (
       <>
-        <Typography>
+        <Typography paragraph>
           Sends the given certificates to an OpenSSL v3.0.2 server running on{" "}
           <strong>Morello in Purecap (Pure-capability) mode</strong>.
         </Typography>
@@ -43,13 +53,19 @@ const servers = [
           Expected behavior with malicious certificates:
         </Typography>
         <ul>
-          <li>Buffer overflow is prevented by the CPU</li>
-          <li>
+          <Typography component="li">
+            Buffer overflow is prevented by the CPU
+          </Typography>
+          <Typography component="li">
             OpenSSL server is killed with <code>SIGPROT</code>
-          </li>
+          </Typography>
           <li>
-            Bash shell catches <code>SIGPROT</code> and prints{" "}
-            <samp>In-address space security exception (core dumped)</samp>
+            <Typography>
+              Bash shell catches <code>SIGPROT</code> and prints
+            </Typography>
+            <StyledSamp>
+              In-address space security exception (core dumped)
+            </StyledSamp>
           </li>
         </ul>
       </>
@@ -69,7 +85,7 @@ const servers = [
     name: "Morello Hybrid",
     description: (
       <>
-        <Typography>
+        <Typography paragraph>
           Sends the given certificates to an OpenSSL v3.0.2 server running on{" "}
           <strong>Morello in Hybrid (hybrid-capability) mode</strong>.
         </Typography>
@@ -90,13 +106,17 @@ const servers = [
           Expected behavior with malicious certificates:
         </Typography>
         <ul>
-          <li>Stack buffer overflow is detected by stack canaries</li>
-          <li>
+          <Typography component="li">
+            Stack buffer overflow is detected by stack canaries
+          </Typography>
+          <Typography component="li">
             OpenSSL server is killed with <code>SIGABRT</code>
-          </li>
+          </Typography>
           <li>
-            Bash shell catches <code>SIGABRT</code> and prints{" "}
-            <samp>Abort trap (core dumped)</samp>
+            <Typography>
+              Bash shell catches <code>SIGABRT</code> and prints
+            </Typography>
+            <StyledSamp>Abort trap (core dumped)</StyledSamp>
           </li>
         </ul>
       </>

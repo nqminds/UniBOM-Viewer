@@ -103,8 +103,6 @@ describe("LocalHostTestCase", () => {
         async () => {
           const result = await morelloHybridOpenSSLTestCase.run();
 
-          // console.info("Results from pwning OpenSSL server were: ", result);
-
           // shell should catch SIGABRT and print a nice error message for us
           expect(result.server.stdout).toContain("Abort trap (core dumped)");
 
@@ -134,14 +132,10 @@ describe("LocalHostTestCase", () => {
             port: 31051,
           });
 
-          // console.info("Results from pwning OpenSSL server were: ", result);
-
           // shell should catch SIGPROT and print a nice error message for us
-
-          // TODO: for some reason this line doesn't get printed
-          // expect(result.server.stdout).toContain(
-          //   "In-address space security exception (core dumped)"
-          // );
+          expect(result.server.stdout).toContain(
+            "In-address space security exception (core dumped)"
+          );
 
           await expect(result.server.exitCode).toBe(162);
           expectValidRunLogs(result);

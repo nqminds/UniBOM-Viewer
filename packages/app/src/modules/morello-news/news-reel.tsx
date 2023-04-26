@@ -26,6 +26,7 @@ const News = styled(Paper)(() => ({
   display: "flex",
   flexDirection: "column",
   height: "100%",
+  justifyContent: "space-between",
 }));
 
 const Container = styled("div")(() => ({
