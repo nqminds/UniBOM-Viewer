@@ -13,7 +13,7 @@ declare interface cve {
   licences: string;
   cwes: cwe[];
   baseScore: number;
-  baseSeverity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | "NONE" | undefined;
+  baseSeverity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | "NONE" | "MITIGATED" | undefined;
   version: string;
   vectorString: string;
 }

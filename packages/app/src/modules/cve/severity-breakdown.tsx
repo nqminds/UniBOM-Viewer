@@ -33,6 +33,7 @@ const severityCategories = [
   "MEDIUM",
   "LOW",
   "NONE",
+  "MITIGATED"
 ] as noNulls[];
 
 export default function SeverityBreakdown({cves}: props) {
@@ -46,7 +47,7 @@ export default function SeverityBreakdown({cves}: props) {
       <Container>
         {severityCategories.map((cat) => {
           const percentage =
-            ((bySeverity[cat]?.length / cves.length) * 100) | 0;
+            ((bySeverity[cat]?.length /cves.length) * 100) | 0;
           if (percentage) {
             return (
               <SeverityBar

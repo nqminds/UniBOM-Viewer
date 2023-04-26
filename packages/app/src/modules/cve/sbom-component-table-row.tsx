@@ -3,7 +3,7 @@ import {styled} from "@mui/system";
 
 import SeverityBreakdown from "./severity-breakdown";
 import {TableCell, TableRow, Icon} from "@mui/material";
-import {classifySeverityScore} from "./severity-map";
+import {classifySeverityScore, mitigated} from "./severity-map";
 
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import CveTable from "./cve-table";
@@ -41,9 +41,13 @@ export default function SbomComponentTableRow({
   }));
 
   const categorisedCves = data.cves.map(categoriseCves);
-  const memorySafeCves = categorisedCves.filter(
-    ({cwes}) => !cwes.find(({memoryCwe}) => memoryCwe),
-  );
+  const memorySafeCves = categorisedCves.map((cve) => {
+    const {cwes} = cve;
+    if(!cwes.find(({memoryCwe}) => memoryCwe)) {
+      return {...cve, baseSeverity: mitigated}
+    }
+    return cve
+  });
 
   return (
     <>
@@ -56,7 +60,7 @@ export default function SbomComponentTableRow({
         <TableCell>{data.licenses}</TableCell>
         <TableCell align="center">{categorisedCves.length}</TableCell>
         <SeverityBreakdown cves={categorisedCves} />
-        <TableCell align="center">{memorySafeCves.length}</TableCell>
+        <TableCell align="center">{memorySafeCves.filter(({baseSeverity}) => baseSeverity!== mitigated).length}</TableCell>
         <SeverityBreakdown cves={memorySafeCves} />
         <TableCell align="center" sx={{alignItems: "center"}}>
           <Controls>{open ? <ExpandLess /> : <ExpandMore />}</Controls>
