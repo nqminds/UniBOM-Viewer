@@ -20,7 +20,6 @@ export default function SbomComponentTable({data}: props) {
       version: "",
       licenses: "",
       cves: [],
-      id: undefined,
     },
   );
 
@@ -30,7 +29,10 @@ export default function SbomComponentTable({data}: props) {
         <SbomComponentTableHead />
         <TableBody>
           {sortBy(data, ({cves}) => -cves.length).map((row) => (
-            <SbomComponentTableRow data={row} key={row.id} />
+            <SbomComponentTableRow
+              data={row}
+              key={`${row.name}-${row.version}`}
+            />
           ))}
           <SbomComponentTableRow data={allComponents} highlight />
         </TableBody>
