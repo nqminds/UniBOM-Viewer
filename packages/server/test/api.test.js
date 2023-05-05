@@ -160,18 +160,14 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     const { default: api } = await import("../src/api.mjs");
     const requests = await Promise.all(getAllGoodRequests(api));
     requests.forEach((res) => {
-      if (res.stdout) {
-        expect(typeof res.stdout).toEqual("string");
-      }
+      expect(typeof res.stdout).toEqual("string");
     });
   });
   test("stderr should have value string", async () => {
     const { default: api } = await import("../src/api.mjs");
     const requests = await Promise.all(getAllGoodRequests(api));
     requests.forEach((res) => {
-      if (res.stderr) {
-        expect(typeof res.stdout).toEqual("string");
-      }
+      expect(typeof res.stderr).toEqual("string");
     });
   });
   test("should respond with 500 if unexpected error occurs", async () => {

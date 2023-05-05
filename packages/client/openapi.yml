@@ -46,17 +46,20 @@ paths:
           content:
             application/json:
               example:
-                stdin: "standard input"
+                stdin: "openssl, server, -accept, 12345"
                 stdout: "some\n output"
                 stderr: ""
               schema:
                 type: object
                 required:
                   - "stdin"
+                  - "stdout"
+                  - "stderr"
                 properties:
                   stdin:
                     type: string
-                    description: standard input
+                    description: |
+                      Comma separated Args for the command, **not standard input**.
                   stdout:
                     type: string
                     description: standard output
