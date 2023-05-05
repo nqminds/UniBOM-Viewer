@@ -5,7 +5,7 @@ import {Paper, IconButton} from "@mui/material";
 import {red, amber, lightGreen} from "@mui/material/colors";
 
 import {Delete, Circle} from "@mui/icons-material";
-import {AxiosError} from "axios";
+import {ApiError, NqmCyberAPI} from "@nqminds/cyber-demonstrator-client";
 
 const TerminalContainer = styled(Paper)(({theme: {spacing, terminal}}) => ({
   marginBottom: spacing(2),
@@ -83,11 +83,8 @@ export default function Terminal({data, error, isLoading}: props) {
       setTerminalDisplay(display);
     } else if (error) {
       let errorMessage;
-      if (
-        error instanceof AxiosError &&
-        typeof error.response?.data === "string"
-      ) {
-        errorMessage = error.response?.data;
+      if (error instanceof ApiError && typeof error.body === "string") {
+        errorMessage = error.body;
       } else {
         errorMessage = error.message;
       }
@@ -122,13 +119,7 @@ export default function Terminal({data, error, isLoading}: props) {
 }
 
 type props = {
-  data?: TerminalData;
+  data?: Awaited<ReturnType<NqmCyberAPI["default"]["runScript"]>>;
   error?: Error;
   isLoading: boolean;
-};
-
-type TerminalData = {
-  stdin: string;
-  stdout: string;
-  stderr: string;
 };

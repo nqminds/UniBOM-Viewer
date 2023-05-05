@@ -3,22 +3,15 @@ import DemoDescriptor from "./demo-descriptor";
 import InfoPane from "./info-pane";
 import ServerRequestControls from "./server-request-controls";
 import Terminal from "./terminal";
-import axios from "axios";
+import {NqmCyberAPI} from "@nqminds/cyber-demonstrator-client";
 
 import {NewsReel} from "../morello-news";
 
 import {useState} from "react";
 
 const fetcher = async ([purecap, goodCert]: [boolean, boolean]) => {
-  const response = await axios(`/api/morello/${purecap}/${goodCert}`);
-  const json = response.data;
-  if (typeof json !== "object" || json === null) {
-    throw new Error(`Expected response to be an object but was: ${json}`);
-  }
-  if (json.error) {
-    throw new Error(json.error);
-  }
-  return json as {stdin: string; stdout: string; stderr: string};
+  const nqmCyberApi = new NqmCyberAPI({BASE: `/api`});
+  return await nqmCyberApi.default.runScript(purecap, goodCert);
 };
 
 const Container = styled("div")(({theme: {spacing}}) => ({
