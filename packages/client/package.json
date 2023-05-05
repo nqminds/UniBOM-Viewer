@@ -24,11 +24,11 @@
       "email": "alois@nquiringminds.com"
     }
   ],
-  "types": "./generated/NqmCyberAPI.ts",
+  "types": "./generated/index.ts",
   "exports": {
     ".": {
-      "node": "./generated-node/NqmCyberAPI.js",
-      "default": "./generated/NqmCyberAPI.js"
+      "node": "./generated-node/index.js",
+      "default": "./generated/index.js"
     }
   },
   "license": "UNLICENSED",
