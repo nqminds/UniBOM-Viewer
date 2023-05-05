@@ -102,6 +102,3 @@ dist
 
 # TernJS port file
 .tern-port
-
-# OpenAPI ts schema
-packages/server/openapi-schema.ts

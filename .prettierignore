@@ -1,5 +1,6 @@
-# OpenAPI ts schema
-/packages/server/openapi-schema.ts
+# OpenAPI automatically generated clients
+/packages/client/generated
+/packages/client/generated-node
 
 # input
 /packages/vulnerability-analysis/input/*
