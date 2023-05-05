@@ -4,9 +4,11 @@ import SbomComponentTable from "@/modules/cve/sbom-component-table";
 import {Box, CircularProgress, Typography} from "@mui/material";
 import {styled} from "@mui/system";
 
+import {NqmCyberAPI} from "@nqminds/cyber-demonstrator-client";
+
 const fetcher = async () => {
-  const response = await fetch("/api/vulnerability-analysis");
-  return await response.json();
+  const nqmCyberApi = new NqmCyberAPI({BASE: `/api`});
+  return await nqmCyberApi.default.vulnerabilityAnalysis();
 };
 
 const Container = styled("div")(({theme: {spacing}}) => ({
@@ -20,7 +22,7 @@ const Container = styled("div")(({theme: {spacing}}) => ({
 export default function Home() {
   const {data, error, isLoading} = useSWR("vul-analysis", fetcher);
 
-  if (error || data?.error) {
+  if (error) {
     return <Typography>ERROR</Typography>;
   }
 
@@ -40,6 +42,11 @@ export default function Home() {
         <CircularProgress />
       </Box>
     );
+  }
+
+  if (data === undefined) {
+    // never happens, is just here to make TypeScript happy
+    return null;
   }
 
   return (

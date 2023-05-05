@@ -7,10 +7,12 @@ import SbomComponentTableRow from "./sbom-component-table-row";
 
 import {sortBy} from "lodash";
 
+import {type SbomComponent} from "@nqminds/cyber-demonstrator-client";
+
 export default function SbomComponentTable({data}: props) {
   // An SBOM component that has all the (unique) CVEs of every other component
   const allComponents = data.reduce(
-    (iterator: sbomComponent, component: sbomComponent) => {
+    (iterator: SbomComponent, component: SbomComponent) => {
       const concatCves = [...iterator.cves, ...component.cves];
 
       return {...iterator, cves: concatCves};
@@ -42,5 +44,5 @@ export default function SbomComponentTable({data}: props) {
 }
 
 type props = {
-  data: sbomComponent[];
+  data: SbomComponent[];
 };

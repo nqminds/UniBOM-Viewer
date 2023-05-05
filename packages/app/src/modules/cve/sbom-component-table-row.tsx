@@ -3,9 +3,10 @@ import {styled} from "@mui/system";
 
 import SeverityBreakdown from "./severity-breakdown";
 import {TableCell, TableRow, Icon} from "@mui/material";
-import {classifySeverityScore, mitigated} from "./severity-map";
+import {categoriseCve, categoriseMemSafeCve, mitigated} from "./severity-map";
 
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
+import {type SbomComponent} from "@nqminds/cyber-demonstrator-client";
 import CveTable from "./cve-table";
 import {uniqBy} from "lodash";
 
@@ -17,14 +18,6 @@ const Controls = styled(Icon)(({theme: {palette}}) => ({
   justifyContent: "center",
   width: "50px",
 }));
-
-function categoriseCves(props: cve) {
-  const {baseScore, baseSeverity, version} = props;
-  if (!baseSeverity) {
-    return {...props, baseSeverity: classifySeverityScore(baseScore, version)};
-  }
-  return props;
-}
 
 export default function SbomComponentTableRow({
   data,
@@ -41,14 +34,8 @@ export default function SbomComponentTableRow({
     background: highlight ? palette.background.default : null,
   }));
 
-  const categorisedCves = data.cves.map(categoriseCves);
-  const memorySafeCves = categorisedCves.map((cve) => {
-    const {cwes} = cve;
-    if (cwes.find(({memoryCwe}) => memoryCwe)) {
-      return {...cve, baseSeverity: mitigated};
-    }
-    return cve;
-  });
+  const categorisedCves = data.cves.map(categoriseCve);
+  const categorisedMemSafeCves = categorisedCves.map(categoriseMemSafeCve);
 
   return (
     <>
@@ -63,12 +50,12 @@ export default function SbomComponentTableRow({
         <SeverityBreakdown cves={categorisedCves} />
         <TableCell align="center">
           {
-            memorySafeCves.filter(
+            categorisedMemSafeCves.filter(
               ({baseSeverity}) => baseSeverity !== mitigated,
             ).length
           }
         </TableCell>
-        <SeverityBreakdown cves={memorySafeCves} />
+        <SeverityBreakdown cves={categorisedMemSafeCves} />
         <TableCell align="center" sx={{alignItems: "center"}}>
           <Controls>{open ? <ExpandLess /> : <ExpandMore />}</Controls>
         </TableCell>
@@ -79,6 +66,6 @@ export default function SbomComponentTableRow({
 }
 
 type props = {
-  data: sbomComponent;
+  data: SbomComponent;
   highlight?: boolean;
 };

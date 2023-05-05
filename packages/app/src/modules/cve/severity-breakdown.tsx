@@ -3,7 +3,7 @@ import React from "react";
 import {groupBy} from "lodash";
 import {styled} from "@mui/material/styles";
 import {TableCell, Typography} from "@mui/material";
-import {severityColourMap} from "./severity-map";
+import {type CVE_MemSafe_Severity, severityColourMap} from "./severity-map";
 
 const Container = styled("div")(() => ({
   width: "100%",
@@ -26,7 +26,6 @@ const SeverityBar = styled("div")(({theme: {menu}}) => ({
   textAlign: "center",
 }));
 
-type noNulls = NonNullable<cve["baseSeverity"]>;
 const severityCategories = [
   "CRITICAL",
   "HIGH",
@@ -34,7 +33,7 @@ const severityCategories = [
   "LOW",
   "NONE",
   "MITIGATED",
-] as noNulls[];
+] as CVE_MemSafe_Severity[];
 
 export default function SeverityBreakdown({cves}: props) {
   if (!cves.length) {
@@ -69,5 +68,5 @@ export default function SeverityBreakdown({cves}: props) {
 }
 
 type props = {
-  cves: cve[];
+  cves: {baseSeverity: CVE_MemSafe_Severity}[];
 };
