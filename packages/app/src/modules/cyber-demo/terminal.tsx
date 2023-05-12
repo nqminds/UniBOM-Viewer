@@ -5,6 +5,7 @@ import {Paper, IconButton} from "@mui/material";
 import {red, amber, lightGreen} from "@mui/material/colors";
 
 import {Delete, Circle} from "@mui/icons-material";
+import {AxiosError} from "axios";
 
 const TerminalContainer = styled(Paper)(({theme: {spacing, terminal}}) => ({
   marginBottom: spacing(2),
@@ -64,22 +65,33 @@ export default function Terminal({data, error, isLoading}: props) {
   const [terminalDisplay, setTerminalDisplay] = useState<string[]>([]);
 
   useEffect(() => {
-    if (data && typeof data === "object") {
-      if (data?.error) {
-        setTerminalDisplay([...terminalDisplay, `ERROR: ${data.error}`]);
-      } else if (data.stdin && (data.stdout || data.stderr)) {
-        const display = [...terminalDisplay];
+    if (isLoading) {
+      return; // data/error is out of date, waiting to get new data/error
+    }
 
-        display.push(`> ${data.stdin}`);
-        if (data.stdout) {
-          display.push(formatOutput(data.stdout));
-        }
-        // TODO: Temporarily remove STDERR from the terminal for the purposes of demoing
-        // if (data.stderr) {
-        //   display.push(formatOutput(data.stderr));
-        // }
-        setTerminalDisplay(display);
+    if (data) {
+      const display = [...terminalDisplay];
+
+      display.push(`> ${data.stdin}`);
+      if (data.stdout) {
+        display.push(formatOutput(data.stdout));
       }
+      // TODO: Temporarily remove STDERR from the terminal for the purposes of demoing
+      // if (data.stderr) {
+      //   display.push(formatOutput(data.stderr));
+      // }
+      setTerminalDisplay(display);
+    } else if (error) {
+      let errorMessage;
+      if (
+        error instanceof AxiosError &&
+        typeof error.response?.data === "string"
+      ) {
+        errorMessage = error.response?.data;
+      } else {
+        errorMessage = error.message;
+      }
+      setTerminalDisplay([...terminalDisplay, `ERROR: ${errorMessage}`]);
     }
   }, [data, typeof data, isLoading, error]);
 
@@ -110,14 +122,13 @@ export default function Terminal({data, error, isLoading}: props) {
 }
 
 type props = {
-  data: TerminalData | (() => Promise<TerminalData>) | undefined;
-  error?: object;
+  data?: TerminalData;
+  error?: Error;
   isLoading: boolean;
 };
 
 type TerminalData = {
-  stdin?: string;
-  stdout?: string;
-  stderr?: string;
-  error?: string;
+  stdin: string;
+  stdout: string;
+  stderr: string;
 };

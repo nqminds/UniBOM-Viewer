@@ -7,17 +7,18 @@ import axios from "axios";
 
 import {NewsReel} from "../morello-news";
 
-import useSWRImmutable from "swr/immutable";
 import {useState} from "react";
 
 const fetcher = async ([purecap, goodCert]: [boolean, boolean]) => {
   const response = await axios(`/api/morello/${purecap}/${goodCert}`);
   const json = response.data;
-  // TODO: error codes are not being surfaced, infer if data is a string, it is an error
-  if (typeof json === "string") {
-    return {error: json};
+  if (typeof json !== "object" || json === null) {
+    throw new Error(`Expected response to be an object but was: ${json}`);
   }
-  return json;
+  if (json.error) {
+    throw new Error(json.error);
+  }
+  return json as {stdin: string; stdout: string; stderr: string};
 };
 
 const Container = styled("div")(({theme: {spacing}}) => ({
@@ -37,17 +38,26 @@ const DemoContainer = styled("div")(({theme: {spacing}}) => ({
   marginBottom: spacing(2),
 }));
 
-export default function Dashboard() {
-  const [fetchParams, setFetchParams] = useState<[boolean, boolean] | null>(
-    null,
-  );
+// designed to follow the useSWR API
+type APIRequest = {
+  data?: Awaited<ReturnType<typeof fetcher>>;
+  error?: Error;
+  isLoading: boolean;
+};
 
-  const apiRequest = useSWRImmutable(fetchParams, fetcher);
-  function mutateRequest(purecap: boolean, goodCert: boolean) {
-    // reset current SWR cache without revalidating, so that a request is only
-    // made if we come back to the same `fetchParams`.
-    apiRequest.mutate(undefined, {revalidate: false});
-    setFetchParams([purecap, goodCert]);
+export default function Dashboard() {
+  const [apiRequest, setApiRequest] = useState<APIRequest>({
+    isLoading: false,
+  });
+
+  async function mutateRequest(purecap: boolean, goodCert: boolean) {
+    setApiRequest({data: undefined, error: undefined, isLoading: true});
+    try {
+      const result = await fetcher([purecap, goodCert]);
+      setApiRequest({data: result, error: undefined, isLoading: false});
+    } catch (error) {
+      setApiRequest({data: undefined, error: error as Error, isLoading: false});
+    }
   }
 
   return (

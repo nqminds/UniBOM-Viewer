@@ -2,8 +2,11 @@
 import { expect, describe, test, jest } from "@jest/globals";
 
 import { setTimeout } from "node:timers/promises";
+import { promisify } from "node:util";
+import { createServer } from "node:http";
 
-import request from "supertest";
+import { NqmCyberAPI } from "@nqminds/cyber-demonstrator-client";
+import express from "express";
 
 function checkLength(item) {
   if (item && item.length) {
@@ -13,17 +16,42 @@ function checkLength(item) {
 }
 
 /**
+ * Runs the api on a temporary server, then calls `runScript` with the `args`.
+ *
+ * @param {mport("../src/api.mjs")["default"]} api - Server API.
+ * @param {Parameters<NqmCyberAPI["default"]["runScript"]>} args - Args to pass
+ * to Morello RunScript API route.
+ * @returns {ReturnType<NqmCyberAPI["default"]["runScript"]>>} `runScript` results,
+ * or rejects with an `ApiError` if there's an error.
+ */
+async function get(api, ...args) {
+  const app = express();
+  app.use(api);
+
+  const server = createServer(app);
+  try {
+    await promisify(server.listen).call(server, 0, "127.0.0.1");
+    const { port, address } = server.address();
+
+    const nqmCyberApi = new NqmCyberAPI({ BASE: `http://${address}:${port}` });
+    return await nqmCyberApi.default.runScript(...args);
+  } finally {
+    await promisify(server.close).call(server);
+  }
+}
+
+/**
  * Send a request to all known working API routes.
  *
  * @param {import("../src/api.mjs")["default"]} api - The express API.
- * @returns {Promise<void>} Resolves on success.
+ * @returns {Promise<ReturnType<NqmCyberAPI["default"]["runScript"]>[]>} runScript results.
  */
 function getAllGoodRequests(api) {
   return [
-    request(api).get("/run-script/true/true"),
-    request(api).get("/run-script/true/false"),
-    request(api).get("/run-script/false/true"),
-    request(api).get("/run-script/false/false"),
+    get(api, true, true),
+    get(api, true, false),
+    get(api, false, true),
+    get(api, false, false),
   ];
 }
 
@@ -109,32 +137,23 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     jest.resetModules();
   });
 
-  test("should respond with 200", async () => {
-    const { default: api } = await import("../src/api.mjs");
-    const requests = await Promise.all(getAllGoodRequests(api));
-    requests.forEach((res) => expect(res.statusCode).toEqual(200));
-  });
   test("should return stdin string value", async () => {
     const { default: api } = await import("../src/api.mjs");
     const requests = await Promise.all(getAllGoodRequests(api));
     requests.forEach((res) => {
-      expect(res.body).toHaveProperty("stdin");
-      expect(res.body.stdin.length).not.toEqual(0);
-      expect(typeof res.body.stdin).toEqual("string");
+      expect(res).toHaveProperty("stdin");
+      expect(res.stdin.length).not.toEqual(0);
+      expect(typeof res.stdin).toEqual("string");
     });
   });
   test("should return stdout And/Or stderr", async () => {
     const { default: api } = await import("../src/api.mjs");
     const requests = await Promise.all(getAllGoodRequests(api));
     requests.forEach((res) => {
-      expect([res.body.stdout, res.body.stderr]).not.toEqual([
-        undefined,
-        undefined,
+      expect([res.stdout, res.stderr]).not.toEqual([undefined, undefined]);
+      expect([checkLength(res.stdout), checkLength(res.stderr)]).not.toEqual([
+        0, 0,
       ]);
-      expect([
-        checkLength(res.body.stdout),
-        checkLength(res.body.stderr),
-      ]).not.toEqual([0, 0]);
     });
   });
   test("stdout should have value string", async () => {
@@ -160,8 +179,13 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
       throw new Error("Unexpected error!");
     });
     const { default: api } = await import("../src/api.mjs");
-    const response = await request(api).get("/run-script/true/false");
-    expect(response.statusCode).toEqual(500);
+
+    expect.assertions(1);
+    try {
+      await get(api, true, false);
+    } catch (error) {
+      expect(error.status).toEqual(500);
+    }
   });
 
   test("should respond with a 503 if the server is still settting up", async () => {
@@ -173,19 +197,23 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     // wait a bit for event loop to run
     await setTimeout(1);
 
+    expect.assertions(4);
+
     const { default: api } = await import("../src/api.mjs");
-    const response503 = await request(api).get("/run-script/true/false");
-    expect(response503.statusCode).toEqual(503);
-    expect(response503.error.text).toContain(
-      "Morello Server is still setting up"
-    );
+    try {
+      await get(api, true, false);
+    } catch (error) {
+      expect(error.status).toEqual(503);
+      expect(error.body).toContain("Morello Server is still setting up");
+    }
 
     abortSetup.abort("Testing setup() failure");
-    const response500 = await request(api).get("/run-script/true/false");
-    expect(response500.statusCode).toEqual(500);
-    expect(response500.error.text).toContain(
-      "Setting up the Morello Server failed"
-    );
+    try {
+      await get(api, true, false);
+    } catch (error) {
+      expect(error.status).toEqual(500);
+      expect(error.body).toContain("Setting up the Morello Server failed");
+    }
   });
 
   test("should return error message if unexpected error", async () => {
@@ -194,8 +222,13 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
       throw new Error(message);
     });
     const { default: api } = await import("../src/api.mjs");
-    const response = await request(api).get("/run-script/true/false");
-    expect(response.error.text).toEqual(`"${message}"`);
+
+    try {
+      await get(api, true, false);
+    } catch (error) {
+      expect(error.status).toEqual(500);
+      expect(error.body).toEqual(message);
+    }
   });
   test("should respond with 501 if incorrect config", async () => {
     jest.unstable_mockModule("../src/test-cases.mjs", () => {
@@ -209,8 +242,12 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
       };
     });
     const { default: api } = await import("../src/api.mjs");
-    const response = await request(api).get("/run-script/true/false");
-    expect(response.statusCode).toEqual(501);
+
+    try {
+      await get(api, true, false);
+    } catch (error) {
+      expect(error.status).toEqual(501);
+    }
   });
   test("should return error message if incorrect config", async () => {
     jest.unstable_mockModule("../src/test-cases.mjs", () => {
@@ -229,32 +266,37 @@ describe("/run-script/:purecap(true|false)/:goodCert(true|false)", () => {
     });
     const { default: api } = await import("../src/api.mjs");
 
-    const response_purecap_good = await request(api).get(
-      "/run-script/true/true"
-    );
-    expect(response_purecap_good.error.text).toEqual(
-      '"goodCert certificate for purecap mode is not implemented"'
-    );
+    expect.assertions(4);
+    try {
+      await get(api, true, true);
+    } catch (error) {
+      expect(error.body).toEqual(
+        "goodCert certificate for purecap mode is not implemented"
+      );
+    }
 
-    const response_purecap_bad = await request(api).get(
-      "/run-script/true/false"
-    );
-    expect(response_purecap_bad.error.text).toEqual(
-      '"maliciousCert certificate for purecap mode is not implemented"'
-    );
+    try {
+      await get(api, true, false);
+    } catch (error) {
+      expect(error.body).toEqual(
+        "maliciousCert certificate for purecap mode is not implemented"
+      );
+    }
 
-    const response_hybrid_good = await request(api).get(
-      "/run-script/false/true"
-    );
-    expect(response_hybrid_good.error.text).toEqual(
-      '"goodCert certificate for hybrid mode is not implemented"'
-    );
+    try {
+      await get(api, false, true);
+    } catch (error) {
+      expect(error.body).toEqual(
+        "goodCert certificate for hybrid mode is not implemented"
+      );
+    }
 
-    const response_hybrid_bad = await request(api).get(
-      "/run-script/false/false"
-    );
-    expect(response_hybrid_bad.error.text).toEqual(
-      '"maliciousCert certificate for hybrid mode is not implemented"'
-    );
+    try {
+      await get(api, false, false);
+    } catch (error) {
+      expect(error.body).toEqual(
+        "maliciousCert certificate for hybrid mode is not implemented"
+      );
+    }
   });
 });

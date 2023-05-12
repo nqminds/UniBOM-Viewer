@@ -1,0 +1,45 @@
+{
+  "name": "@nqminds/cyber-demonstrator-client",
+  "version": "1.0.0",
+  "description": "OpenAPI definitions for the @nqminds/cyber-demonstrator-server.",
+  "scripts": {
+    "build:openapi-codegen:browser": "openapi --input ./openapi.yml --name NqmCyberAPI --output ./generated",
+    "build:openapi-codegen:node": "openapi --input ./openapi.yml --name NqmCyberAPI --client node --output ./generated-node",
+    "build:ts:browser": "tsc --project tsconfig.json",
+    "build:ts:node": "tsc --project tsconfig.node.json",
+    "prepare": "concurrently 'npm:build:openapi-codegen:*' && concurrently 'npm:build:ts:*'"
+  },
+  "author": "nqminds",
+  "contributors": [
+    {
+      "name": "Ash Setter",
+      "email": "ash@nquiringminds.com"
+    },
+    {
+      "name": "Anthony McCaigue",
+      "email": "anthony@nquiringminds.com"
+    },
+    {
+      "name": "Alois Klink",
+      "email": "alois@nquiringminds.com"
+    }
+  ],
+  "types": "./generated/NqmCyberAPI.ts",
+  "exports": {
+    ".": {
+      "node": "./generated-node/NqmCyberAPI.js",
+      "default": "./generated/NqmCyberAPI.js"
+    }
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.3",
+    "concurrently": "^8.0.1",
+    "openapi-typescript-codegen": "^0.24.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "form-data": "^4.0.0",
+    "node-fetch": "^2.6.9"
+  }
+}

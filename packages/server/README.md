@@ -10,11 +10,3 @@ running
 npm install
 npm start
 ```
-
-### OpenAPI spec
-
-To convert the OpenAPI schema to Typescript:
-
-```bash
-npx openapi-typescript openapi.yml --output schema.ts
-```
