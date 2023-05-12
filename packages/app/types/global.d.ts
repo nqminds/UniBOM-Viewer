@@ -1,5 +1,4 @@
 declare interface sbomComponent {
-  id: string | undefined;
   name: string;
   version: string;
   licenses: string;
