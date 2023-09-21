@@ -7,4 +7,10 @@ module.exports = {
     "/generated",
     "/generated-node",
   ],
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      plugins: ["@babel/plugin-syntax-import-assertions"],
+    },
+  },
 };
