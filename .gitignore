@@ -102,8 +102,3 @@ dist
 
 # TernJS port file
 .tern-port
-
-# CVE Data
-packages/vulnerability-analysis-tools/input/cves/*
-packages/vulnerability-analysis-tools/input/sboms/*
-packages/vulnerability-analysis-tools/input/reports/*
