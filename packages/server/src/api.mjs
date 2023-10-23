@@ -1,7 +1,10 @@
+/* eslint-disable no-unused-vars */
 import express from "express";
 import config from "../config.json" assert { type: "json" };
 
 import getVulnerabilityAnalysis from "@nqminds/vulnerability-analysis";
+import { extractDetails } from "../../vulnerability-analysis-tools/src/vulnerability-analysis.mjs";
+
 import testCases from "./test-cases.mjs";
 
 import { MorelloOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
@@ -93,7 +96,11 @@ api.get(
 );
 
 api.get("/vulnerability-analysis", async (req, res) => {
-  const data = await getVulnerabilityAnalysis(nistApiKey);
+  // I'll leave getVulnerabilityAnalysis for now, to help me debug various things
+  // const data = await getVulnerabilityAnalysis(nistApiKey);
+  const data = await extractDetails(
+    "/home/ionut/Repositories/cyber/packages/vulnerability-analysis-tools/input/sbom.json"
+  );
   res.send(data);
 });
 
