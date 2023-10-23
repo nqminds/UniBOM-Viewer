@@ -8,6 +8,7 @@ import {classifySeverityScore, mitigated} from "./severity-map";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import CveTable from "./cve-table";
 import {uniqBy} from "lodash";
+import { Console } from "console";
 
 const Controls = styled(Icon)(({theme: {palette}}) => ({
   background: palette.text.primary,
@@ -44,7 +45,9 @@ export default function SbomComponentTableRow({
   const categorisedCves = data.cves.map(categoriseCves);
   const memorySafeCves = categorisedCves.map((cve) => {
     const {cwes} = cve;
-    if (cwes.find(({memoryCwe}) => memoryCwe)) {
+    // leve this here temoprarly
+    // if (cwes.find(({memoryCwe}) => memoryCwe)) {
+      if (Array.isArray(cwes) && cwes.find(({memoryCwe}) => memoryCwe)){
       return {...cve, baseSeverity: mitigated};
     }
     return cve;
