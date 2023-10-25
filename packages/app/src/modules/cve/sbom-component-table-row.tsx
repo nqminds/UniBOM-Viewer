@@ -44,7 +44,7 @@ export default function SbomComponentTableRow({
   const categorisedCves = data.cves.map(categoriseCves);
   const memorySafeCves = categorisedCves.map((cve) => {
     const {cwes} = cve;
-      if (Array.isArray(cwes) && cwes.find(({memoryCwe}) => memoryCwe)){
+    if (Array.isArray(cwes) && cwes.find(({memoryCwe}) => memoryCwe)) {
       return {...cve, baseSeverity: mitigated};
     }
     return cve;
