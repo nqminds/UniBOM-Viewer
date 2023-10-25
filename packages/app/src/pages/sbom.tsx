@@ -31,7 +31,6 @@ const VisuallyHiddenInput = styled('input')({
 export default function Home() {
   
   const [uploadedFile, setUploadedFile] = useState(null);
-  const [isGeneratePressed, setGeneratePressed] = useState(false);
   const [data, setData] = useState(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +39,8 @@ export default function Home() {
     const file = event?.target?.files?.[0];
     if (!file) {
       <Alert severity="warning">No file selected!</Alert>
+      setUploadedFile(null);  // reset the uploaded file state
+      setIsLoading(false);    // reset the loading state
       return;
     }  
     setIsLoading(true);
@@ -70,53 +71,46 @@ export default function Home() {
     }
   };
 
-
   if (error) {
     return <Typography>ERROR ${error.message}</Typography>;
   }
 
-  if (!uploadedFile || !isGeneratePressed) {
-    return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="start"
-        alignItems="flex-start"
-        minHeight="100vh"
-        padding="20px 0 0 20px"
-      >
-        <Button 
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="start"
+      alignItems="flex-start"
+      minHeight="100vh"
+      padding="20px 0 0 20px"
+    >
+      <Button 
         component="label" 
         variant="contained" 
         startIcon={<CloudUploadIcon />}
         style={{ marginBottom: '10px' }}
-        >
-          Upload json sbom
-          <VisuallyHiddenInput type="file" onChange={handleFileUpload} accept=".json" />
-        </Button>
-        <Button 
-          variant="contained" 
-          onClick={() => setGeneratePressed(true)}
-          disabled={!uploadedFile}  // Only enable if file is uploaded
-        >
-          Generate Vulnerability Report
-        </Button>
-        {isLoading && (
-          <>
-            <Typography variant="h2">Loading CVE data</Typography>
-            <Typography variant="subtitle1" marginBottom={2}>
-              This may take a while until the latest data has been downloaded.
-            </Typography>
-            <CircularProgress />
-          </>
-        )}
-      </Box>
-    );
-  }
-  
-  return (
-    <Container>
-      {data ? <SbomComponentTable data={data} /> : <Typography>No data available</Typography>}
-    </Container>
+      >
+        Upload json sbom
+        <VisuallyHiddenInput type="file" onChange={handleFileUpload} accept=".json" />
+      </Button>
+      {isLoading && (
+        <>
+          <Typography variant="h2">Loading CVE data</Typography>
+          <Typography variant="subtitle1" marginBottom={2}>
+            This may take a while until the latest data has been downloaded.
+          </Typography>
+          <CircularProgress />
+        </>
+      )}
+
+      {!uploadedFile ? (
+        null
+      ) : (
+        <Container>
+          {data ? <SbomComponentTable data={data} /> : <Typography>No data available</Typography>}
+        </Container>
+      )}
+    </Box>
   );
 }
+
