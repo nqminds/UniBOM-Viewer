@@ -72,41 +72,48 @@ export default function Home() {
   };
 
   if (error) {
-    return <Typography>ERROR ${error.message}</Typography>;
+    return <Typography>ERROR {error.message}</Typography>;
   }
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="start"
-      alignItems="flex-start"
-      minHeight="100vh"
-      padding="20px 0 0 20px"
-    >
-      <Button
-        component="label"
-        variant="contained"
-        startIcon={<CloudUploadIcon />}
-        style={{marginBottom: "10px"}}
+    <React.Fragment>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="start"
+        alignItems="flex-start"
+        padding="20px 0 0 20px"
       >
-        Upload json sbom
-        <VisuallyHiddenInput
-          type="file"
-          onChange={handleFileUpload}
-          accept=".json"
-        />
-      </Button>
+        <Button
+          component="label"
+          variant="contained"
+          startIcon={<CloudUploadIcon />}
+          style={{marginBottom: "10px"}}
+          disabled={isLoading}
+        >
+          Upload json sbom
+          <VisuallyHiddenInput
+            type="file"
+            onChange={handleFileUpload}
+            accept=".json"
+          />
+        </Button>
+      </Box>
       {isLoading && (
-        <>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="start"
+          alignItems="center"
+          minHeight="100vh"
+        >
           <Typography variant="h2">Loading CVE data</Typography>
           <Typography variant="subtitle1" marginBottom={2}>
             This may take a while until the latest data has been downloaded.
           </Typography>
           <CircularProgress />
-        </>
+        </Box>
       )}
-
       {!uploadedFile ? null : (
         <Container>
           {data ? (
@@ -116,6 +123,6 @@ export default function Home() {
           )}
         </Container>
       )}
-    </Box>
+    </React.Fragment>
   );
 }
