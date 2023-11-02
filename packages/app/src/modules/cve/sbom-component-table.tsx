@@ -28,10 +28,10 @@ export default function SbomComponentTable({data}: props) {
       <Table size="small">
         <SbomComponentTableHead />
         <TableBody>
-          {sortBy(data, ({cves}) => -cves.length).map((row) => (
+          {sortBy(data, ({cves}) => -cves.length).map((row, index) => (
             <SbomComponentTableRow
               data={row}
-              key={`${row.name}-${row.version}`}
+              key={`${row.name}-${row.version}-${index}`}
             />
           ))}
           <SbomComponentTableRow data={allComponents} highlight />

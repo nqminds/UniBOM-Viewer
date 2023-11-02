@@ -3,6 +3,10 @@
 const express = require("express");
 const next = require("next");
 const config = require("config");
+const fs = require("fs");
+const multer = require("multer");
+const upload = multer({dest: "uploads/"});
+const FormData = require("form-data");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({dev});
@@ -69,6 +73,62 @@ app
     server.get("*", (req, res) => {
       return handle(req, res);
     });
+
+    server.post(
+      "/api/vulnerability-analysis",
+      upload.single("file"),
+      async (req, res) => {
+        const file = req.file;
+        if (!file) {
+          console.warn("No file uploaded");
+          res.status(400).send({error: "No file uploaded"});
+          return;
+        }
+        try {
+          const formData = new FormData();
+          formData.append("file", fs.createReadStream(file.path));
+
+          const response = await fetch(
+            `${config.get("serverAddress")}/vulnerability-analysis`,
+            {
+              referrerPolicy: "strict-origin-when-cross-origin",
+              method: "POST",
+              body: formData,
+            },
+          );
+
+          const contentType = response.headers.get("content-type");
+          // Ensure is JSON
+          if (contentType && contentType.indexOf("application/json") !== -1) {
+            const data = await response.json();
+            res.send(data);
+          } else {
+            // Handle non-JSON response or throw an error
+            const text = await response.text();
+            console.error("Non-JSON response:", text);
+            res.status(500).send({error: "Unexpected server response"});
+          }
+        } catch (error) {
+          console.log(error);
+          if (error.errno === "ECONNREFUSED") {
+            console.log(
+              "Have you started the server on:",
+              config.get("serverAddress"),
+            );
+          }
+          res.send({error});
+        } finally {
+          try {
+            if (file && file.path) {
+              // delete the uploaded file after processing
+              fs.unlinkSync(file.path);
+            }
+          } catch (fileDelErr) {
+            console.error("Error deleting file:", fileDelErr);
+          }
+        }
+      },
+    );
 
     server.listen(8082, (err) => {
       if (err) throw err;

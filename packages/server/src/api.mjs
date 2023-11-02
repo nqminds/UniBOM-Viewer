@@ -1,14 +1,19 @@
 import express from "express";
 import config from "../config.json" assert { type: "json" };
 
-import getVulnerabilityAnalysis from "@nqminds/vulnerability-analysis";
+import { extractDetails } from "../../vulnerability-analysis-tools/src/vulnerability-analysis.mjs";
+
 import testCases from "./test-cases.mjs";
 
 import { MorelloOpenSSLTestCase } from "@nqminds/openssl-vuln-poc";
+import multer from "multer";
 
 const api = express();
 
-const { username, host, sshPort, nistApiKey } = config;
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+const { username, host, sshPort } = config;
 
 const sshOpts = { username, host, port: sshPort };
 /** @type {boolean | Error} `true` is the server is setup. `Error` is the server failed to setup. */
@@ -92,9 +97,28 @@ api.get(
   }
 );
 
-api.get("/vulnerability-analysis", async (req, res) => {
-  const data = await getVulnerabilityAnalysis(nistApiKey);
+// eslint-disable-next-line consistent-return
+api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded");
+  }
+  const file = req.file;
+  const fileContent = file.buffer.toString("utf-8");
+  const jsonObject = JSON.parse(fileContent);
+
+  const data = await extractDetails(jsonObject);
   res.send(data);
+});
+
+// Error handling middleware for Multer
+api.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    res.status(400).send("File upload error");
+  } else if (err) {
+    res.status(400).send(err.message);
+  } else {
+    next();
+  }
 });
 
 export default api;
