@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 import express from "express";
 import config from "../config.json" assert { type: "json" };
+import validator from "validator";
 
 import { extractDetails } from "../../vulnerability-analysis-tools/src/vulnerability-analysis.mjs";
 
@@ -97,6 +99,32 @@ api.get(
   }
 );
 
+function validateApiKeys(nistKey, openaiKey) {
+  if (!nistKey || !openaiKey) {
+    throw new Error("Both API keys must be provided.");
+  }
+
+  // Using `isLength` to check if the keys have a reasonable length
+  // and `isAlphanumeric` to ensure they consist of alphanumeric characters
+  if (
+    !validator.isLength(nistKey, { min: 10 }) ||
+    !validator.isAlphanumeric(nistKey, "en-US", { ignore: "-_" })
+  ) {
+    throw new Error("Invalid NIST API Key format.");
+  }
+
+  if (
+    !validator.isLength(openaiKey, { min: 10 }) ||
+    !validator.isAlphanumeric(openaiKey, "en-US", { ignore: "-_" })
+  ) {
+    throw new Error("Invalid OpenAI API Key format.");
+  }
+
+  // Add any additional security checks here
+
+  return { nistApiKey: nistKey, openaiApiKey: openaiKey };
+}
+
 // eslint-disable-next-line consistent-return
 api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
   if (!req.file) {
@@ -105,6 +133,27 @@ api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
   const file = req.file;
   const fileContent = file.buffer.toString("utf-8");
   const jsonObject = JSON.parse(fileContent);
+
+  let nistApiKey;
+  let openaiApiKey;
+  try {
+    // Assume req.body.nistApiKey and req.body.openaiApiKey are the API keys from the request
+    const validatedKeys = validateApiKeys(
+      req.body.nistApiKey,
+      req.body.openaiApiKey
+    );
+    nistApiKey = validatedKeys.nistApiKey;
+    openaiApiKey = validatedKeys.openaiApiKey;
+
+    // Now you can use nistApiKey and openaiApiKey as needed
+  } catch (error) {
+    console.error(error);
+    // Send an error response back to the client
+    res.status(400).send({ error: error.message });
+  }
+  // TODO: use the api keys instead of the .env files
+  console.log("NIST API KEY", nistApiKey);
+  console.log("OPENAI API KEY", openaiApiKey);
 
   const data = await extractDetails(jsonObject);
   res.send(data);

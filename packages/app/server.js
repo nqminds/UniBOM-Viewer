@@ -79,14 +79,23 @@ app
       upload.single("file"),
       async (req, res) => {
         const file = req.file;
+        const nistApiKey = req.body.nistApiKey;
+        const openaiApiKey = req.body.openaiApiKey;
         if (!file) {
           console.warn("No file uploaded");
           res.status(400).send({error: "No file uploaded"});
           return;
         }
+        if (!nistApiKey || !openaiApiKey) {
+          console.warn("API keys are missing");
+          res.status(400).send({error: "API keys are missing"});
+          return;
+        }
         try {
           const formData = new FormData();
           formData.append("file", fs.createReadStream(file.path));
+          formData.append("nistApiKey", nistApiKey);
+          formData.append("openaiApiKey", openaiApiKey);
 
           const response = await fetch(
             `${config.get("serverAddress")}/vulnerability-analysis`,
