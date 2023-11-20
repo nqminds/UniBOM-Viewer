@@ -1,9 +1,19 @@
 import React from "react";
 import SbomComponentTable from "@/modules/cve/sbom-component-table";
-import {Box, CircularProgress, Typography, Button, Alert, TextField, Card, Grid, Snackbar} from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  Button,
+  Alert,
+  TextField,
+  Card,
+  Grid,
+  Snackbar,
+} from "@mui/material";
 import {styled} from "@mui/system";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import {useState,useEffect} from "react";
+import {useState, useEffect} from "react";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -22,28 +32,27 @@ export default function Home() {
   const [data, setData] = useState(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [nistApiKey, setNistApiKey] = useState('');
-  const [openaiApiKey, setOpenaiApiKey] = useState('');
+  const [nistApiKey, setNistApiKey] = useState("");
+  const [openaiApiKey, setOpenaiApiKey] = useState("");
   const [showAlertNist, setShowAlertNist] = useState(false);
   const [showAlertOpenai, setShowAlertOpenai] = useState(false);
 
-   // Load any saved API keys when the component mounts
-   useEffect(() => {
-    const savedNistKey = sessionStorage.getItem('nistApiKey');
-    const savedOpenaiKey = sessionStorage.getItem('openaiApiKey');
+  // Load any saved API keys when the component mounts
+  useEffect(() => {
+    const savedNistKey = sessionStorage.getItem("nistApiKey");
+    const savedOpenaiKey = sessionStorage.getItem("openaiApiKey");
     if (savedNistKey) setNistApiKey(savedNistKey);
     if (savedOpenaiKey) setOpenaiApiKey(savedOpenaiKey);
   }, []);
 
-   // Save API keys to sessionStorage when they are updated
-   useEffect(() => {
-    if (nistApiKey) sessionStorage.setItem('nistApiKey', nistApiKey);
+  // Save API keys to sessionStorage when they are updated
+  useEffect(() => {
+    if (nistApiKey) sessionStorage.setItem("nistApiKey", nistApiKey);
   }, [nistApiKey]);
 
-    useEffect(() => {
-      if (openaiApiKey) sessionStorage.setItem('openaiApiKey', openaiApiKey);
+  useEffect(() => {
+    if (openaiApiKey) sessionStorage.setItem("openaiApiKey", openaiApiKey);
   }, [openaiApiKey]);
-
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -102,8 +111,13 @@ export default function Home() {
 
   return (
     <React.Fragment>
-      <Box sx={{ p: 2 }}>
-        <Grid container spacing={2} alignItems="center" justifyContent="flex-start">
+      <Box sx={{p: 2}}>
+        <Grid
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="flex-start"
+        >
           <Grid item>
             <Button
               component="label"
@@ -117,7 +131,7 @@ export default function Home() {
                 type="file"
                 onChange={handleFileUpload}
                 accept=".json"
-                style={{ display: "none" }}
+                style={{display: "none"}}
               />
             </Button>
           </Grid>
@@ -130,13 +144,18 @@ export default function Home() {
               onChange={(err) => setNistApiKey(err.target.value)}
               helperText={
                 <span>
-                  Don't have a key? Get it from {" "}
-                  <a href="https://nvd.nist.gov/developers/request-an-api-key" target="_blank" rel="noopener noreferrer">
+                  Don't have a key? Get it from{" "}
+                  <a
+                    href="https://nvd.nist.gov/developers/request-an-api-key"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     here
-                  </a>.
+                  </a>
+                  .
                 </span>
               }
-              sx={{ m: 1}}
+              sx={{m: 1}}
             />
           </Grid>
           <Grid item>
@@ -148,26 +167,31 @@ export default function Home() {
               onChange={(err) => setOpenaiApiKey(err.target.value)}
               helperText={
                 <span>
-                  Don't have a key? Get it from {" "}
-                  <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">
+                  Don't have a key? Get it from{" "}
+                  <a
+                    href="https://platform.openai.com/api-keys"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     here
-                  </a>.
+                  </a>
+                  .
                 </span>
               }
-              sx={{ m: 1}}
+              sx={{m: 1}}
             />
           </Grid>
         </Grid>
         {showAlertNist && (
-        <Alert severity="warning" onClose={() => setShowAlertNist(false)}>
-          Please enter NIST API key!
-        </Alert>
-      )}
+          <Alert severity="warning" onClose={() => setShowAlertNist(false)}>
+            Please enter NIST API key!
+          </Alert>
+        )}
         {showAlertOpenai && (
-        <Alert severity="info" onClose={() => setShowAlertOpenai(false)}>
-          Using an OpenAi key helps for a better classification of weaknesses!
-        </Alert>
-      )}
+          <Alert severity="info" onClose={() => setShowAlertOpenai(false)}>
+            Using an OpenAi key helps for a better classification of weaknesses!
+          </Alert>
+        )}
       </Box>
       {isLoading && (
         <Box
@@ -178,15 +202,19 @@ export default function Home() {
           minHeight="100vh"
         >
           <CircularProgress />
-          <Typography variant="subtitle1" sx={{ mt: 2 }}>
+          <Typography variant="subtitle1" sx={{mt: 2}}>
             Loading CVE data...
           </Typography>
         </Box>
       )}
       {uploadedFile && (
-        <Box sx={{ p: 2 }}>
-          <Card variant="outlined" sx={{ p: 2 }}>
-            {data ? <SbomComponentTable data={data} /> : <Typography>No data available</Typography>}
+        <Box sx={{p: 2}}>
+          <Card variant="outlined" sx={{p: 2}}>
+            {data ? (
+              <SbomComponentTable data={data} />
+            ) : (
+              <Typography>No data available</Typography>
+            )}
           </Card>
         </Box>
       )}
@@ -195,10 +223,14 @@ export default function Home() {
         autoHideDuration={6000}
         onClose={() => setError(null)}
       >
-        <Alert onClose={() => setError(null)} severity="error" sx={{ width: '100%' }}>
+        <Alert
+          onClose={() => setError(null)}
+          severity="error"
+          sx={{width: "100%"}}
+        >
           {error || "An unknown error occurred"}
         </Alert>
       </Snackbar>
     </React.Fragment>
-  );  
+  );
 }
