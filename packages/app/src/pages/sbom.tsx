@@ -32,6 +32,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [nistApiKey, setNistApiKey] = useState('');
   const [openaiApiKey, setOpenaiApiKey] = useState('');
+  const [showAlertNist, setShowAlertNist] = useState(false);
+  const [showAlertOpenai, setShowAlertOpenai] = useState(false);
 
    // Load any saved API keys when the component mounts
    useEffect(() => {
@@ -61,9 +63,13 @@ export default function Home() {
       setIsLoading(false); // reset the loading state
       return;
     }
-    if (!nistApiKey || !openaiApiKey) {
-      alert("Please enter both NIST and OpenAI API keys.");
+
+    if (!nistApiKey) {
+      setShowAlertNist(true);
       return;
+    }
+    if (!openaiApiKey) {
+      setShowAlertOpenai(true);
     }
 
     setIsLoading(true);
@@ -99,9 +105,9 @@ export default function Home() {
   };
 
   if (error) {
-    return <Typography>ERROR {error.message}</Typography>;
+    return <Alert severity="error">ERROR: {error.message}</Alert>;
   }
-  
+
   return (
     <React.Fragment>
       <Box sx={{ p: 2 }}>
@@ -160,6 +166,16 @@ export default function Home() {
             />
           </Grid>
         </Grid>
+        {showAlertNist && (
+        <Alert severity="warning" onClose={() => setShowAlertNist(false)}>
+          Please enter NIST API key!
+        </Alert>
+      )}
+        {showAlertOpenai && (
+        <Alert severity="info" onClose={() => setShowAlertOpenai(false)}>
+          Using an OpenAi key helps for a better classification of weaknesses!
+        </Alert>
+      )}
       </Box>
       {isLoading && (
         <Box
