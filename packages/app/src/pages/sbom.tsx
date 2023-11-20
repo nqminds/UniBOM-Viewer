@@ -5,14 +5,6 @@ import {styled} from "@mui/system";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {useState,useEffect} from "react";
 
-const Container = styled("div")(({theme: {spacing}}) => ({
-  padding: spacing(2),
-  display: "flex",
-  flexDirection: "column",
-  overflowY: "auto",
-  overflowX: "hidden",
-}));
-
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
