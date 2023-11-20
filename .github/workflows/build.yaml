@@ -40,6 +40,7 @@ jobs:
           # everything we're accessing is public, but authenticating allows us
           # to avoid failures due to rate-limits
           GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Check for uncommited/unignored files
         shell: bash
         run: |
