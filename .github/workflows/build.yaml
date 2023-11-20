@@ -26,6 +26,7 @@ jobs:
         run: npm ci --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: lint
         run: npm run lint
       - name: build dependencies
@@ -40,7 +41,6 @@ jobs:
           # everything we're accessing is public, but authenticating allows us
           # to avoid failures due to rate-limits
           GH_TOKEN: ${{ github.token }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Check for uncommited/unignored files
         shell: bash
         run: |
