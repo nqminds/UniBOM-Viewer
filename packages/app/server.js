@@ -88,7 +88,7 @@ app
         }
         if (!nistApiKey) {
           console.warn("API key for NIST is missing!");
-          res.status(400).send({error: "API keys are missing"});
+          res.status(400).send({error: "NIST API key is missing"});
           return;
         }
         try {
