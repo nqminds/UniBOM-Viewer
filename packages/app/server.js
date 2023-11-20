@@ -86,8 +86,8 @@ app
           res.status(400).send({error: "No file uploaded"});
           return;
         }
-        if (!nistApiKey || !openaiApiKey) {
-          console.warn("API keys are missing");
+        if (!nistApiKey) {
+          console.warn("API key for NIST is missing!");
           res.status(400).send({error: "API keys are missing"});
           return;
         }
@@ -105,6 +105,11 @@ app
               body: formData,
             },
           );
+
+          if (response.status === 400) {
+            const errorDetails = await response.json();
+            res.status(400).send({error: errorDetails});
+          }
 
           const contentType = response.headers.get("content-type");
           // Ensure is JSON
