@@ -100,29 +100,37 @@ api.get(
 );
 
 function validateApiKeys(nistKey, openaiKey) {
-  if (!nistKey || !openaiKey) {
-    throw new Error("Both API keys must be provided.");
+  const validatedKeys = {};
+  let errorMessage;
+
+  if (nistKey) {
+    if (
+      !validator.isLength(nistKey, { min: 10 }) ||
+      !validator.isAlphanumeric(nistKey, "en-US", { ignore: "-_" })
+    ) {
+      errorMessage = "Invalid NIST API Key format.";
+    } else {
+      validatedKeys.nistApiKey = nistKey;
+    }
   }
 
-  // Using `isLength` to check if the keys have a reasonable length
-  // and `isAlphanumeric` to ensure they consist of alphanumeric characters
-  if (
-    !validator.isLength(nistKey, { min: 10 }) ||
-    !validator.isAlphanumeric(nistKey, "en-US", { ignore: "-_" })
-  ) {
-    throw new Error("Invalid NIST API Key format.");
+  if (openaiKey) {
+    if (
+      !validator.isLength(openaiKey, { min: 10 }) ||
+      !validator.isAlphanumeric(openaiKey, "en-US", { ignore: "-_" })
+    ) {
+      errorMessage = "Invalid OpenAI API Key format.";
+    } else {
+      validatedKeys.openaiApiKey = openaiKey;
+    }
   }
 
-  if (
-    !validator.isLength(openaiKey, { min: 10 }) ||
-    !validator.isAlphanumeric(openaiKey, "en-US", { ignore: "-_" })
-  ) {
-    throw new Error("Invalid OpenAI API Key format.");
-  }
-
-  // Add any additional security checks here
-
-  return { nistApiKey: nistKey, openaiApiKey: openaiKey };
+  // Return the original key if empty or the validated key
+  return {
+    nistApiKey: validatedKeys.nistApiKey || nistKey,
+    openaiApiKey: validatedKeys.openaiApiKey || openaiKey,
+    errorMessage: errorMessage,
+  };
 }
 
 // eslint-disable-next-line consistent-return
@@ -137,25 +145,27 @@ api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
   let nistApiKey;
   let openaiApiKey;
   try {
-    // Assume req.body.nistApiKey and req.body.openaiApiKey are the API keys from the request
     const validatedKeys = validateApiKeys(
       req.body.nistApiKey,
       req.body.openaiApiKey
     );
+    if (validatedKeys.errorMessage) {
+      return res.status(400).send({ error: validatedKeys.errorMessage });
+    }
     nistApiKey = validatedKeys.nistApiKey;
     openaiApiKey = validatedKeys.openaiApiKey;
-
-    // Now you can use nistApiKey and openaiApiKey as needed
   } catch (error) {
     console.error(error);
     // Send an error response back to the client
     res.status(400).send({ error: error.message });
   }
-  // TODO: use the api keys instead of the .env files
-  console.log("NIST API KEY", nistApiKey);
-  console.log("OPENAI API KEY", openaiApiKey);
 
-  const data = await extractDetails(jsonObject);
+  const apiKeys = {
+    nist: nistApiKey,
+    openai: openaiApiKey,
+  };
+
+  const data = await extractDetails(jsonObject, apiKeys);
   res.send(data);
 });
 
