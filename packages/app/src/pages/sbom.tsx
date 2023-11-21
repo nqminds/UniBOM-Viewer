@@ -36,6 +36,7 @@ export default function Home() {
   const [openaiApiKey, setOpenaiApiKey] = useState("");
   const [showAlertNist, setShowAlertNist] = useState(false);
   const [showAlertOpenai, setShowAlertOpenai] = useState(false);
+  const [showAlertWrongFileType, setShowAlertWrongFileType] = useState(false);
 
   // Load any saved API keys when the component mounts
   useEffect(() => {
@@ -62,6 +63,14 @@ export default function Home() {
       <Alert severity="warning">No file selected!</Alert>;
       setUploadedFile(null); // reset the uploaded file state
       setIsLoading(false); // reset the loading state
+      return;
+    }
+
+      // Check for CycloneDx JSON file
+    if (file.type !== 'application/json' || !file.name.endsWith('.json')) {
+      setShowAlertWrongFileType(true)
+      setUploadedFile(null);
+      setIsLoading(false);
       return;
     }
 
@@ -190,6 +199,11 @@ export default function Home() {
         {showAlertOpenai && (
           <Alert severity="info" onClose={() => setShowAlertOpenai(false)}>
             Using an OpenAi key helps for a better classification of weaknesses!
+          </Alert>
+        )}
+        {showAlertWrongFileType && (
+          <Alert severity="warning" onClose={() => setShowAlertWrongFileType(false)}>
+            Invalid file type. Only CycloneDx JSON files are allowed!
           </Alert>
         )}
       </Box>
