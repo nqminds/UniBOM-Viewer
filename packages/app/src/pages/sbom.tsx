@@ -13,7 +13,7 @@ import {
 import {styled} from "@mui/system";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {useState, useEffect} from "react";
-import { Paper } from "@nqminds/ui-components";
+import {Paper} from "@nqminds/ui-components";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -30,7 +30,7 @@ const VisuallyHiddenInput = styled("input")({
 const UploadContainer = styled("div")({
   width: "100%",
   display: "flex",
-  justifyContent: "flex-end" 
+  justifyContent: "flex-end",
 });
 
 export default function Home() {
@@ -128,7 +128,7 @@ export default function Home() {
           justifyContent="flex-start"
           width="100%"
           rowSpacing={1}
-          columnSpacing={{ xs: 1, sm: 2}}
+          columnSpacing={{xs: 1, sm: 2}}
         >
           <Grid item xs={1}>
             <TextField
@@ -203,7 +203,6 @@ export default function Home() {
           </Alert>
         )}
         <UploadContainer>
-          
           <Button
             component="label"
             variant="contained"
