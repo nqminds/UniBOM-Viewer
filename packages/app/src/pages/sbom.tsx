@@ -66,9 +66,9 @@ export default function Home() {
       return;
     }
 
-      // Check for CycloneDx JSON file
-    if (file.type !== 'application/json' || !file.name.endsWith('.json')) {
-      setShowAlertWrongFileType(true)
+    // Check for CycloneDx JSON file
+    if (file.type !== "application/json" || !file.name.endsWith(".json")) {
+      setShowAlertWrongFileType(true);
       setUploadedFile(null);
       setIsLoading(false);
       return;
@@ -202,7 +202,10 @@ export default function Home() {
           </Alert>
         )}
         {showAlertWrongFileType && (
-          <Alert severity="warning" onClose={() => setShowAlertWrongFileType(false)}>
+          <Alert
+            severity="warning"
+            onClose={() => setShowAlertWrongFileType(false)}
+          >
             Invalid file type. Only CycloneDx JSON files are allowed!
           </Alert>
         )}
