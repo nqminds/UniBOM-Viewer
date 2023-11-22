@@ -13,6 +13,7 @@ import {
 import {styled} from "@mui/system";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {useState, useEffect} from "react";
+import { Paper } from "@nqminds/ui-components";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -24,6 +25,12 @@ const VisuallyHiddenInput = styled("input")({
   left: 0,
   whiteSpace: "nowrap",
   width: 1,
+});
+
+const UploadContainer = styled("div")({
+  width: "100%",
+  display: "flex",
+  justifyContent: "flex-end" 
 });
 
 export default function Home() {
@@ -112,32 +119,20 @@ export default function Home() {
 
   return (
     <React.Fragment>
-      <Box sx={{p: 2}}>
+      <Paper>
         <Grid
           container
           spacing={2}
+          columns={2}
           alignItems="center"
           justifyContent="flex-start"
+          width="100%"
+          rowSpacing={1}
+          columnSpacing={{ xs: 1, sm: 2}}
         >
-          <Grid item>
-            <Button
-              component="label"
-              variant="contained"
-              color="primary"
-              startIcon={<CloudUploadIcon />}
-              disabled={isLoading}
-            >
-              Upload JSON SBOM
-              <VisuallyHiddenInput
-                type="file"
-                onChange={handleFileUpload}
-                accept=".json"
-                style={{display: "none"}}
-              />
-            </Button>
-          </Grid>
-          <Grid item>
+          <Grid item xs={1}>
             <TextField
+              fullWidth
               label="NIST API Key"
               variant="outlined"
               type="password"
@@ -159,8 +154,9 @@ export default function Home() {
               sx={{m: 1}}
             />
           </Grid>
-          <Grid item>
+          <Grid item xs={1}>
             <TextField
+              fullWidth
               label="OpenAI API Key"
               variant="outlined"
               type="password"
@@ -206,7 +202,25 @@ export default function Home() {
             Invalid file type. Only CycloneDx JSON files are allowed!
           </Alert>
         )}
-      </Box>
+        <UploadContainer>
+          
+          <Button
+            component="label"
+            variant="contained"
+            color="primary"
+            startIcon={<CloudUploadIcon />}
+            disabled={isLoading}
+          >
+            Upload JSON SBOM
+            <VisuallyHiddenInput
+              type="file"
+              onChange={handleFileUpload}
+              accept=".json"
+              style={{display: "none"}}
+            />
+          </Button>
+        </UploadContainer>
+      </Paper>
       {isLoading && (
         <Box
           display="flex"
