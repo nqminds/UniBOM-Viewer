@@ -107,10 +107,12 @@ app
           );
 
           if (response.status === 400) {
-            const errorDetails = await response.json();
-            res.status(400).send({error: errorDetails});
+            // Handle 400 Bad Request
+            const errorDetails = await response.text();
+            console.error("400 Bad Request Error: ", errorDetails);
+            res.status(400).send({error: `Bad request: ${errorDetails}`});
+            return;
           }
-
           const contentType = response.headers.get("content-type");
           // Ensure is JSON
           if (contentType && contentType.indexOf("application/json") !== -1) {
