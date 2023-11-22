@@ -9,7 +9,6 @@ import {
   TextField,
   Card,
   Grid,
-  Snackbar,
 } from "@mui/material";
 import {styled} from "@mui/system";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -106,17 +105,10 @@ export default function Home() {
       } else {
         setError(new Error("An unknown error occurred"));
       }
-      <Alert severity="error">
-        Error uploading file: {(err as Error).message}!
-      </Alert>;
     } finally {
       setIsLoading(false);
     }
   };
-
-  if (error) {
-    return <Alert severity="error">ERROR: {error.message}</Alert>;
-  }
 
   return (
     <React.Fragment>
@@ -191,6 +183,11 @@ export default function Home() {
             />
           </Grid>
         </Grid>
+        {error && (
+          <Alert severity="error" onClose={() => setError(null)}>
+            {error.message || "An unknown error occurred"}
+          </Alert>
+        )}
         {showAlertNist && (
           <Alert severity="warning" onClose={() => setShowAlertNist(false)}>
             Please enter NIST API key!
@@ -235,19 +232,6 @@ export default function Home() {
           </Card>
         </Box>
       )}
-      <Snackbar
-        open={Boolean(error)}
-        autoHideDuration={6000}
-        onClose={() => setError(null)}
-      >
-        <Alert
-          onClose={() => setError(null)}
-          severity="error"
-          sx={{width: "100%"}}
-        >
-          {error || "An unknown error occurred"}
-        </Alert>
-      </Snackbar>
     </React.Fragment>
   );
 }
