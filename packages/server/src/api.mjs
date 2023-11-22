@@ -133,6 +133,16 @@ function validateApiKeys(nistKey, openaiKey) {
   };
 }
 
+function validateCycloneDX(jsonObject) {
+  if (jsonObject.bomFormat !== "CycloneDX") {
+    return false;
+  }
+  if (!jsonObject.components || !Array.isArray(jsonObject.components)) {
+    return false;
+  }
+  return true;
+}
+
 // eslint-disable-next-line consistent-return
 api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
   if (!req.file) {
@@ -141,6 +151,10 @@ api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
   const file = req.file;
   const fileContent = file.buffer.toString("utf-8");
   const jsonObject = JSON.parse(fileContent);
+
+  if (!validateCycloneDX(jsonObject)) {
+    return res.status(400).send("The file is not a valid CycloneDX JSON");
+  }
 
   let nistApiKey;
   let openaiApiKey;
