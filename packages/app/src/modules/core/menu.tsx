@@ -12,8 +12,7 @@ import {IconButton, useTheme} from "@mui/material";
 import {LightMode, Nightlight} from "@mui/icons-material";
 
 const routes = [
-  {url: "", name: "OpenSSL protection", associatedUrls: ["/"]},
-  {url: "sbom", name: "SBOM memory vulnerability", associatedUrls: ["/sbom"]},
+  {url: "", name: "SBOM memory vulnerability", associatedUrls: ["/"]},
 ];
 
 const Container = styled("div")(() => ({

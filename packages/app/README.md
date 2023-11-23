@@ -1,11 +1,6 @@
 ## @nqminds/cyber-demonstrator app
 
-First, run the development server:
-
-```bash
-cd packages/server
-npm start
-```
+You can run the app server with:
 
 ```bash
 cd packages/app
