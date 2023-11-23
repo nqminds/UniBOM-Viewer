@@ -41,6 +41,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@nqminds/cyber-demonstrator-client": "^1.0.0",
     "@nqminds/cyber-demonstrator-server": "^1.0.0",
     "@nqminds/ui-components": "^4.0.13",
     "dotenv": "^16.3.1",

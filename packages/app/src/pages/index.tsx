@@ -6,14 +6,14 @@ import {
   Typography,
   Button,
   Alert,
-  TextField,
   Card,
   Grid,
 } from "@mui/material";
 import {styled} from "@mui/system";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {useState, useEffect} from "react";
-import {Paper} from "@nqminds/ui-components";
+import {Paper, ApiKeyTextField} from "@/modules/common";
+import Warning from "@/modules/common/warning";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -37,12 +37,12 @@ export default function Home() {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [data, setData] = useState(null);
   const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [nistApiKey, setNistApiKey] = useState("");
-  const [openaiApiKey, setOpenaiApiKey] = useState("");
-  const [showAlertNist, setShowAlertNist] = useState(false);
-  const [showAlertOpenai, setShowAlertOpenai] = useState(false);
-  const [showAlertWrongFileType, setShowAlertWrongFileType] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [nistApiKey, setNistApiKey] = useState<string>("");
+  const [openaiApiKey, setOpenaiApiKey] = useState<string>("");
+  const [showAlertNist, setShowAlertNist] = useState<boolean>(false);
+  const [showAlertOpenai, setShowAlertOpenai] = useState<boolean>(false);
+  const [showAlertWrongFileType, setShowAlertWrongFileType] = useState<boolean>(false);
 
   // Load any saved API keys when the component mounts
   useEffect(() => {
@@ -130,78 +130,43 @@ export default function Home() {
           rowSpacing={1}
           columnSpacing={{xs: 1, sm: 2}}
         >
-          <Grid item xs={1}>
-            <TextField
-              fullWidth
-              label="NIST API Key"
-              variant="outlined"
-              type="password"
-              value={nistApiKey}
-              onChange={(err) => setNistApiKey(err.target.value)}
-              helperText={
-                <span>
-                  Don't have a key? Get it from{" "}
-                  <a
-                    href="https://nvd.nist.gov/developers/request-an-api-key"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    here
-                  </a>
-                  .
-                </span>
-              }
-              sx={{m: 1}}
-            />
-          </Grid>
-          <Grid item xs={1}>
-            <TextField
-              fullWidth
-              label="OpenAI API Key"
-              variant="outlined"
-              type="password"
-              value={openaiApiKey}
-              onChange={(err) => setOpenaiApiKey(err.target.value)}
-              helperText={
-                <span>
-                  Don't have a key? Get it from{" "}
-                  <a
-                    href="https://platform.openai.com/api-keys"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    here
-                  </a>
-                  .
-                </span>
-              }
-              sx={{m: 1}}
-            />
-          </Grid>
+          <ApiKeyTextField
+            label="NIST API Key"
+            value={nistApiKey}
+            onChange={setNistApiKey}
+            link="https://nvd.nist.gov/developers/request-an-api-key"
+          />
+          <ApiKeyTextField
+          label="OpenAI API Key"
+          value={openaiApiKey}
+          onChange={setOpenaiApiKey}
+          link="https://platform.openai.com/api-keys"
+          />
         </Grid>
-        {error && (
-          <Alert severity="error" onClose={() => setError(null)}>
-            {error.message || "An unknown error occurred"}
-          </Alert>
-        )}
-        {showAlertNist && (
-          <Alert severity="warning" onClose={() => setShowAlertNist(false)}>
-            Please enter NIST API key!
-          </Alert>
-        )}
-        {showAlertOpenai && (
-          <Alert severity="info" onClose={() => setShowAlertOpenai(false)}>
-            Using an OpenAi key helps for a better classification of weaknesses!
-          </Alert>
-        )}
-        {showAlertWrongFileType && (
-          <Alert
-            severity="warning"
-            onClose={() => setShowAlertWrongFileType(false)}
-          >
-            Invalid file type. Only CycloneDx JSON files are allowed!
-          </Alert>
-        )}
+        <Warning
+          error={error}
+          severity="error"
+          closeWarning={() => setError(null)}
+          message={error?.message || "An unknown error occurred"}
+        />
+        <Warning
+          error={showAlertNist}
+          severity="warning"
+          closeWarning={() => setShowAlertNist(false)}
+          message={"Please enter NIST API key!"}
+        />
+        <Warning
+          error={showAlertOpenai}
+          severity="info"
+          closeWarning={() => setShowAlertOpenai(false)}
+          message={"Using an OpenAi key helps for a better classification of weaknesses!"}
+        />
+        <Warning
+          error={showAlertWrongFileType}
+          severity="warning"
+          closeWarning={() => setShowAlertWrongFileType(false)}
+          message={"Invalid file type. Only CycloneDx JSON files are allowed!!"}
+        />
         <UploadContainer>
           <Button
             component="label"

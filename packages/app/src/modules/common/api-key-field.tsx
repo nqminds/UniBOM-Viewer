@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 
 function ApiKeyTextField({label, value, onChange, link}: props) {
   return (
-    <Grid item xs={1}>
+    <Grid item xs={1} minWidth={"50%"}>
       <TextField
         fullWidth
         label={label}
@@ -30,7 +30,7 @@ function ApiKeyTextField({label, value, onChange, link}: props) {
 type props = {
   label: string;
   value: string;
-  onChange: (ard0: string) => null;
+  onChange: (ard0: string) => void;
   link: string;
 };
 
