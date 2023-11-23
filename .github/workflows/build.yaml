@@ -26,6 +26,7 @@ jobs:
         run: npm ci --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: lint
         run: npm run lint
       - name: build dependencies

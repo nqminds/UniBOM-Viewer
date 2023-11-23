@@ -79,14 +79,23 @@ app
       upload.single("file"),
       async (req, res) => {
         const file = req.file;
+        const nistApiKey = req.body.nistApiKey;
+        const openaiApiKey = req.body.openaiApiKey;
         if (!file) {
           console.warn("No file uploaded");
           res.status(400).send({error: "No file uploaded"});
           return;
         }
+        if (!nistApiKey) {
+          console.warn("API key for NIST is missing!");
+          res.status(400).send({error: "NIST API key is missing"});
+          return;
+        }
         try {
           const formData = new FormData();
           formData.append("file", fs.createReadStream(file.path));
+          formData.append("nistApiKey", nistApiKey);
+          formData.append("openaiApiKey", openaiApiKey);
 
           const response = await fetch(
             `${config.get("serverAddress")}/vulnerability-analysis`,
@@ -97,6 +106,13 @@ app
             },
           );
 
+          if (response.status === 400) {
+            // Handle 400 Bad Request
+            const errorDetails = await response.text();
+            console.error("400 Bad Request Error: ", errorDetails);
+            res.status(400).send({error: `Bad request: ${errorDetails}`});
+            return;
+          }
           const contentType = response.headers.get("content-type");
           // Ensure is JSON
           if (contentType && contentType.indexOf("application/json") !== -1) {
