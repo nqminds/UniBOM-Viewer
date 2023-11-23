@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "OpenAPI definitions for the @nqminds/cyber-demonstrator-server.",
   "scripts": {
-    "build:openapi-codegen:browser": "openapi --input ./openapi.yml --name NqmCyberAPI --output ./generated",
-    "build:openapi-codegen:node": "openapi --input ./openapi.yml --name NqmCyberAPI --client node --output ./generated-node",
+    "build:openapi-codegen:browser": "openapi --input ./openapi.yml --name NqmCyberAPI --useUnionTypes --output ./generated",
+    "build:openapi-codegen:node": "openapi --input ./openapi.yml --name NqmCyberAPI --useUnionTypes --client node --output ./generated-node",
     "build:ts:browser": "tsc --project tsconfig.json",
     "build:ts:node": "tsc --project tsconfig.node.json",
     "prepare": "concurrently 'npm:build:openapi-codegen:*' && concurrently 'npm:build:ts:*'"
@@ -24,11 +24,11 @@
       "email": "alois@nquiringminds.com"
     }
   ],
-  "types": "./generated/NqmCyberAPI.ts",
+  "types": "./generated/index.ts",
   "exports": {
     ".": {
-      "node": "./generated-node/NqmCyberAPI.js",
-      "default": "./generated/NqmCyberAPI.js"
+      "node": "./generated-node/index.js",
+      "default": "./generated/index.js"
     }
   },
   "license": "UNLICENSED",
