@@ -15,6 +15,9 @@ import {useState, useEffect} from "react";
 import {Paper, ApiKeyTextField} from "@/modules/common";
 import Warning from "@/modules/common/warning";
 
+import {NqmCyberAPI} from "@nqminds/cyber-demonstrator-client";
+const nqmCyberApi = new NqmCyberAPI({BASE: `/api`});
+
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -90,23 +93,14 @@ export default function Home() {
     }
 
     setIsLoading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("nistApiKey", nistApiKey);
-    formData.append("openaiApiKey", openaiApiKey);
     try {
-      const response = await fetch("/api/vulnerability-analysis", {
-        method: "POST",
-        body: formData,
+      const response = await nqmCyberApi.default.vulnerabilityAnalysis({
+        file,
+        nistApiKey,
+        openaiApiKey,
       });
-      if (response.ok) {
-        const responseData = await response.json();
-        setUploadedFile(responseData);
-        setData(responseData);
-      } else {
-        const errorData = await response.text();
-        setError(new Error(errorData));
-      }
+      setUploadedFile(response);
+      setData(response);
     } catch (err) {
       if (err instanceof Error) {
         setError(err);

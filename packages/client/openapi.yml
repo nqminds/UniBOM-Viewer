@@ -14,6 +14,7 @@ servers:
 paths:
   /vulnerability-analysis:
     post:
+      operationId: vulnerabilityAnalysis
       summary: Upload and analyze a file for vulnerability assessment
       requestBody:
         required: true
@@ -23,8 +24,11 @@ paths:
               type: object
               properties:
                 file:
+                  type: file
+                nistApiKey:
                   type: string
-                  format: binary
+                openaiApiKey:
+                  type: string
       responses:
         "200":
           description: Successfully analyzed the file
