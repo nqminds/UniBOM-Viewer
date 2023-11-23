@@ -42,7 +42,8 @@ export default function Home() {
   const [openaiApiKey, setOpenaiApiKey] = useState<string>("");
   const [showAlertNist, setShowAlertNist] = useState<boolean>(false);
   const [showAlertOpenai, setShowAlertOpenai] = useState<boolean>(false);
-  const [showAlertWrongFileType, setShowAlertWrongFileType] = useState<boolean>(false);
+  const [showAlertWrongFileType, setShowAlertWrongFileType] =
+    useState<boolean>(false);
 
   // Load any saved API keys when the component mounts
   useEffect(() => {
@@ -137,10 +138,10 @@ export default function Home() {
             link="https://nvd.nist.gov/developers/request-an-api-key"
           />
           <ApiKeyTextField
-          label="OpenAI API Key"
-          value={openaiApiKey}
-          onChange={setOpenaiApiKey}
-          link="https://platform.openai.com/api-keys"
+            label="OpenAI API Key"
+            value={openaiApiKey}
+            onChange={setOpenaiApiKey}
+            link="https://platform.openai.com/api-keys"
           />
         </Grid>
         <Warning
@@ -159,7 +160,9 @@ export default function Home() {
           error={showAlertOpenai}
           severity="info"
           closeWarning={() => setShowAlertOpenai(false)}
-          message={"Using an OpenAi key helps for a better classification of weaknesses!"}
+          message={
+            "Using an OpenAi key helps for a better classification of weaknesses!"
+          }
         />
         <Warning
           error={showAlertWrongFileType}
