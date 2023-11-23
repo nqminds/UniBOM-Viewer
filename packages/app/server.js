@@ -17,35 +17,6 @@ app
   .then(() => {
     const server = express();
 
-    // TODO: should we use Next.JS Dynamic API Routes instead? https://nextjs.org/docs/api-routes/dynamic-api-routes
-    server.get(
-      "/api/morello/:purecap(true|false)/:goodCert(true|false)",
-      async (req, res) => {
-        const {purecap, goodCert} = req.params;
-        try {
-          const result = await fetch(
-            `${config.get("serverAddress")}/run-script/${purecap}/${goodCert}`,
-            {
-              referrerPolicy: "strict-origin-when-cross-origin",
-              body: null,
-              method: "GET",
-            },
-          );
-          const data = await result.json();
-          res.send(data);
-        } catch (error) {
-          console.log(error);
-          if (error.errno === "ECONNREFUSED") {
-            console.log(
-              "Have you started the server on:",
-              config.get("serverAddress"),
-            );
-          }
-          res.send({error});
-        }
-      },
-    );
-
     server.get("/api/vulnerability-analysis", async (req, res) => {
       try {
         const result = await fetch(
