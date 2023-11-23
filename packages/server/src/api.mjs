@@ -5,7 +5,7 @@ import validator from "validator";
 import { extractDetails } from "@nqminds/vulnerability-analysis-tools";
 import multer from "multer";
 
-const api = express();
+const api = express.Router(); // eslint-disable-line new-cap
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
