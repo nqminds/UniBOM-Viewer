@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, {ReactElement} from "react";
 import {Paper} from "@mui/material";
 import {styled} from "@mui/system";
 
@@ -13,6 +13,11 @@ export default function PaperComponent({children, sx}: props) {
 }
 
 type props = {
-  children?: string | JSX.Element | JSX.Element[] | ReactElement | ReactElement[];
+  children?:
+    | string
+    | JSX.Element
+    | JSX.Element[]
+    | ReactElement
+    | ReactElement[];
   sx?: React.ComponentProps<typeof StyledPaper>["sx"];
 };

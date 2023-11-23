@@ -1,8 +1,8 @@
-import React from 'react';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import React from "react";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 
-function ApiKeyTextField({ label, value, onChange, link }: props) {
+function ApiKeyTextField({label, value, onChange, link}: props) {
   return (
     <Grid item xs={1}>
       <TextField
@@ -14,14 +14,14 @@ function ApiKeyTextField({ label, value, onChange, link }: props) {
         onChange={(evt) => onChange(evt.target.value)}
         helperText={
           <span>
-            Dont have a key?{' '}
+            Dont have a key?{" "}
             <a href={link} target="_blank" rel="noopener noreferrer">
               get it from here
             </a>
             .
           </span>
         }
-        sx={{ m: 1 }}
+        sx={{m: 1}}
       />
     </Grid>
   );
