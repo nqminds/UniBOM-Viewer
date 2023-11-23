@@ -26,16 +26,16 @@ paths:
                   type: string
                   format: binary
       responses:
-        '200':
+        "200":
           description: Successfully analyzed the file
-        '400':
+        "400":
           description: Bad Request
           content:
             text/plain:
               example: No file uploaded
             application/json:
               example: { error: "The file is not a valid CycloneDX JSON" }
-        '500':
+        "500":
           description: Internal Server Error
           content:
             application/json:
