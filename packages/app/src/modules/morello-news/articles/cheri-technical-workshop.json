@@ -1,8 +1,0 @@
-{
-  "name": "CHERI Technical Workshop 2023 #cheritech23",
-  "publisher": "University of Glasgow, Advanced Research Centre",
-  "published": "March 2023",
-  "excerpt": "The UKRI Digital Security by Design (DSbD) government-led programme is working to create an ecosystem around the adoption of CHERI concepts to significantly increase the protection of next-generation products and services from cyber-attack. #cheritech23 is a workshop providing a venue for technical discussion around CHERI infrastructure of all kinds, including hardware, software, verification, and applications. The focus is to bring together people working on or interested in CHERI technology, and to share existing work and future ideas to develop the CHERI ecosystem.",
-  "link": "https://www.dcs.gla.ac.uk/~jsinger/cheritech23.html",
-  "imagery": "/morello-art.png"
-}

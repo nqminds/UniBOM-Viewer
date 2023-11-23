@@ -1,8 +1,0 @@
-{
-  "name": "CHERIoT: Rethinking security for low-cost embedded systems",
-  "publisher": "Microsoft",
-  "published": "February 2023",
-  "excerpt": "Small embedded cores have little area to spare for security features and yet must often run code written in unsafe languages and, increasingly, are exposed to the hostile Internet. CHERIoT  (Capability Hardware Extension to RISC-V for Internet of Things) builds on top of CHERI and RISC-V to provide an ISA and software model that lets software depend on object-granularity spatial memory safety, deterministic use-after-free protection, and lightweight compartmentalization exposed directly to the C/C++ language model.",
-  "link": "https://www.microsoft.com/en-us/research/publication/cheriot-rethinking-security",
-  "imagery": "/morello.png"
-}
