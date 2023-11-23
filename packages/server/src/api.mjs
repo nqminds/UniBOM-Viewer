@@ -2,7 +2,7 @@
 import express from "express";
 import validator from "validator";
 
-import { extractDetails } from "@nqminds/vulnerability-analysis-tools";
+import { extractDetails } from "@nqminds/vulnerability-analysis-tools/src/vulnerability-analysis.mjs";
 import multer from "multer";
 
 const api = express.Router(); // eslint-disable-line new-cap

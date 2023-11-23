@@ -4,7 +4,7 @@
   "private": true,
   "author": "Anthony McCaigue <anthony@nquiringminds.com>",
   "scripts": {
-    "dev": "concurrently 'npm run start:server' 'sleep 5 && npm run start:app'",
+    "dev": "npm run start:app",
     "build": "next build",
     "start": "next start",
     "start:server": "cd ../server && npm start",
@@ -41,6 +41,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@nqminds/cyber-demonstrator-server": "^1.0.0",
     "@nqminds/ui-components": "^4.0.13",
     "dotenv": "^16.3.1",
     "lodash": "^4.17.21",

@@ -12,65 +12,31 @@ servers:
   - url: http://localhost:3000
     description: Development Server
 paths:
-  /run-script/{purecap}/{goodCert}:
-    get:
-      operationId: runScript
-      summary: Returns standard input / output / errors when running open-ssl vulnerability scripts on various servers
-      parameters:
-        - in: path
-          name: purecap
-          schema:
-            type: boolean
-          required: true
-          description: |
-            Boolean flag to test server with morello architecture.
-
-            If:
-              - `true`, a request is sent to a morello server.
-              - `false`, a request is sent to a ubuntu server.
-        - in: path
-          name: goodCert
-          schema:
-            type: boolean
-          required: true
-          description: |
-            Boolean flag to test server with a "good" certificate.
-
-            If:
-              - `true`, this is a malicious certificate that attempts to exploit
-            [CVE-2022-3602](https://nvd.nist.gov/vuln/detail/CVE-2022-3602).
-              - `false`, this is a non-malicious certificate.
+  /vulnerability-analysis:
+    post:
+      summary: Upload and analyze a file for vulnerability assessment
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
       responses:
-        "200":
-          description: open-ssl script executed successfully and the response has been returned
+        '200':
+          description: Successfully analyzed the file
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              example: No file uploaded
+            application/json:
+              example: { error: "The file is not a valid CycloneDX JSON" }
+        '500':
+          description: Internal Server Error
           content:
             application/json:
-              example:
-                stdin: "openssl, server, -accept, 12345"
-                stdout: "some\n output"
-                stderr: ""
-              schema:
-                type: object
-                required:
-                  - "stdin"
-                properties:
-                  stdin:
-                    type: string
-                    description: |
-                      Comma separated Args for the command, **not standard input**.
-                  stdout:
-                    type: string
-                    description: standard output
-                  stderr:
-                    type: string
-                    description: standard error
-        "500":
-          description: Internal Server Error
-        "501":
-          description: Config is not implemented
-        "503":
-          description: |
-            Morello Server backend is still in the process of setting up
-            (usually takes 5-10 minutes to setup).
-
-            Please try again after a couple of seconds.
+              example: { error: "Internal server error" }
