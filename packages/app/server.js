@@ -20,9 +20,9 @@ app
       return handle(req, res);
     });
 
-    server.listen(8082, (err) => {
+    server.listen(8082, "0.0.0.0", (err) => {
       if (err) throw err;
-      console.log("Ready on http://localhost:8082");
+      console.log("Ready on http://0.0.0.0:8082");
     });
   })
   .catch((ex) => {
