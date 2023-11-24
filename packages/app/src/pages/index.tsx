@@ -15,7 +15,7 @@ import {useState, useEffect} from "react";
 import {Paper, ApiKeyTextField} from "@/modules/common";
 import Warning from "@/modules/common/warning";
 
-import {NqmCyberAPI} from "@nqminds/cyber-demonstrator-client";
+import {ApiError, NqmCyberAPI} from "@nqminds/cyber-demonstrator-client";
 const nqmCyberApi = new NqmCyberAPI({BASE: `/api`});
 
 const VisuallyHiddenInput = styled("input")({
@@ -39,7 +39,7 @@ const UploadContainer = styled("div")({
 export default function Home() {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [data, setData] = useState(null);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<ApiError | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [nistApiKey, setNistApiKey] = useState<string>("");
   const [openaiApiKey, setOpenaiApiKey] = useState<string>("");
@@ -102,11 +102,7 @@ export default function Home() {
       setUploadedFile(response);
       setData(response);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err);
-      } else {
-        setError(new Error("An unknown error occurred"));
-      }
+      setError(err as ApiError);
     } finally {
       setIsLoading(false);
     }
@@ -142,7 +138,7 @@ export default function Home() {
           error={error}
           severity="error"
           closeWarning={() => setError(null)}
-          message={error?.message || "An unknown error occurred"}
+          message={error?.body || error?.message || "An unknown error occurred"}
         />
         <Warning
           error={showAlertNist}
