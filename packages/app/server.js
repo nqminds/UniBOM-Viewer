@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 const express = require("express");
 const next = require("next");
+const path = require("path");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({dev});
@@ -15,6 +16,13 @@ app
     const {default: api} = await import("@nqminds/cyber-demonstrator-server");
 
     server.use("/api", api);
+
+    // Define a route for the verification file
+    server.get("/.well-known/pki-validation/fileauth.txt", (req, res) => {
+      console.log(__dirname);
+      const filePath = path.join(__dirname, "public", "fileauth.txt");
+      res.sendFile(filePath);
+    });
 
     server.get("*", (req, res) => {
       return handle(req, res);
