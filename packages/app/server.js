@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-console */
+const path = require("path");
+require("dotenv").config({path: path.resolve(__dirname, "../../.env")});
 const express = require("express");
 const next = require("next");
-const path = require("path");
 
 const dev = process.env.NODE_ENV !== "production";
+const port = process.env.PORT || 8082;
 const app = next({dev});
 const handle = app.getRequestHandler();
 
@@ -28,9 +30,9 @@ app
       return handle(req, res);
     });
 
-    server.listen(8082, (err) => {
+    server.listen(port, "0.0.0.0", (err) => {
       if (err) throw err;
-      console.log("Ready on http://localhost:8082");
+      console.log(`Ready on https://0.0.0.0:${port}`);
     });
   })
   .catch((ex) => {
