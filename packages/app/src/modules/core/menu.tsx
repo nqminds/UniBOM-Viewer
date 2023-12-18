@@ -13,6 +13,7 @@ import {LightMode, Nightlight} from "@mui/icons-material";
 
 const routes = [
   {url: "", name: "SBOM memory vulnerability", associatedUrls: ["/"]},
+  { url: "historical", name: "CPE Data Visualization",associatedUrls: ["/historical"] },
 ];
 
 const Container = styled("div")(() => ({
@@ -46,7 +47,7 @@ export default function Menu() {
         <MenuItem
           key={url}
           sx={{
-            color: [url, ...associatedUrls].find(
+            color: [url, ...associatedUrls || []].find(
               (route) => router.route === route,
             )
               ? menu.menuHighlight
