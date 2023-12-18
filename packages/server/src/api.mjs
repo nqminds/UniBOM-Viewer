@@ -3,6 +3,7 @@ import express from "express";
 import validator from "validator";
 
 import { extractDetails } from "@nqminds/vulnerability-analysis-tools/src/vulnerability-analysis.mjs";
+import { mapCpeCveCwe } from "@nqminds/vulnerability-analysis-tools/src/show-cpe-history.mjs";
 import multer from "multer";
 
 const api = express.Router(); // eslint-disable-line new-cap
@@ -92,6 +93,46 @@ api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
 
   const data = await extractDetails(jsonObject, apiKeys);
   res.send(data);
+});
+
+// Body parser middleware to handle JSON data
+api.use(express.json());
+api.post("/historical-cpe-analysis", async (req, res) => {
+  // Log the entire request body
+  console.log("Request Body:", req.body);
+
+  // Check if the body is undefined
+  if (!req.body) {
+    console.error("Request body is undefined.");
+    return res.status(400).send({ error: "Request body is missing." });
+  }
+
+  const { cpe, historyFlag } = req.body;
+
+  // Additional console logs to verify the values
+  console.log("CPE:", cpe);
+  console.log("History Flag:", historyFlag);
+
+  // Validate input
+  if (!cpe || typeof cpe !== "string") {
+    return res
+      .status(400)
+      .send({ error: "CPE is required and must be a string." });
+  }
+  if (historyFlag !== "hist" && historyFlag !== "all") {
+    return res
+      .status(400)
+      .send({ error: "Invalid history flag. Use 'hist' or 'all'." });
+  }
+
+  try {
+    // Call historical CPE analysis function
+    const analysisResult = await mapCpeCveCwe(cpe, historyFlag);
+    return res.status(200).send(analysisResult);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ error: "Internal server error" });
+  }
 });
 
 // Error handling middleware for Multer
