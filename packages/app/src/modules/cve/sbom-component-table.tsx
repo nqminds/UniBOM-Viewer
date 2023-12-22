@@ -20,6 +20,7 @@ export default function SbomComponentTable({data}: props) {
       version: "",
       licenses: "",
       cves: [],
+      cpe: "",
     },
   );
 
