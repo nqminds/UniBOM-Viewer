@@ -58,9 +58,6 @@ paths:
                 cpe:
                   type: string
                   description: The CPE string to analyze
-                historyFlag:
-                  type: string
-                  description: Flag to indicate the history type ('hist' or 'all')
               required:
                 - cpe
       responses:
@@ -69,20 +66,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    cpe:
-                      type: string
-                    cve:
-                      type: string
-                    cwe:
-                      type: array
-                      items:
+                type: object
+                additionalProperties: 
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      cve:
                         type: string
-                    weakType:
-                      type: string
+                      cwe:
+                        type: array
+                        items:
+                          type: string
+                      weakType:
+                        type: string
+                      baseScore:
+                        type: number
+                        format: float
+                      baseSeverity:
+                        type: string
         "400":
           description: Bad Request
           content:
@@ -103,3 +105,4 @@ paths:
                   error:
                     type: string
                     example: "Internal server error"
+
