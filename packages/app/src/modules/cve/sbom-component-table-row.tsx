@@ -1,8 +1,9 @@
 import React, {useState} from "react";
 import {styled} from "@mui/system";
+import Link from "next/link";
 
 import SeverityBreakdown from "./severity-breakdown";
-import {TableCell, TableRow, Icon} from "@mui/material";
+import {TableCell, TableRow, Icon, Box, Button} from "@mui/material";
 import {classifySeverityScore, mitigated} from "./severity-map";
 
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
@@ -31,7 +32,6 @@ export default function SbomComponentTableRow({
   highlight = false,
 }: props) {
   const [open, setOpen] = useState(false);
-
   function expand(currentState: boolean) {
     setOpen(!currentState);
   }
@@ -40,7 +40,6 @@ export default function SbomComponentTableRow({
     cursor: "pointer",
     background: highlight ? palette.background.default : null,
   }));
-
   const categorisedCves = data.cves.map(categoriseCves);
   const memorySafeCves = categorisedCves.map((cve) => {
     const {cwes} = cve;
@@ -74,6 +73,15 @@ export default function SbomComponentTableRow({
         </TableCell>
       </Row>
       <CveTable open={open} cves={uniqBy(categorisedCves, "id")} />
+      {open && (
+        <Box textAlign="center" sx={{ marginTop: 2 }}>
+          <Link href={`/historical?cpe=${encodeURIComponent(data.cpe || '')}`} passHref>
+          <Button variant="contained" color="primary">
+              CPE History
+          </Button>
+          </Link>
+        </Box>
+      )}
     </>
   );
 }
