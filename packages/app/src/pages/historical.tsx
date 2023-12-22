@@ -1,145 +1,132 @@
 /* eslint-disable no-console */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Box, Button, Card, CircularProgress, Grid, TextField, Typography
+  Box, Card, CircularProgress, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip
 } from '@mui/material';
-import {Paper} from "@/modules/common";
+import { Paper } from "@/modules/common";
+import { NqmCyberAPI } from "@nqminds/cyber-demonstrator-client";
+import { useRouter } from 'next/router';
+import CpeTimeline from '@/modules/cve/cpe-timeline';
+import Dashboard from '@/modules/cve/dashboard';
 
-import {NqmCyberAPI} from "@nqminds/cyber-demonstrator-client";
-const nqmCyberApi = new NqmCyberAPI({BASE: `/api`});
+
+const nqmCyberApi = new NqmCyberAPI({ BASE: `/api` });
+
+interface CVEData {
+    cve?: string;
+    cwe?: string[];
+    weakType?: string;
+    baseScore?: number;
+    baseSeverity?: string;
+  }
 
 interface CpeData {
-  cpe?: string;
-  cve?: string;
-  cwe?: string[];
-  weakType?: string;
+  [cpe: string]: CVEData[];
 }
 
 export default function CpeDataPage() {
-  const [cpeInput, setCpeInput] = useState('');
-  const [cpeData, setCpeData] = useState<CpeData[]>([]);
+  const router = useRouter();
+  const [cpeData, setCpeData] = useState<CpeData>({});
   const [loading, setLoading] = useState(false);
 
-  const handleCpeInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCpeInput(event.target.value);
-  };
-  // mock data for testing
-  const mockCpeData = [
-    { cpe: 'mock-cpe-1', cve: 'mock-cve-1', cwe: ['CWE-123'], weakType: 'mock-type-1' },
-    { cpe: 'mock-cpe-2', cve: 'mock-cve-2', cwe: ['CWE-456'], weakType: 'mock-type-2' },
-    { cpe: 'mock-cpe-3', cve: 'mock-cve-3', cwe: ['CWE-789'], weakType: 'mock-type-3' },
-  ];
+  const color1 = '#E0F7FA'; // Light blue
+  const color2 = '#E8F5E9'; // Light green
 
-  // TODO fetch data
-  const fetchCpeData = async () => {
-    setLoading(true);
-    try {
-      const data = await nqmCyberApi.default.historicalCpeAnalysis({
-        cpe: cpeInput,
-        historyFlag: 'hist' // or 'all'
-      });
-      if (Array.isArray(data)) {
-        setCpeData(data);
-      } else {
-        console.log('NO DATA');
-        setCpeData(mockCpeData);
-      }
-      
-    } catch (error) {
-      console.error('Error fetching CPE data:', error);
+
+  const getColorForWeakType = (weakType: string | undefined) => {
+    switch (weakType) {
+      case 'not-memory-related': return { backgroundColor: '#59cd90', color: '#fff' };
+      case 'other-memory-related': return { backgroundColor: '#ea8c55', color: '#fff' };
+      case 'spatial-memory-related': return { backgroundColor: '#c75146', color: '#fff' };
+      case 'temporal-memory-related': return { backgroundColor: '#ad2e24', color: '#fff' };
+      case 'No Info': return { backgroundColor: '#ffea00', color: '#000' };
+      default: return {};
     }
-    setLoading(false);
   };
-  
-  console.log("CPE Data:", cpeData);
-
-  // Example data formatting for a graph
-  let graphData;
-  if (Array.isArray(cpeData)) {
-    graphData = {
-        labels: cpeData.map(data => data.cve),
-        datasets: [{
-        label: 'CWE Types',
-        data: cpeData.map(data => {
-            if (data.cwe && data.cwe.length > 0) {
-            return parseInt(data.cwe[0].replace('CWE-', ''));
-            } else {
-            return 0;
-            }
-        }),
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        }]
-    };
-  } else {
-
-    // Using mock data for testing
-        console.log('CpeData is not an array, using mock data');
-        
-        graphData = {
-            labels: ['Mock CVE-1', 'Mock CVE-2', 'Mock CVE-3'],
-            datasets: [{
-            label: 'CWE Types',
-            data: [10, 20, 30], // Mock CWE data
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            }] 
-        };
-  }
-
-  if (Array.isArray(cpeData) && cpeData.length > 0) {
-    graphData = {
-        labels: cpeData.map(data => data.cve),
-        datasets: [{
-            label: 'CWE Types',
-            data: cpeData.map(data => {
-                if (data.cwe && data.cwe.length > 0) {
-                    return parseInt(data.cwe[0].replace('CWE-', ''));
+    useEffect(() => {
+        const fetchCpeData = async () => {
+            if (router.query.cpe) {
+                setLoading(true);
+                try {
+                const cpeInput = router.query.cpe as string;
+                const data = await nqmCyberApi.default.historicalCpeAnalysis({ cpe: cpeInput });
+                
+                if (typeof data === 'object' && !Array.isArray(data)) {
+                    setCpeData(data);
                 } else {
-                    return 0;
+                    console.error('Unexpected data format received from API');
                 }
-            }),
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        }]
-    };
-}
+                } catch (error) {
+                console.error('Error fetching CPE data:', error);
+                }
+                setLoading(false);
+            }
+        };
+    fetchCpeData();
+  }, [router.query]);
 
-
-return (
-    <Box sx={{ p: 4 }}>
-      <Paper>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              label="Enter CPE"
-              value={cpeInput}
-              onChange={handleCpeInputChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button variant="contained" onClick={fetchCpeData} disabled={loading}>
-              {loading ? <CircularProgress size={24} /> : 'Fetch Data'}
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
-
-      {Array.isArray(cpeData) && cpeData.length > 0 && (
-        <Card sx={{ mt: 4 }}>
-          <Typography variant="h6" sx={{ p: 2 }}>
-            CPE Data Visualization
-          </Typography>
-          <Box sx={{ p: 2 }}>
-            {cpeData.map((data, index) => (
-              <Box key={index} sx={{ mb: 2 }}>
-                <Typography variant="subtitle1">{data.cpe}</Typography>
-                <ul>
-                  <li>{`CVE: ${data.cve} - CWE: ${data.cwe ? data.cwe.join(', ') : 'N/A'} - Weak Type: ${data.weakType || 'N/A'}`}</li>
-                </ul>
-              </Box>
-            ))}
-          </Box>
-        </Card>
-      )}
-
-    </Box>
-  );
+  return (
+    <React.Fragment>
+      <Box sx={{ p: 4 }}>
+        <Paper>
+          {loading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: "100%" }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Card sx={{ mt: 4 }}>
+              <Typography variant="h6" sx={{ p: 2 }}>
+                CPE History Visualization
+              </Typography>
+              {/* ADD new component here */}
+              <Dashboard cpeData={cpeData} />
+              <Typography variant="h6" sx={{ p: 2 }}>
+                CPE History TimeLine
+              </Typography>
+              <CpeTimeline cpeData={cpeData} />
+              <Typography variant="h2" sx={{ p: 2 }}>
+                THE DATA BELLOW IS GOING TO BE REMOVED! THIS IS JUST FOR TESTING
+              </Typography>
+              <TableContainer>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>CPE</TableCell>
+                      <TableCell>CVE</TableCell>
+                      <TableCell>CWE</TableCell>
+                      <TableCell>Weakness Type</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {Object.entries(cpeData).map(([cpe, cveDetails], index) => (
+                      cveDetails.map((detail, detailIndex) => (
+                        <TableRow key={`${index}-${detailIndex}`}>
+                          {detailIndex === 0 && (
+                            <TableCell 
+                              rowSpan={cveDetails.length} 
+                              sx={{ backgroundColor: index % 2 === 0 ? color1 : color2 }}
+                            >
+                              {cpe}
+                            </TableCell>
+                          )}
+                          <TableCell sx={{ backgroundColor: index % 2 === 0 ? color1 : color2 }}>{detail.cve}</TableCell>
+                          <TableCell sx={{ backgroundColor: index % 2 === 0 ? color1 : color2 }}>{detail.cwe ? detail.cwe.join(', ') : 'N/A'}</TableCell>
+                          <TableCell sx={{ backgroundColor: index % 2 === 0 ? color1 : color2 }}>
+                            <Chip
+                              label={detail.weakType || 'N/A'}
+                              sx={getColorForWeakType(detail.weakType)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Card>
+          )}
+        </Paper>
+      </Box>
+    </React.Fragment>
+  );  
 }
