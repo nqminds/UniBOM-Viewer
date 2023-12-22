@@ -65,6 +65,15 @@ export default function Home() {
     if (openaiApiKey) sessionStorage.setItem("openaiApiKey", openaiApiKey);
   }, [openaiApiKey]);
 
+  useEffect(() => {
+    const savedData = sessionStorage.getItem('sbomData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      setData(parsedData);
+      setUploadedFile(parsedData);
+    }
+  }, []);
+
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -101,6 +110,7 @@ export default function Home() {
       });
       setUploadedFile(response);
       setData(response);
+      sessionStorage.setItem('sbomData', JSON.stringify(response)); // Store data in session storage
     } catch (err) {
       setError(err as ApiError);
     } finally {
