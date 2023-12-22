@@ -3,8 +3,16 @@ import express from "express";
 import validator from "validator";
 
 import { extractDetails } from "@nqminds/vulnerability-analysis-tools/src/vulnerability-analysis.mjs";
-import { mapCpeCveCwe } from "@nqminds/vulnerability-analysis-tools/src/show-cpe-history.mjs";
+// import { mapCpeCveCwe } from "@nqminds/vulnerability-analysis-tools/src/show-cpe-history.mjs";
 import multer from "multer";
+
+import fs from "fs/promises"; // Using fs promises for async/await
+import path from "path";
+
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const api = express.Router(); // eslint-disable-line new-cap
 
@@ -107,11 +115,7 @@ api.post("/historical-cpe-analysis", async (req, res) => {
     return res.status(400).send({ error: "Request body is missing." });
   }
 
-  const { cpe, historyFlag } = req.body;
-
-  // Additional console logs to verify the values
-  console.log("CPE:", cpe);
-  console.log("History Flag:", historyFlag);
+  const { cpe } = req.body;
 
   // Validate input
   if (!cpe || typeof cpe !== "string") {
@@ -119,15 +123,18 @@ api.post("/historical-cpe-analysis", async (req, res) => {
       .status(400)
       .send({ error: "CPE is required and must be a string." });
   }
-  if (historyFlag !== "hist" && historyFlag !== "all") {
-    return res
-      .status(400)
-      .send({ error: "Invalid history flag. Use 'hist' or 'all'." });
-  }
 
   try {
     // Call historical CPE analysis function
-    const analysisResult = await mapCpeCveCwe(cpe, historyFlag);
+    // const analysisResult = await mapCpeCveCwe(cpe);
+
+    // Define the path to the file
+    const filePath = path.resolve(__dirname, "cpeCveMap2.json");
+
+    // Read the data from the file
+    const dataString = await fs.readFile(filePath, "utf8");
+    const analysisResult = JSON.parse(dataString);
+
     return res.status(200).send(analysisResult);
   } catch (error) {
     console.error(error);
