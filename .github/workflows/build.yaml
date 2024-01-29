@@ -21,7 +21,7 @@ jobs:
         run: |
           git clone https://github.com/nqminds/sbom-cli.git
           cd sbom-cli
-          git checkout -b ${{ env.BRANCH_NAME }}
+          git checkout -b ${{ github.ref_name }}
 
       # Copy the changes from cyber repository
       - name: Copy changes to sbom-cli
@@ -36,7 +36,7 @@ jobs:
           git config user.email "actions@github.com"
           git add -A
           git commit -m "Update vulnerability-analysis-tools"
-          git push origin ${{ env.BRANCH_NAME }}
+          git push origin ${{ github.ref_name }}
 
       # Create a pull request
       - name: Create Pull Request
@@ -46,7 +46,7 @@ jobs:
           destination_branch: "main"
           pr_title: "Update vulnerability-analysis-tools"
           pr_body: "Automated PR to update vulnerability-analysis-tools"
-          source_branch: ${{ env.BRANCH_NAME }}
+          source_branch: "${{ github.ref_name }}"
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
