@@ -42,7 +42,7 @@ jobs:
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.NPM_TOKEN }}
           destination_branch: "main"
           pr_title: "Update vulnerability-analysis-tools"
           pr_body: "Automated PR to update vulnerability-analysis-tools"
