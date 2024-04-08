@@ -32,7 +32,7 @@ app
 
     server.listen(port, "0.0.0.0", (err) => {
       if (err) throw err;
-      console.log(`Ready on https://0.0.0.0:${port}`);
+      console.log(`Ready on http://0.0.0.0:${port}`);
     });
   })
   .catch((ex) => {
