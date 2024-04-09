@@ -33,7 +33,7 @@ jobs:
         # run dependency build scripts with exposing our private NODE_AUTH_KEY
         run: npm rebuild && npm run prepare --if-present
       - name: test
-        run: npm test -- --testPathIgnorePatterns "test/local_tests/"
+        run: npm test -- --testPathIgnorePatterns "packages/vulnerability-analysis-tools/test/local_tests/"
         # normally this step only takes ~1 minute, but sometimes the download
         # can be slow
         timeout-minutes: 10
