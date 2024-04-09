@@ -4,7 +4,7 @@
   "description": "Demonstrator use cases for a variety of cyber scenarios",
   "private": true,
   "scripts": {
-    "test": "npm run test --workspaces --if-present --testPathIgnorePatterns \"packages/vulnerability-analysis-tools/test/local_tests/\"",
+    "test": "npm run test --workspaces --if-present",
     "lint": "eslint --cache --cache-strategy content . && prettier --check --cache .",
     "prepare": "husky install"
   },
