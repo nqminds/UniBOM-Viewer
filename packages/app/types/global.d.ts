@@ -94,3 +94,9 @@ interface SeverityDistributionPopupProps {
   onClose: () => void;
   severities: Severity[];
 }
+
+interface CveTableProps {
+  open: boolean;
+  cves: cve[];
+  extraContent?: React.ReactNode;
+}

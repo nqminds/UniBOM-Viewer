@@ -72,16 +72,19 @@ export default function SbomComponentTableRow({
           <Controls>{open ? <ExpandLess /> : <ExpandMore />}</Controls>
         </TableCell>
       </Row>
-      <CveTable open={open} cves={uniqBy(categorisedCves, "id")} />
-      {open && (
-        <Box textAlign="center" sx={{ marginTop: 2 }}>
-          <Link href={`/historical?cpe=${encodeURIComponent(data.cpe || '')}`} passHref>
-          <Button variant="contained" color="primary">
-              CPE History
-          </Button>
-          </Link>
-        </Box>
-      )}
+      <CveTable
+        open={open}
+        cves={uniqBy(categorisedCves, "id")}
+        extraContent={
+          <Box textAlign="left" sx={{ marginTop: 2 }}>
+            <Link href={`/historical?cpe=${encodeURIComponent(data.cpe || '')}`} passHref>
+              <Button variant="contained" color="primary">
+                CPE History
+              </Button>
+            </Link>
+          </Box>
+        }
+      />
     </>
   );
 }
