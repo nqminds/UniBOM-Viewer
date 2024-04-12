@@ -1,4 +1,4 @@
-import {red, amber, orange, green} from "@mui/material/colors";
+import {red, amber, orange, green, grey} from "@mui/material/colors";
 
 const critical: cve["baseSeverity"] = "CRITICAL";
 const high: cve["baseSeverity"] = "HIGH";
@@ -20,7 +20,7 @@ export function severityColourMap(severity: cve["baseSeverity"]) {
     case mitigated:
       return green[500];
     default:
-      return null;
+      return grey[500];
   }
 }
 
