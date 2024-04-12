@@ -1,21 +1,13 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-console */
 import express from "express";
 import validator from "validator";
 
 import { extractDetails } from "@nqminds/vulnerability-analysis-tools/src/vulnerability-analysis.mjs";
-// import { mapCpeCveCwe } from "@nqminds/vulnerability-analysis-tools/src/show-cpe-history.mjs";
+import { streamMapCpeCveCwe } from "@nqminds/vulnerability-analysis-tools/src/show-cpe-history.mjs";
 import multer from "multer";
 
-import fs from "fs/promises"; // Using fs promises for async/await
-import path from "path";
-
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const api = express.Router(); // eslint-disable-line new-cap
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -105,41 +97,24 @@ api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
 
 // Body parser middleware to handle JSON data
 api.use(express.json());
-api.post("/historical-cpe-analysis", async (req, res) => {
-  // Log the entire request body
-  console.log("Request Body:", req.body);
 
-  // Check if the body is undefined
-  if (!req.body) {
-    console.error("Request body is undefined.");
-    return res.status(400).send({ error: "Request body is missing." });
-  }
-
-  const { cpe } = req.body;
-
-  // Validate input
+api.get("/historical-cpe-analysis/:cpe", async (req, res) => {
+  const { cpe } = req.params;
   if (!cpe || typeof cpe !== "string") {
     return res
       .status(400)
       .send({ error: "CPE is required and must be a string." });
   }
 
-  try {
-    // Call historical CPE analysis function
-    // const analysisResult = await mapCpeCveCwe(cpe);
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
 
-    // Define the path to the file
-    const filePath = path.resolve(__dirname, "cpeCveMap2.json");
-
-    // Read the data from the file
-    const dataString = await fs.readFile(filePath, "utf8");
-    const analysisResult = JSON.parse(dataString);
-
-    return res.status(200).send(analysisResult);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send({ error: "Internal server error" });
+  const mapStream = streamMapCpeCveCwe(cpe);
+  for await (const entry of mapStream) {
+    res.write(`data: ${JSON.stringify(entry)}\n\n`);
   }
+  res.end();
 });
 
 // Error handling middleware for Multer
