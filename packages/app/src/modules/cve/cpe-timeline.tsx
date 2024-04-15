@@ -52,7 +52,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ title, details, index }) =>
           <Typography variant="h6" component="span">
             {title}
           </Typography>
-          <Typography>{`Number of CVEs: ${details.length}`}</Typography>
+          <Typography>{`Number of CVEs: ${averageScore <= 0 ? 0 : details.length}`}</Typography>
         </Paper>
         <Tooltip title={severityLevel}>
             <LensRoundedIcon sx={{ 
