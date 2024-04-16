@@ -28,7 +28,12 @@ export default function CpeDataPage() {
   useEffect(() => {
     const cpeInput = router.query.cpe;
     if (cpeInput) {
-      const eventSource = new EventSource(`/api/historical-cpe-analysis/${cpeInput}`);
+      const apiKey = sessionStorage.getItem('nistApiKey');
+      if (!apiKey) {
+        console.error('API Key is not available');
+        return;
+      }
+      const eventSource = new EventSource(`/api/historical-cpe-analysis/${cpeInput}?nistApiKey=${apiKey}`)
       eventSourceRef.current = eventSource;
 
       eventSource.onmessage = (event) => {
