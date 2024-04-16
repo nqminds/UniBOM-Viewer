@@ -100,6 +100,7 @@ api.use(express.json());
 
 api.get("/historical-cpe-analysis/:cpe", async (req, res) => {
   const { cpe } = req.params;
+  const apiKey = req.query.nistApiKey;
   if (!cpe || typeof cpe !== "string") {
     return res
       .status(400)
@@ -110,7 +111,7 @@ api.get("/historical-cpe-analysis/:cpe", async (req, res) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  const mapStream = streamMapCpeCveCwe(cpe);
+  const mapStream = streamMapCpeCveCwe(cpe, apiKey);
   for await (const entry of mapStream) {
     res.write(`data: ${JSON.stringify(entry)}\n\n`);
   }

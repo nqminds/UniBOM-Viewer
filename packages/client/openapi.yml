@@ -115,6 +115,12 @@ paths:
           schema:
             type: string
           description: The CPE string to analyze
+        - in: query
+          name: nistApiKey
+          required: true
+          schema:
+            type: string
+          description: API key for accessing NIST database
       responses:
         "200":
           description: Streams data as server-sent events.
