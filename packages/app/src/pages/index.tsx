@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import SbomComponentTable from "@/modules/cve/sbom-component-table";
 import {
   Box,
@@ -117,6 +117,10 @@ export default function Home() {
       setIsLoading(false);
     }
   };
+  const handleApiKeyChange = (setter: (value: string) => void) => (value: string) => {
+    const valueWithoutSpaces = value.replace(/\s/g, "");
+    setter(valueWithoutSpaces);
+  };
 
   return (
     <React.Fragment>
@@ -134,13 +138,13 @@ export default function Home() {
           <ApiKeyTextField
             label="NIST API Key"
             value={nistApiKey}
-            onChange={setNistApiKey}
+            onChange={handleApiKeyChange(setNistApiKey)}
             link="https://nvd.nist.gov/developers/request-an-api-key"
           />
           <ApiKeyTextField
             label="OpenAI API Key"
             value={openaiApiKey}
-            onChange={setOpenaiApiKey}
+            onChange={handleApiKeyChange(setOpenaiApiKey)}
             link="https://platform.openai.com/api-keys"
           />
         </Grid>
