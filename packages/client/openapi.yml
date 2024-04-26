@@ -121,6 +121,12 @@ paths:
           schema:
             type: string
           description: API key for accessing NIST database
+        - in: query
+          name: openaiApiKey
+          required: true
+          schema:
+            type: string
+          description: API key for accessing OpenAi
       responses:
         "200":
           description: Streams data as server-sent events.
