@@ -29,11 +29,12 @@ export default function CpeDataPage() {
     const cpeInput = router.query.cpe;
     if (cpeInput) {
       const apiKey = sessionStorage.getItem('nistApiKey');
+      const openaiApiKey = sessionStorage.getItem('openaiApiKey');
       if (!apiKey) {
         console.error('API Key is not available');
         return;
       }
-      const eventSource = new EventSource(`/api/historical-cpe-analysis/${cpeInput}?nistApiKey=${apiKey}`)
+      const eventSource = new EventSource(`/api/historical-cpe-analysis/${cpeInput}?nistApiKey=${apiKey}&openaiApiKey=${openaiApiKey}`)
       eventSourceRef.current = eventSource;
 
       eventSource.onmessage = (event) => {
