@@ -15,39 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      # Clone the sbom-cli repository
-      - name: Clone sbom-cli repository
-        run: |
-          git clone https://github.com/nqminds/sbom-cli.git
-          cd sbom-cli
-          git checkout -b ${{ github.ref_name }}
-
-      # Copy the changes from cyber repository
-      - name: Copy changes to sbom-cli
-        run: |
-          cp -r ./packages/vulnerability-analysis-tools/src/* ./sbom-cli/src/
-
-      # Commit and push changes
-      - name: Commit and push changes
-        run: |
-          cd sbom-cli
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add -A
-          git commit -m "Update vulnerability-analysis-tools"
-          git push origin ${{ github.ref_name }}
-
-      # Create a pull request
-      - name: Create Pull Request
-        uses: repo-sync/pull-request@v2
-        with:
-          github_token: ${{ secrets.NPM_TOKEN }}
-          destination_branch: "main"
-          pr_title: "Update vulnerability-analysis-tools"
-          pr_body: "Automated PR to update vulnerability-analysis-tools"
-          source_branch: "${{ github.ref_name }}"
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
