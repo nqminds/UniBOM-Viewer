@@ -39,17 +39,28 @@ const barColors: { [key: string]: string } = {
 
 // Helper function to aggregate data for bar chart (Base Severities)
 const aggregateBaseSeverities = (cpeData: CpeData): ChartData[] => {
-    const severities: Severities = { LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0 };
-  
-    Object.values(cpeData).flat().forEach((cveData) => {
-      const severityKey = cveData.baseSeverity as keyof Severities;
-      if (severityKey && severities[severityKey] !== undefined) {
-        severities[severityKey]++;
+  const severitiesCount: { [key: string]: Set<string> } = {
+    LOW: new Set<string>(),
+    MEDIUM: new Set<string>(),
+    HIGH: new Set<string>(),
+    CRITICAL: new Set<string>()
+  };
+
+  Object.values(cpeData).forEach((cveList: CVEData[]) => {
+    cveList.forEach((cveData: CVEData) => {
+      const { cve, baseSeverity } = cveData;
+      if (cve && baseSeverity && severitiesCount[baseSeverity]) {
+        severitiesCount[baseSeverity].add(cve);
       }
     });
-  
-    return Object.entries(severities).map(([name, value]) => ({ name, value }));
-  };
+  });
+
+  return Object.entries(severitiesCount).map(([name, cveSet]): ChartData => ({
+    name,
+    value: cveSet.size
+  }));
+};
+
   
 const calculateAverageScoresPerCpe = (cpeData: CpeData): AverageScoreData[] => {
     let index = 0;
@@ -92,7 +103,7 @@ const Dashboard: React.FC<DashboardProps> = ({ cpeData, loadedCPEs, totalCPEs })
              <YAxis />
              <Tooltip />
              <Legend />
-             <Bar dataKey="value" name="Overall base scores">
+             <Bar dataKey="value" name="Total Distribution of CVE Severity" fill="#8884d8">
                  {
                  barData.map((entry, index) => (
                      <Cell key={`cell-${index}`} fill={barColors[entry.name.toUpperCase()]} />
