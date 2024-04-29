@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import CpeTimeline from '@/modules/cve/cpe-timeline';
 import Dashboard from '@/modules/cve/dashboard';
 
-// Interfaces for expected data structure
 interface CVEData {
   cve?: string;
   cwe?: string[];
@@ -19,7 +18,7 @@ interface CVEData {
 interface CpeData {
   [cpe: string]: CVEData[];
 }
-// TODO: FIX THE DISPLAY CIRCULAR BAR ISSUE 
+
 export default function CpeDataPage() {
   const router = useRouter();
   const [cpeData, setCpeData] = useState<CpeData>({});
@@ -28,23 +27,10 @@ export default function CpeDataPage() {
 
   useEffect(() => {
     const cpeInput = router.query.cpe as string;
-    const savedCpeData = localStorage.getItem('cpeData');
-    const storedCpeKey = localStorage.getItem('cpeKey');
-
-    // Reset if the CPE input is different
-    if (cpeInput !== storedCpeKey) {
-      localStorage.removeItem('cpeData'); // Clear previous data
-      setCpeData({});
-    } else if (savedCpeData) {
-      // Load from localStorage only if the CPE input is the same
-      setCpeData(JSON.parse(savedCpeData));
-      setInitialLoad(false);
-    }
 
     if (cpeInput) {
       const apiKey = sessionStorage.getItem('nistApiKey');
       const openaiApiKey = sessionStorage.getItem('openaiApiKey');
-
       if (!apiKey) {
         console.error('API Key is not available');
         setInitialLoad(false);
@@ -59,25 +45,26 @@ export default function CpeDataPage() {
 
       eventSource.onmessage = (event) => {
         const newEntry = JSON.parse(event.data);
-        setCpeData((prevData) => {
-          const updatedData = {
-            ...prevData,
-            [newEntry.cpe]: [...(prevData[newEntry.cpe] || []), newEntry.data],
-          };
-
-          // Save updated data to localStorage
-          localStorage.setItem('cpeData', JSON.stringify(updatedData));
-          localStorage.setItem('cpeKey', cpeInput);
-
-          return updatedData;
-        });
-        setInitialLoad(false); 
+        setCpeData((prevData) => ({
+          ...prevData,
+          [newEntry.cpe]: [...(prevData[newEntry.cpe] || []), newEntry.data]
+        }));
       };
 
       eventSource.onerror = (error) => {
         console.error('EventSource failed:', error);
+        setInitialLoad(false);
         eventSource.close();
       };
+
+      eventSource.onopen = () => {
+        console.log('Connection to server opened.');
+      };
+
+      eventSource.addEventListener('done', () => {
+        setInitialLoad(false);
+        eventSource.close();
+      });
 
       return () => {
         if (eventSourceRef.current) {
@@ -85,7 +72,7 @@ export default function CpeDataPage() {
         }
       };
     }
-  }, [router.query]); // Re-run effect when router query changes
+  }, [router.query]);
 
   const cancelRequest = () => {
     if (eventSourceRef.current) {
@@ -99,32 +86,28 @@ export default function CpeDataPage() {
     <React.Fragment>
       <Box sx={{ p: 4 }}>
         <Paper>
-          <Button color="error" onClick={cancelRequest} sx={{ mt: 2 }}>
-            Cancel Request
-          </Button>
-          <Card sx={{ mt: 4, position: 'relative' }}>
-            {/* Overlay with CircularProgress to indicate loading */}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ mt: 2 }}
+          >
+            <Button color="error" onClick={cancelRequest}>
+              Cancel Request
+            </Button>
             {initialLoad && (
               <Box
-                position="absolute"
-                top={0}
-                left={0}
-                right={0}
-                bottom={0}
                 display="flex"
-                justifyContent="center"
                 alignItems="center"
-                bgcolor="rgba(255, 255, 255, 0.75)" // Semi-transparent overlay
-                zIndex={1} // Ensures it's above the card content
               >
-                <CircularProgress />
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
+                <CircularProgress size={24} /> 
+                <Typography variant="subtitle1" alignItems="center" sx={{ ml: 2 }}>
                   Loading historical information about CPE {router.query.cpe}
                 </Typography>
               </Box>
             )}
-
-            {/* Main content always displayed */}
+          </Box>
+          <Card sx={{ mt: 4 }}>
             <Typography variant="h6" sx={{ p: 2 }}>
               CPE History Visualization
             </Typography>
