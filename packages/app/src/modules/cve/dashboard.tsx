@@ -65,7 +65,7 @@ const calculateAverageScoresPerCpe = (cpeData: CpeData): AverageScoreData[] => {
     })
   };
 
-const Dashboard: React.FC<DashboardProps> = ({ cpeData }) => {
+const Dashboard: React.FC<DashboardProps> = ({ cpeData, loadedCPEs, totalCPEs }) => {
   const pieData = aggregateMemoryTypes(cpeData);
   const barData = aggregateBaseSeverities(cpeData);
   const lineData = calculateAverageScoresPerCpe(cpeData);
@@ -78,7 +78,7 @@ const Dashboard: React.FC<DashboardProps> = ({ cpeData }) => {
         <Grid item xs={12} sm={4}>
           <Box display="flex" justifyContent="center" alignItems="center" height="100%">
             <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-              {Object.keys(cpeData).length} CPEs
+              Loading {loadedCPEs}/{totalCPEs} CPEs
             </Typography>
           </Box>
         </Grid>

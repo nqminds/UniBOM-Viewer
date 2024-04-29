@@ -24,10 +24,13 @@ export default function CpeDataPage() {
   const [cpeData, setCpeData] = useState<CpeData>({});
   const [initialLoad, setInitialLoad] = useState(true);
   const eventSourceRef = useRef<EventSource | null>(null);
+  const [currentCPE, setCurrentCPE] = useState("");
+  const [totalCPEs, setTotalCPEs] = useState(0);
+  const [loadedCPEs, setLoadedCPEs] = useState(0);
+  const progressPercent = totalCPEs > 0 ? (loadedCPEs / totalCPEs * 100).toFixed(0) : 0;
 
   useEffect(() => {
     const cpeInput = router.query.cpe as string;
-
     if (cpeInput) {
       const apiKey = sessionStorage.getItem('nistApiKey');
       const openaiApiKey = sessionStorage.getItem('openaiApiKey');
@@ -44,11 +47,17 @@ export default function CpeDataPage() {
       eventSourceRef.current = eventSource;
 
       eventSource.onmessage = (event) => {
-        const newEntry = JSON.parse(event.data);
-        setCpeData((prevData) => ({
-          ...prevData,
-          [newEntry.cpe]: [...(prevData[newEntry.cpe] || []), newEntry.data]
-        }));
+        const messageData = JSON.parse(event.data);
+        if (messageData.type === 'total') {
+          setTotalCPEs(messageData.total);
+        } else {
+          setCpeData((prevData) => ({
+            ...prevData,
+            [messageData.cpe]: [...(prevData[messageData.cpe] || []), messageData.data]
+          }));
+          setLoadedCPEs(messageData.processed);
+          setCurrentCPE(messageData.cpe);
+        }
       };
 
       eventSource.onerror = (error) => {
@@ -81,7 +90,6 @@ export default function CpeDataPage() {
       console.log('Streaming has been canceled by the user.');
     }
   };
-
   return (
     <React.Fragment>
       <Box sx={{ p: 4 }}>
@@ -96,22 +104,38 @@ export default function CpeDataPage() {
               Cancel Request
             </Button>
             {initialLoad && (
-              <Box
-                display="flex"
-                alignItems="center"
-              >
-                <CircularProgress size={24} /> 
-                <Typography variant="subtitle1" alignItems="center" sx={{ ml: 2 }}>
-                  Loading historical information about CPE {router.query.cpe}
-                </Typography>
-              </Box>
+              <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%" sx={{ mt: 4, mb: 4 }}>
+                  <Box position="relative" display="inline-flex" width="100%" justifyContent="center" sx={{ mb: 5 }}>
+                    <CircularProgress variant="determinate" value={Number(progressPercent)} size={68} />
+                    <Box
+                      top={0}
+                      left={0}
+                      bottom={0}
+                      right={0}
+                      position="absolute"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <Typography variant="caption" component="div" color="textPrimary">
+                        {`${progressPercent}%`}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Typography variant="subtitle1">
+                    Loading historical information about CPE
+                  </Typography>
+                  <Typography variant="subtitle2">
+                    {currentCPE}
+                  </Typography>
+                </Box>
             )}
           </Box>
           <Card sx={{ mt: 4 }}>
             <Typography variant="h6" sx={{ p: 2 }}>
               CPE History Visualization
             </Typography>
-            <Dashboard cpeData={cpeData} />
+            <Dashboard cpeData={cpeData} loadedCPEs={loadedCPEs} totalCPEs={totalCPEs} />
             <Typography variant="h6" sx={{ p: 2 }}>
               CPE History Timeline
             </Typography>

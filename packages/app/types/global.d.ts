@@ -63,7 +63,10 @@ interface ChartData {
 
 interface DashboardProps {
   cpeData: CpeData;
+  loadedCPEs: number;
+  totalCPEs: number;
 }
+
 
 interface AverageScoreData {
     index: number;
