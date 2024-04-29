@@ -2,18 +2,18 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Card, CircularProgress, Typography, Button } from '@mui/material';
-import { Paper } from "@/modules/common";
+import { Paper } from '@/modules/common';
 import { useRouter } from 'next/router';
 import CpeTimeline from '@/modules/cve/cpe-timeline';
 import Dashboard from '@/modules/cve/dashboard';
 
 interface CVEData {
-    cve?: string;
-    cwe?: string[];
-    weakType?: string;
-    baseScore?: number;
-    baseSeverity?: string;
-  }
+  cve?: string;
+  cwe?: string[];
+  weakType?: string;
+  baseScore?: number;
+  baseSeverity?: string;
+}
 
 interface CpeData {
   [cpe: string]: CVEData[];
@@ -26,33 +26,50 @@ export default function CpeDataPage() {
   const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    const cpeInput = router.query.cpe;
+    const cpeInput = router.query.cpe as string;
+
     if (cpeInput) {
       const apiKey = sessionStorage.getItem('nistApiKey');
       const openaiApiKey = sessionStorage.getItem('openaiApiKey');
       if (!apiKey) {
         console.error('API Key is not available');
+        setInitialLoad(false);
         return;
       }
-      const eventSource = new EventSource(`/api/historical-cpe-analysis/${cpeInput}?nistApiKey=${apiKey}&openaiApiKey=${openaiApiKey}`)
+
+      const eventSource = new EventSource(
+        `/api/historical-cpe-analysis/${cpeInput}?nistApiKey=${apiKey}&openaiApiKey=${openaiApiKey}`
+      );
+
       eventSourceRef.current = eventSource;
 
       eventSource.onmessage = (event) => {
         const newEntry = JSON.parse(event.data);
-        setCpeData(prevData => ({
+        setCpeData((prevData) => ({
           ...prevData,
           [newEntry.cpe]: [...(prevData[newEntry.cpe] || []), newEntry.data]
         }));
-        setInitialLoad(false);
       };
 
       eventSource.onerror = (error) => {
         console.error('EventSource failed:', error);
+        setInitialLoad(false);
         eventSource.close();
       };
 
-      return () => {
+      eventSource.onopen = () => {
+        console.log('Connection to server opened.');
+      };
+
+      eventSource.addEventListener('done', () => {
+        setInitialLoad(false);
         eventSource.close();
+      });
+
+      return () => {
+        if (eventSourceRef.current) {
+          eventSourceRef.current.close();
+        }
       };
     }
   }, [router.query]);
@@ -61,25 +78,35 @@ export default function CpeDataPage() {
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
       setInitialLoad(false);
-      console.log("Streaming has been canceled by the user.");
+      console.log('Streaming has been canceled by the user.');
     }
   };
 
-return (
-  <React.Fragment>
-    <Box sx={{ p: 4 }}>
-      <Paper>
-      <Button color="error" onClick={cancelRequest} sx={{ mt: 2 }}>
+  return (
+    <React.Fragment>
+      <Box sx={{ p: 4 }}>
+        <Paper>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ mt: 2 }}
+          >
+            <Button color="error" onClick={cancelRequest}>
               Cancel Request
-      </Button>
-        {initialLoad ? (
-          <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" sx={{ height: "100%" }}>
-            <CircularProgress />
-            <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
-              Please wait while loading historical information about CPE {router.query.cpe}
-            </Typography>
+            </Button>
+            {initialLoad && (
+              <Box
+                display="flex"
+                alignItems="center"
+              >
+                <CircularProgress size={24} /> 
+                <Typography variant="subtitle1" alignItems="center" sx={{ ml: 2 }}>
+                  Loading historical information about CPE {router.query.cpe}
+                </Typography>
+              </Box>
+            )}
           </Box>
-        ) : (
           <Card sx={{ mt: 4 }}>
             <Typography variant="h6" sx={{ p: 2 }}>
               CPE History Visualization
@@ -90,9 +117,8 @@ return (
             </Typography>
             <CpeTimeline cpeData={cpeData} />
           </Card>
-        )}
-      </Paper>
-    </Box>
-  </React.Fragment>
-);
+        </Paper>
+      </Box>
+    </React.Fragment>
+  );
 }
