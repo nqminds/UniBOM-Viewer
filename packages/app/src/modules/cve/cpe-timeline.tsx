@@ -97,7 +97,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({title, details, index}) => {
   );
 };
 
-const CpeTimeline: React.FC<{cpeData: {[cpe: string]: any[]}}> = ({
+const CpeTimeline: React.FC<{cpeData: {[cpe: string]: unknown[]}}> = ({
   cpeData,
 }) => {
   const arrowWidth = "40px"; // Width of the "shaft" of the arrow

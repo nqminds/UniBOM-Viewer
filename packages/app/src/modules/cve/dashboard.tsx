@@ -86,6 +86,7 @@ const aggregateBaseSeverities = (cpeData: CpeData): ChartData[] => {
 
 const calculateAverageScoresPerCpe = (cpeData: CpeData): AverageScoreData[] => {
   let index = 0;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return Object.entries(cpeData).map(([cpe, cveList]) => {
     const totalScore = cveList.reduce((acc, cveData) => {
       return acc + (cveData.baseScore || 0);

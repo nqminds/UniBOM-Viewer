@@ -77,7 +77,7 @@ interface AverageScoreData {
 
 interface TimelineItemProps {
   title: string;
-  details: any[];
+  details: unknown[];
   index: number;
 }
 
