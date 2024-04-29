@@ -67,11 +67,10 @@ interface DashboardProps {
   totalCPEs: number;
 }
 
-
 interface AverageScoreData {
-    index: number;
-    averageScore: number;
-  }
+  index: number;
+  averageScore: number;
+}
 
 // cpe timeline components
 
@@ -84,7 +83,7 @@ interface TimelineItemProps {
 // popup components
 
 interface Severity {
-  value: string;  // 'CRITICAL', 'HIGH', 'MEDIUM', or 'LOW'
+  value: string; // 'CRITICAL', 'HIGH', 'MEDIUM', or 'LOW'
   count: number;
 }
 
