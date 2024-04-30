@@ -15,6 +15,7 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
+  ComposedChart,
 } from "recharts";
 import semver from "semver";
 
@@ -102,22 +103,106 @@ const aggregateBaseSeverities = (cpeData: CpeData): ChartData[] => {
   );
 };
 
-const calculateAverageScoresPerCpe = (cpeData: CpeData): AverageScoreData[] => {
+const severityWeights = {
+  CRITICAL: 4,
+  HIGH: 3,
+  MEDIUM: 2,
+  LOW: 1,
+};
+
+const calculateWeightedSeverityScore = (
+  cpeData: CpeData,
+): AverageScoreData[] => {
   let index = 0;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return Object.entries(cpeData).map(([cpe, cveList]) => {
-    const totalScore = cveList.reduce((acc, cveData) => {
-      return acc + (cveData.baseScore || 0);
-    }, 0);
-    const averageScore =
-      cveList.length > 0
-        ? parseFloat((totalScore / cveList.length).toFixed(2))
+  return Object.entries(cpeData).map(([, cveList]) => {
+    let totalWeightedScore = 0;
+    let totalWeight = 0;
+
+    cveList.forEach((cveData: CVEData) => {
+      const severityKey = cveData.baseSeverity as keyof typeof severityWeights;
+      const weight = severityWeights[severityKey];
+      totalWeightedScore += (cveData.baseScore || 0) * weight;
+      totalWeight += weight;
+    });
+
+    const weightedAverageScore =
+      totalWeight > 0
+        ? parseFloat((totalWeightedScore / totalWeight).toFixed(2))
         : 0;
     return {
       index: ++index,
-      averageScore,
+      averageScore: weightedAverageScore,
     };
   });
+};
+
+type SeverityScore = {
+  LOW: number;
+  MEDIUM: number;
+  HIGH: number;
+  CRITICAL: number;
+};
+
+// This function makes sure that any string is actually a key of SeverityScore
+const isSeverityKey = (key: string): key is keyof SeverityScore => {
+  return ["LOW", "MEDIUM", "HIGH", "CRITICAL"].includes(key);
+};
+
+const aggregateDataBySeverity = (cpeData: CpeData): ParetoData[] => {
+  const data: SeverityScore = {LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0};
+
+  Object.values(cpeData).forEach((cveList) => {
+    cveList.forEach((cve) => {
+      if (cve.baseSeverity) {
+        const severityKey = cve.baseSeverity.toUpperCase();
+        if (isSeverityKey(severityKey)) {
+          data[severityKey] += cve.baseScore || 0;
+        }
+      }
+    });
+  });
+
+  const totalScore = Object.values(data).reduce((acc, cur) => acc + cur, 0);
+  let cumulative = 0;
+
+  return Object.entries(data).map(([severity, score]) => {
+    cumulative += score;
+    return {
+      severity,
+      score: parseFloat(score.toFixed(2)),
+      cumulativePercentage: parseFloat(
+        ((cumulative / totalScore) * 100).toFixed(2),
+      ),
+    };
+  });
+};
+
+const ParetoChart: React.FC<{data: ParetoData[]}> = ({data}) => {
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <ComposedChart data={data} layout="horizontal">
+        <CartesianGrid stroke="#f5f5f5" />
+        <XAxis type="category" dataKey="severity" />
+        <YAxis yAxisId="left" orientation="left" type="number" />
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          type="number"
+          domain={[0, 100]}
+        />
+        <Tooltip />
+        <Legend />
+        <Bar yAxisId="left" dataKey="score" fill="#413ea0" name="Score" />
+        <Line
+          yAxisId="right"
+          type="monotone"
+          dataKey="cumulativePercentage"
+          stroke="#ff7300"
+          name="Cumulative Percentage"
+        />
+      </ComposedChart>
+    </ResponsiveContainer>
+  );
 };
 
 type SeverityKey = keyof SeverityCounts | undefined;
@@ -175,12 +260,14 @@ const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const pieData = aggregateMemoryTypes(cpeData);
   const barData = aggregateBaseSeverities(cpeData);
-  const lineData = calculateAverageScoresPerCpe(cpeData);
+  const lineData = calculateWeightedSeverityScore(cpeData);
+  // const lineData = calculateWeightedSeverityScore(cpeData);
   const timeSeriesData = prepareTimeSeriesData(cpeData);
-
+  const paretoData = aggregateDataBySeverity(cpeData);
+  console.log(paretoData);
   return (
     <Paper elevation={3} sx={{p: 2, mb: 4}}>
-      <Grid container spacing={2}>
+      <Grid container spacing={4}>
         {/* CPE Count */}
         <Grid item xs={12} sm={4}>
           <Box
@@ -258,6 +345,10 @@ const Dashboard: React.FC<DashboardProps> = ({
               />
             </LineChart>
           </ResponsiveContainer>
+        </Grid>
+        {/* Pareto Chart */}
+        <Grid item xs={12} sm={8}>
+          <ParetoChart data={paretoData} />
         </Grid>
         {/* Time Series Chart */}
         <Grid item xs={12}>

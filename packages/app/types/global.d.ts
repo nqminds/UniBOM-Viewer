@@ -123,3 +123,9 @@ interface TimeSeriesData {
 interface TimeSeriesChartProps {
   data: TimeSeriesData[];
 }
+
+interface ParetoData {
+  severity: string;
+  score: number;
+  cumulativePercentage: number;
+}
