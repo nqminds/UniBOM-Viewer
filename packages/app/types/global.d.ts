@@ -102,3 +102,24 @@ interface CveTableProps {
   cves: cve[];
   extraContent?: React.ReactNode;
 }
+
+interface SeverityCounts {
+  total: number;
+  HIGH: number;
+  MEDIUM: number;
+  LOW: number;
+  CRITICAL: number;
+}
+
+interface TimeSeriesData {
+  version: string;
+  total: number;
+  HIGH: number;
+  MEDIUM: number;
+  LOW: number;
+  CRITICAL: number;
+}
+
+interface TimeSeriesChartProps {
+  data: TimeSeriesData[];
+}
