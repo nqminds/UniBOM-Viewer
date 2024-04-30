@@ -16,7 +16,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import semver from 'semver';
+import semver from "semver";
 
 const getVersion = (cpe: string): string => {
   // Regular expression to extract version from CPE
@@ -29,10 +29,10 @@ const getVersion = (cpe: string): string => {
       return validVersion || "0.0.0";
     }
   } catch (error) {
-    console.error('Error extracting version:', error);
+    console.error("Error extracting version:", error);
   }
   return "0.0.0";
-}
+};
 
 const getColorForWeakType = (weakType: string | undefined) => {
   switch (weakType) {
@@ -109,7 +109,10 @@ const calculateAverageScoresPerCpe = (cpeData: CpeData): AverageScoreData[] => {
     const totalScore = cveList.reduce((acc, cveData) => {
       return acc + (cveData.baseScore || 0);
     }, 0);
-    const averageScore = cveList.length > 0 ? parseFloat((totalScore / cveList.length).toFixed(2)) : 0;
+    const averageScore =
+      cveList.length > 0
+        ? parseFloat((totalScore / cveList.length).toFixed(2))
+        : 0;
     return {
       index: ++index,
       averageScore,
@@ -123,26 +126,32 @@ const prepareTimeSeriesData = (cpeData: CpeData): TimeSeriesData[] => {
   const timeSeriesData: TimeSeriesData[] = [];
 
   Object.entries(cpeData).forEach(([cpe, cveList]) => {
-      const severityCounts: SeverityCounts = { total: 0, HIGH: 0, MEDIUM: 0, LOW: 0, CRITICAL: 0 };
-      const version = getVersion(cpe);
+    const severityCounts: SeverityCounts = {
+      total: 0,
+      HIGH: 0,
+      MEDIUM: 0,
+      LOW: 0,
+      CRITICAL: 0,
+    };
+    const version = getVersion(cpe);
 
-      cveList.forEach((cve) => {
-          const severity: SeverityKey = cve.baseSeverity;
-          if (severity && severity in severityCounts) {
-              severityCounts[severity] = (severityCounts[severity] || 0) + 1;
-              severityCounts.total++;
-          }
-      });
-      timeSeriesData.push({
-          version: version,
-          ...severityCounts
-      });
+    cveList.forEach((cve) => {
+      const severity: SeverityKey = cve.baseSeverity;
+      if (severity && severity in severityCounts) {
+        severityCounts[severity] = (severityCounts[severity] || 0) + 1;
+        severityCounts.total++;
+      }
+    });
+    timeSeriesData.push({
+      version: version,
+      ...severityCounts,
+    });
   });
 
   return timeSeriesData;
 };
 
-const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data }) => (
+const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({data}) => (
   <ResponsiveContainer width="100%" height={300}>
     <LineChart data={data}>
       <CartesianGrid strokeDasharray="3 3" />
