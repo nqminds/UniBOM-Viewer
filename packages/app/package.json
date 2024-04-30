@@ -53,6 +53,7 @@
     "react-plotly.js": "^2.6.0",
     "react-tooltip": "^5.25.0",
     "reactjs-popup": "^2.0.6",
-    "recharts": "^2.10.3"
+    "recharts": "^2.10.3",
+    "semver": "^7.6.0"
   }
 }
