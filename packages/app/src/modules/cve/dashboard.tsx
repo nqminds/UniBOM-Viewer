@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from "react";
 import {Paper, Typography, Grid, Box} from "@mui/material";
 import {
@@ -15,6 +16,23 @@ import {
   LineChart,
   Line,
 } from "recharts";
+import semver from 'semver';
+
+const getVersion = (cpe: string): string => {
+  // Regular expression to extract version from CPE
+  const regex = /:\b\d+(?:\.\d+){0,2}(?:[-+][\w.]+)?\b/g; // Updated to match a broader range of versions
+  try {
+    const matches = regex.exec(cpe);
+    if (matches && matches[0]) {
+      const version = matches[0].substring(1); // Remove leading colon
+      const validVersion = semver.valid(semver.coerce(version));
+      return validVersion || "0.0.0";
+    }
+  } catch (error) {
+    console.error('Error extracting version:', error);
+  }
+  return "0.0.0";
+}
 
 const getColorForWeakType = (weakType: string | undefined) => {
   switch (weakType) {
@@ -91,13 +109,55 @@ const calculateAverageScoresPerCpe = (cpeData: CpeData): AverageScoreData[] => {
     const totalScore = cveList.reduce((acc, cveData) => {
       return acc + (cveData.baseScore || 0);
     }, 0);
-    const averageScore = cveList.length > 0 ? totalScore / cveList.length : 0;
+    const averageScore = cveList.length > 0 ? parseFloat((totalScore / cveList.length).toFixed(2)) : 0;
     return {
       index: ++index,
       averageScore,
     };
   });
 };
+
+type SeverityKey = keyof SeverityCounts | undefined;
+
+const prepareTimeSeriesData = (cpeData: CpeData): TimeSeriesData[] => {
+  const timeSeriesData: TimeSeriesData[] = [];
+
+  Object.entries(cpeData).forEach(([cpe, cveList]) => {
+      const severityCounts: SeverityCounts = { total: 0, HIGH: 0, MEDIUM: 0, LOW: 0, CRITICAL: 0 };
+      const version = getVersion(cpe);
+
+      cveList.forEach((cve) => {
+          const severity: SeverityKey = cve.baseSeverity;
+          if (severity && severity in severityCounts) {
+              severityCounts[severity] = (severityCounts[severity] || 0) + 1;
+              severityCounts.total++;
+          }
+      });
+      timeSeriesData.push({
+          version: version,
+          ...severityCounts
+      });
+  });
+
+  return timeSeriesData;
+};
+
+const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data }) => (
+  <ResponsiveContainer width="100%" height={300}>
+    <LineChart data={data}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="version" />
+      <YAxis />
+      <Tooltip />
+      <Legend />
+      <Line type="monotone" dataKey="total" stroke="#8884d8" />
+      <Line type="monotone" dataKey="CRITICAL" stroke="#dc143c" />
+      <Line type="monotone" dataKey="HIGH" stroke="#ff8c00" />
+      <Line type="monotone" dataKey="MEDIUM" stroke="#ffd700" />
+      <Line type="monotone" dataKey="LOW" stroke="#90ee90" />
+    </LineChart>
+  </ResponsiveContainer>
+);
 
 const Dashboard: React.FC<DashboardProps> = ({
   cpeData,
@@ -107,6 +167,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const pieData = aggregateMemoryTypes(cpeData);
   const barData = aggregateBaseSeverities(cpeData);
   const lineData = calculateAverageScoresPerCpe(cpeData);
+  const timeSeriesData = prepareTimeSeriesData(cpeData);
 
   return (
     <Paper elevation={3} sx={{p: 2, mb: 4}}>
@@ -120,7 +181,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             height="100%"
           >
             <Typography variant="h4" component="div" sx={{fontWeight: "bold"}}>
-              Loading {loadedCPEs}/{totalCPEs} CPEs
+              {loadedCPEs}/{totalCPEs} CPEs
             </Typography>
           </Box>
         </Grid>
@@ -188,6 +249,10 @@ const Dashboard: React.FC<DashboardProps> = ({
               />
             </LineChart>
           </ResponsiveContainer>
+        </Grid>
+        {/* Time Series Chart */}
+        <Grid item xs={12}>
+          <TimeSeriesChart data={timeSeriesData} />
         </Grid>
       </Grid>
     </Paper>
