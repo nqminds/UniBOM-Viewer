@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
+    "semver": "^7.6.0",
     "styled-jsx": "^5.1.2"
   }
 }

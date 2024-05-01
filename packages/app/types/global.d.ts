@@ -63,25 +63,27 @@ interface ChartData {
 
 interface DashboardProps {
   cpeData: CpeData;
+  loadedCPEs: number;
+  totalCPEs: number;
 }
 
 interface AverageScoreData {
-    index: number;
-    averageScore: number;
-  }
+  index: number;
+  averageScore: number;
+}
 
 // cpe timeline components
 
 interface TimelineItemProps {
   title: string;
-  details: any[];
+  details: unknown[];
   index: number;
 }
 
 // popup components
 
 interface Severity {
-  value: string;  // 'CRITICAL', 'HIGH', 'MEDIUM', or 'LOW'
+  value: string; // 'CRITICAL', 'HIGH', 'MEDIUM', or 'LOW'
   count: number;
 }
 
@@ -99,4 +101,31 @@ interface CveTableProps {
   open: boolean;
   cves: cve[];
   extraContent?: React.ReactNode;
+}
+
+interface SeverityCounts {
+  total: number;
+  HIGH: number;
+  MEDIUM: number;
+  LOW: number;
+  CRITICAL: number;
+}
+
+interface TimeSeriesData {
+  version: string;
+  total: number;
+  HIGH: number;
+  MEDIUM: number;
+  LOW: number;
+  CRITICAL: number;
+}
+
+interface TimeSeriesChartProps {
+  data: TimeSeriesData[];
+}
+
+interface ParetoData {
+  severity: string;
+  score: number;
+  cumulativePercentage: number;
 }

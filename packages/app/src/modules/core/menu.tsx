@@ -46,7 +46,7 @@ export default function Menu() {
         <MenuItem
           key={url}
           sx={{
-            color: [url, ...associatedUrls || []].find(
+            color: [url, ...(associatedUrls || [])].find(
               (route) => router.route === route,
             )
               ? menu.menuHighlight

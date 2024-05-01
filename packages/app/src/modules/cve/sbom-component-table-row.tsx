@@ -76,8 +76,11 @@ export default function SbomComponentTableRow({
         open={open}
         cves={uniqBy(categorisedCves, "id")}
         extraContent={
-          <Box textAlign="left" sx={{ marginTop: 2 }}>
-            <Link href={`/historical?cpe=${encodeURIComponent(data.cpe || '')}`} passHref>
+          <Box textAlign="left" sx={{marginTop: 2}}>
+            <Link
+              href={`/historical?cpe=${encodeURIComponent(data.cpe || "")}`}
+              passHref
+            >
               <Button variant="contained" color="primary">
                 CPE History
               </Button>

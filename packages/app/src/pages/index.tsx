@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import SbomComponentTable from "@/modules/cve/sbom-component-table";
 import {
   Box,
@@ -66,7 +66,7 @@ export default function Home() {
   }, [openaiApiKey]);
 
   useEffect(() => {
-    const savedData = sessionStorage.getItem('sbomData');
+    const savedData = sessionStorage.getItem("sbomData");
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       setData(parsedData);
@@ -110,17 +110,18 @@ export default function Home() {
       });
       setUploadedFile(response);
       setData(response);
-      sessionStorage.setItem('sbomData', JSON.stringify(response)); // Store data in session storage
+      sessionStorage.setItem("sbomData", JSON.stringify(response)); // Store data in session storage
     } catch (err) {
       setError(err as ApiError);
     } finally {
       setIsLoading(false);
     }
   };
-  const handleApiKeyChange = (setter: (value: string) => void) => (value: string) => {
-    const valueWithoutSpaces = value.replace(/\s/g, "");
-    setter(valueWithoutSpaces);
-  };
+  const handleApiKeyChange =
+    (setter: (value: string) => void) => (value: string) => {
+      const valueWithoutSpaces = value.replace(/\s/g, "");
+      setter(valueWithoutSpaces);
+    };
 
   return (
     <React.Fragment>

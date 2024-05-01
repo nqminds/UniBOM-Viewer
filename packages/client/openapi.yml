@@ -67,7 +67,7 @@ paths:
             application/json:
               schema:
                 type: object
-                additionalProperties: 
+                additionalProperties:
                   type: array
                   items:
                     type: object
