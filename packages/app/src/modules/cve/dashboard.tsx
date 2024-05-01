@@ -261,10 +261,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   const pieData = aggregateMemoryTypes(cpeData);
   const barData = aggregateBaseSeverities(cpeData);
   const lineData = calculateWeightedSeverityScore(cpeData);
-  // const lineData = calculateWeightedSeverityScore(cpeData);
   const timeSeriesData = prepareTimeSeriesData(cpeData);
   const paretoData = aggregateDataBySeverity(cpeData);
-  console.log(paretoData);
   return (
     <Paper elevation={3} sx={{p: 2, mb: 4}}>
       <Grid container spacing={4}>
