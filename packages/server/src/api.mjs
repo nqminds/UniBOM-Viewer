@@ -11,20 +11,9 @@ const api = express.Router(); // eslint-disable-line new-cap
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-function validateApiKeys(nistKey, openaiKey) {
+function validateApiKeys(openaiKey) {
   const validatedKeys = {};
   let errorMessage;
-
-  if (nistKey) {
-    if (
-      !validator.isLength(nistKey, { min: 10 }) ||
-      !validator.isAlphanumeric(nistKey, "en-US", { ignore: "-_" })
-    ) {
-      errorMessage = "Invalid NIST API Key format.";
-    } else {
-      validatedKeys.nistApiKey = nistKey;
-    }
-  }
 
   if (openaiKey) {
     if (
@@ -39,7 +28,6 @@ function validateApiKeys(nistKey, openaiKey) {
 
   // Return the original key if empty or the validated key
   return {
-    nistApiKey: validatedKeys.nistApiKey || nistKey,
     openaiApiKey: validatedKeys.openaiApiKey || openaiKey,
     errorMessage: errorMessage,
   };
@@ -58,6 +46,7 @@ function validateCycloneDX(jsonObject) {
 // eslint-disable-next-line consistent-return
 api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
   if (!req.file) {
+    console.log(`Api called with file`);
     return res.status(400).send("No file uploaded");
   }
   const file = req.file;
@@ -68,17 +57,12 @@ api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
     return res.status(400).send("The file is not a valid CycloneDX JSON");
   }
 
-  let nistApiKey;
   let openaiApiKey;
   try {
-    const validatedKeys = validateApiKeys(
-      req.body.nistApiKey,
-      req.body.openaiApiKey
-    );
+    const validatedKeys = validateApiKeys(req.body.openaiApiKey);
     if (validatedKeys.errorMessage) {
       return res.status(400).send({ error: validatedKeys.errorMessage });
     }
-    nistApiKey = validatedKeys.nistApiKey;
     openaiApiKey = validatedKeys.openaiApiKey;
   } catch (error) {
     console.error(error);
@@ -87,7 +71,6 @@ api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
   }
 
   const apiKeys = {
-    nist: nistApiKey,
     openai: openaiApiKey,
   };
 
@@ -100,7 +83,6 @@ api.use(express.json());
 
 api.get("/historical-cpe-analysis/:cpe", async (req, res) => {
   const { cpe } = req.params;
-  const apiKey = req.query.nistApiKey;
   const openaiApiKey = req.query.openaiApiKey;
   if (!cpe || typeof cpe !== "string") {
     return res
@@ -112,7 +94,7 @@ api.get("/historical-cpe-analysis/:cpe", async (req, res) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  const mapStream = streamMapCpeCveCwe(cpe, apiKey, openaiApiKey);
+  const mapStream = streamMapCpeCveCwe(cpe, openaiApiKey);
   for await (const entry of mapStream) {
     res.write(`data: ${JSON.stringify(entry)}\n\n`);
   }
