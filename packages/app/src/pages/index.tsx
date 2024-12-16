@@ -50,16 +50,9 @@ export default function Home() {
 
   // Load any saved API keys when the component mounts
   useEffect(() => {
-    const savedNistKey = sessionStorage.getItem("nistApiKey");
     const savedOpenaiKey = sessionStorage.getItem("openaiApiKey");
-    if (savedNistKey) setNistApiKey(savedNistKey);
     if (savedOpenaiKey) setOpenaiApiKey(savedOpenaiKey);
   }, []);
-
-  // Save API keys to sessionStorage when they are updated
-  useEffect(() => {
-    if (nistApiKey) sessionStorage.setItem("nistApiKey", nistApiKey);
-  }, [nistApiKey]);
 
   useEffect(() => {
     if (openaiApiKey) sessionStorage.setItem("openaiApiKey", openaiApiKey);
@@ -93,10 +86,6 @@ export default function Home() {
       return;
     }
 
-    if (!nistApiKey) {
-      setShowAlertNist(true);
-      return;
-    }
     if (!openaiApiKey) {
       setShowAlertOpenai(true);
     }
@@ -105,7 +94,6 @@ export default function Home() {
     try {
       const response = await nqmCyberApi.default.vulnerabilityAnalysis({
         file,
-        nistApiKey,
         openaiApiKey,
       });
       setUploadedFile(response);
@@ -137,12 +125,6 @@ export default function Home() {
           columnSpacing={{xs: 1, sm: 2}}
         >
           <ApiKeyTextField
-            label="NIST API Key"
-            value={nistApiKey}
-            onChange={handleApiKeyChange(setNistApiKey)}
-            link="https://nvd.nist.gov/developers/request-an-api-key"
-          />
-          <ApiKeyTextField
             label="OpenAI API Key"
             value={openaiApiKey}
             onChange={handleApiKeyChange(setOpenaiApiKey)}
@@ -154,12 +136,6 @@ export default function Home() {
           severity="error"
           closeWarning={() => setError(null)}
           message={error?.body || error?.message || "An unknown error occurred"}
-        />
-        <Warning
-          error={showAlertNist}
-          severity="warning"
-          closeWarning={() => setShowAlertNist(false)}
-          message={"Please enter NIST API key!"}
         />
         <Warning
           error={showAlertOpenai}
