@@ -95,10 +95,22 @@ api.get("/historical-cpe-analysis/:cpe", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
 
   const mapStream = streamMapCpeCveCwe(cpe, openaiApiKey);
-  for await (const entry of mapStream) {
-    res.write(`data: ${JSON.stringify(entry)}\n\n`);
+
+  // Listen for client disconnect
+  req.on("close", () => {
+    mapStream.return();
+    res.end();
+  });
+
+  try {
+    for await (const entry of mapStream) {
+      res.write(`data: ${JSON.stringify(entry)}\n\n`);
+    }
+    res.end();
+  } catch (error) {
+    console.error("Streaming error:", error);
+    res.status(500).send({ error: "Internal server error" });
   }
-  res.end();
 });
 
 // Error handling middleware for Multer
