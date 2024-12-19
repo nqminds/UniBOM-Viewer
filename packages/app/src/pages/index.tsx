@@ -41,9 +41,7 @@ export default function Home() {
   const [data, setData] = useState(null);
   const [error, setError] = useState<ApiError | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [nistApiKey, setNistApiKey] = useState<string>("");
   const [openaiApiKey, setOpenaiApiKey] = useState<string>("");
-  const [showAlertNist, setShowAlertNist] = useState<boolean>(false);
   const [showAlertOpenai, setShowAlertOpenai] = useState<boolean>(false);
   const [showAlertWrongFileType, setShowAlertWrongFileType] =
     useState<boolean>(false);
