@@ -12,7 +12,8 @@ import {IconButton, useTheme} from "@mui/material";
 import {LightMode, Nightlight} from "@mui/icons-material";
 
 const routes = [
-  {url: "", name: "SBOM memory vulnerability", associatedUrls: ["/"]},
+  {url: "", name: "Home", associatedUrls: ["/"]},
+  {url: "sbom-analysis", name: "SBOM Analysis", associatedUrls: ["/sbom-analysis"]},
 ];
 
 const Container = styled("div")(() => ({

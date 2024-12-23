@@ -23,13 +23,7 @@ const AppTitleContainer = styled("div")(({theme: {spacing, menu}}) => ({
 export default function AppBanner() {
   return (
     <AppTitleContainer>
-      <Image
-        src="/nquiringminds.svg"
-        alt="Nquiringminds Logo"
-        width={180}
-        height={37}
-        priority
-      />
+      <h3>SBOM Generation and Analysis Platform</h3>
       <div>
         <Menu />
       </div>
