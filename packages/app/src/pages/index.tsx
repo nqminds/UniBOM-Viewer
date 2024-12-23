@@ -1,7 +1,7 @@
 import React from "react";
 import { Documentation } from "@/modules/cli";
 import { Typography } from "@mui/material";
-import {Paper, ApiKeyTextField} from "@/modules/common";
+import {Paper} from "@/modules/common";
 
 export default function Home() {
 
