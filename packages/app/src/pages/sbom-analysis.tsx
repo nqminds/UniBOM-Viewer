@@ -36,32 +36,41 @@ const UploadContainer = styled("div")({
   justifyContent: "flex-end",
 });
 
+// The API sends errors as a string or as {error: string}; Alert can only render a string
+function errorMessage(err: ApiError | Error | null): string {
+  const body = err instanceof ApiError ? err.body : undefined;
+  if (typeof body === "string" && body) return body;
+  if (body?.error) return String(body.error);
+  return err?.message || "An unknown error occurred";
+}
+
 export default function Home() {
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [data, setData] = useState(null);
-  const [error, setError] = useState<ApiError | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<sbomComponent[] | null>(
+    null,
+  );
+  const [data, setData] = useState<sbomComponent[] | null>(null);
+  const [error, setError] = useState<ApiError | Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [openaiApiKey, setOpenaiApiKey] = useState<string>("");
-  const [showAlertOpenai, setShowAlertOpenai] = useState<boolean>(false);
   const [showAlertWrongFileType, setShowAlertWrongFileType] =
     useState<boolean>(false);
 
-  // Load any saved API keys when the component mounts
+  // OpenAI classification is no longer maintained; drop any key saved earlier
   useEffect(() => {
-    const savedOpenaiKey = sessionStorage.getItem("openaiApiKey");
-    if (savedOpenaiKey) setOpenaiApiKey(savedOpenaiKey);
+    sessionStorage.removeItem("openaiApiKey");
   }, []);
-
-  useEffect(() => {
-    if (openaiApiKey) sessionStorage.setItem("openaiApiKey", openaiApiKey);
-  }, [openaiApiKey]);
 
   useEffect(() => {
     const savedData = sessionStorage.getItem("sbomData");
     if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      setData(parsedData);
-      setUploadedFile(parsedData);
+      try {
+        const parsedData = JSON.parse(savedData);
+        if (!Array.isArray(parsedData)) throw new Error("Not an array");
+        setData(parsedData);
+        setUploadedFile(parsedData);
+      } catch {
+        // Drop a corrupt entry (e.g. "undefined") so the page loads
+        sessionStorage.removeItem("sbomData");
+      }
     }
   }, []);
 
@@ -84,30 +93,24 @@ export default function Home() {
       return;
     }
 
-    if (!openaiApiKey) {
-      setShowAlertOpenai(true);
-    }
-
     setIsLoading(true);
     try {
       const response = await nqmCyberApi.default.vulnerabilityAnalysis({
         file,
-        openaiApiKey,
       });
+      // The client returns undefined for an empty or non-JSON success response
+      if (!Array.isArray(response)) {
+        throw new Error("The server returned no analysis results. Try again.");
+      }
       setUploadedFile(response);
       setData(response);
       sessionStorage.setItem("sbomData", JSON.stringify(response)); // Store data in session storage
     } catch (err) {
-      setError(err as ApiError);
+      setError(err as ApiError | Error);
     } finally {
       setIsLoading(false);
     }
   };
-  const handleApiKeyChange =
-    (setter: (value: string) => void) => (value: string) => {
-      const valueWithoutSpaces = value.replace(/\s/g, "");
-      setter(valueWithoutSpaces);
-    };
 
   return (
     <React.Fragment>
@@ -124,24 +127,15 @@ export default function Home() {
         >
           <ApiKeyTextField
             label="OpenAI API Key"
-            value={openaiApiKey}
-            onChange={handleApiKeyChange(setOpenaiApiKey)}
             link="https://platform.openai.com/api-keys"
+            disabledMessage="Feature not available: OpenAI weakness classification is no longer maintained."
           />
         </Grid>
         <Warning
           error={error}
           severity="error"
           closeWarning={() => setError(null)}
-          message={error?.body || error?.message || "An unknown error occurred"}
-        />
-        <Warning
-          error={showAlertOpenai}
-          severity="info"
-          closeWarning={() => setShowAlertOpenai(false)}
-          message={
-            "Using an OpenAi key helps for a better classification of weaknesses!"
-          }
+          message={errorMessage(error)}
         />
         <Warning
           error={showAlertWrongFileType}

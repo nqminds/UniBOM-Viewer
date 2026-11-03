@@ -33,10 +33,8 @@ export default function CpeDataPage() {
   useEffect(() => {
     const cpeInput = router.query.cpe as string;
     if (cpeInput) {
-      const openaiApiKey = sessionStorage.getItem("openaiApiKey");
-
       const eventSource = new EventSource(
-        `/api/historical-cpe-analysis/${cpeInput}?openaiApiKey=${openaiApiKey}`,
+        `/api/historical-cpe-analysis/${cpeInput}`,
       );
 
       eventSourceRef.current = eventSource;
