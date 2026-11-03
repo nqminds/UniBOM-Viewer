@@ -51,7 +51,13 @@ api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
   }
   const file = req.file;
   const fileContent = file.buffer.toString("utf-8");
-  const jsonObject = JSON.parse(fileContent);
+
+  let jsonObject;
+  try {
+    jsonObject = JSON.parse(fileContent);
+  } catch (error) {
+    return res.status(400).send("The file is not valid JSON");
+  }
 
   if (!validateCycloneDX(jsonObject)) {
     return res.status(400).send("The file is not a valid CycloneDX JSON");
@@ -67,15 +73,23 @@ api.post("/vulnerability-analysis", upload.single("file"), async (req, res) => {
   } catch (error) {
     console.error(error);
     // Send an error response back to the client
-    res.status(400).send({ error: error.message });
+    return res.status(400).send({ error: error.message });
   }
 
   const apiKeys = {
     openai: openaiApiKey,
   };
 
-  const data = await extractDetails(jsonObject, apiKeys);
-  res.send(data);
+  try {
+    const data = await extractDetails(jsonObject, apiKeys);
+    res.send(data);
+  } catch (error) {
+    console.error(`Vulnerability analysis failed: ${error.message}`);
+    // Most failures here come from the CVE API being slow or unreachable
+    res
+      .status(502)
+      .send({ error: `Vulnerability analysis failed: ${error.message}` });
+  }
 });
 
 // Body parser middleware to handle JSON data
