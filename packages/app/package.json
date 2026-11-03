@@ -45,6 +45,7 @@
   "dependencies": {
     "@nqminds/cyber-demonstrator-client": "^1.0.0",
     "@nqminds/cyber-demonstrator-server": "^1.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "lodash": "^4.17.21",
     "multer": "^1.4.5-lts.1",
