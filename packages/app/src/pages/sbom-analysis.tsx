@@ -51,20 +51,13 @@ export default function Home() {
   const [data, setData] = useState<sbomComponent[] | null>(null);
   const [error, setError] = useState<ApiError | Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [openaiApiKey, setOpenaiApiKey] = useState<string>("");
-  const [showAlertOpenai, setShowAlertOpenai] = useState<boolean>(false);
   const [showAlertWrongFileType, setShowAlertWrongFileType] =
     useState<boolean>(false);
 
-  // Load any saved API keys when the component mounts
+  // OpenAI classification is no longer maintained; drop any key saved earlier
   useEffect(() => {
-    const savedOpenaiKey = sessionStorage.getItem("openaiApiKey");
-    if (savedOpenaiKey) setOpenaiApiKey(savedOpenaiKey);
+    sessionStorage.removeItem("openaiApiKey");
   }, []);
-
-  useEffect(() => {
-    if (openaiApiKey) sessionStorage.setItem("openaiApiKey", openaiApiKey);
-  }, [openaiApiKey]);
 
   useEffect(() => {
     const savedData = sessionStorage.getItem("sbomData");
@@ -100,15 +93,10 @@ export default function Home() {
       return;
     }
 
-    if (!openaiApiKey) {
-      setShowAlertOpenai(true);
-    }
-
     setIsLoading(true);
     try {
       const response = await nqmCyberApi.default.vulnerabilityAnalysis({
         file,
-        openaiApiKey,
       });
       // The client returns undefined for an empty or non-JSON success response
       if (!Array.isArray(response)) {
@@ -123,11 +111,6 @@ export default function Home() {
       setIsLoading(false);
     }
   };
-  const handleApiKeyChange =
-    (setter: (value: string) => void) => (value: string) => {
-      const valueWithoutSpaces = value.replace(/\s/g, "");
-      setter(valueWithoutSpaces);
-    };
 
   return (
     <React.Fragment>
@@ -144,9 +127,8 @@ export default function Home() {
         >
           <ApiKeyTextField
             label="OpenAI API Key"
-            value={openaiApiKey}
-            onChange={handleApiKeyChange(setOpenaiApiKey)}
             link="https://platform.openai.com/api-keys"
+            disabledMessage="Feature not available: OpenAI weakness classification is no longer maintained."
           />
         </Grid>
         <Warning
@@ -154,14 +136,6 @@ export default function Home() {
           severity="error"
           closeWarning={() => setError(null)}
           message={errorMessage(error)}
-        />
-        <Warning
-          error={showAlertOpenai}
-          severity="info"
-          closeWarning={() => setShowAlertOpenai(false)}
-          message={
-            "Using an OpenAi key helps for a better classification of weaknesses!"
-          }
         />
         <Warning
           error={showAlertWrongFileType}
