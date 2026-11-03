@@ -123,7 +123,15 @@ api.get("/historical-cpe-analysis/:cpe", async (req, res) => {
     res.end();
   } catch (error) {
     console.error("Streaming error:", error);
-    res.status(500).send({ error: "Internal server error" });
+    if (!res.headersSent) {
+      return res.status(500).send({ error: "Internal server error" });
+    }
+    // The stream has started, so headers cannot change; close it with the
+    // "done" event the page already listens for
+    res.write(
+      `event: done\ndata: ${JSON.stringify({ error: error.message })}\n\n`
+    );
+    res.end();
   }
 });
 
