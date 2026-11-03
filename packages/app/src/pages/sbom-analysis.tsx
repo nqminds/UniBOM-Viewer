@@ -36,10 +36,20 @@ const UploadContainer = styled("div")({
   justifyContent: "flex-end",
 });
 
+// The API sends errors as a string or as {error: string}; Alert can only render a string
+function errorMessage(err: ApiError | Error | null): string {
+  const body = err instanceof ApiError ? err.body : undefined;
+  if (typeof body === "string" && body) return body;
+  if (body?.error) return String(body.error);
+  return err?.message || "An unknown error occurred";
+}
+
 export default function Home() {
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [data, setData] = useState(null);
-  const [error, setError] = useState<ApiError | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<sbomComponent[] | null>(
+    null,
+  );
+  const [data, setData] = useState<sbomComponent[] | null>(null);
+  const [error, setError] = useState<ApiError | Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [openaiApiKey, setOpenaiApiKey] = useState<string>("");
   const [showAlertOpenai, setShowAlertOpenai] = useState<boolean>(false);
@@ -59,9 +69,15 @@ export default function Home() {
   useEffect(() => {
     const savedData = sessionStorage.getItem("sbomData");
     if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      setData(parsedData);
-      setUploadedFile(parsedData);
+      try {
+        const parsedData = JSON.parse(savedData);
+        if (!Array.isArray(parsedData)) throw new Error("Not an array");
+        setData(parsedData);
+        setUploadedFile(parsedData);
+      } catch {
+        // Drop a corrupt entry (e.g. "undefined") so the page loads
+        sessionStorage.removeItem("sbomData");
+      }
     }
   }, []);
 
@@ -94,11 +110,15 @@ export default function Home() {
         file,
         openaiApiKey,
       });
+      // The client returns undefined for an empty or non-JSON success response
+      if (!Array.isArray(response)) {
+        throw new Error("The server returned no analysis results. Try again.");
+      }
       setUploadedFile(response);
       setData(response);
       sessionStorage.setItem("sbomData", JSON.stringify(response)); // Store data in session storage
     } catch (err) {
-      setError(err as ApiError);
+      setError(err as ApiError | Error);
     } finally {
       setIsLoading(false);
     }
@@ -133,7 +153,7 @@ export default function Home() {
           error={error}
           severity="error"
           closeWarning={() => setError(null)}
-          message={error?.body || error?.message || "An unknown error occurred"}
+          message={errorMessage(error)}
         />
         <Warning
           error={showAlertOpenai}
